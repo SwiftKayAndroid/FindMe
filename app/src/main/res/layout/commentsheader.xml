@@ -47,7 +47,7 @@
                 android:layout_height="55dp"
                 android:layout_margin="3dp" >
 
-                <com.swiftkaytech.findme.CircleImageView
+                <com.swiftkaytech.findme.views.CircleImageView
                     android:id="@+id/ivnewsfeedprofilepic"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

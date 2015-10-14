@@ -50,7 +50,7 @@
         android:id="@+id/relativeLayout4"
         android:layout_marginTop="1dp">
 
-        <com.swiftkaytech.findme.CircleImageView
+        <com.swiftkaytech.findme.views.CircleImageView
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:id="@+id/ivuploadimageimage"
