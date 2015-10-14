@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/holoblue"
+        android:id="@+id/relativeLayout10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Update Status"
+            android:id="@+id/tvupdatestatustitle"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="2000"
+            android:id="@+id/tvupdatestatuscounter"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/tvupdatestatustitle"
+            android:layout_toEndOf="@+id/tvupdatestatustitle"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:layout_marginLeft="10dp" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/ivupdatestatussend"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/sendicon"
+            android:padding="8dp"
+            android:layout_marginRight="10dp" />
+
+    </RelativeLayout>
+
+
+    <EditText
+        android:id="@+id/etupdatestatus"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/relativeLayout10"
+        android:hint="Type Status Here...."
+        android:gravity="left|top"
+        android:inputType="textCapSentences"
+        android:padding="10dp" />
+
+
+</RelativeLayout>

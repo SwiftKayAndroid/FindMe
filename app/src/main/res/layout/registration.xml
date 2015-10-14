@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff">
+
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/etregpassconfirm"
+        android:background="@drawable/bluebuttonbackground"
+        android:hint="Confirm Password"
+        android:paddingLeft="5dp"
+        android:layout_above="@+id/etregisterzip"
+        android:layout_alignLeft="@+id/btnregister"
+        android:layout_marginBottom="15dp"
+        android:layout_alignRight="@+id/etregisterzip" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/etregpass"
+        android:layout_above="@+id/etregpassconfirm"
+        android:layout_alignLeft="@+id/etregpassconfirm"
+        android:layout_alignStart="@+id/etregpassconfirm"
+        android:layout_alignRight="@+id/etregpassconfirm"
+        android:layout_alignEnd="@+id/etregpassconfirm"
+        android:background="@drawable/bluebuttonbackground"
+        android:layout_marginBottom="15dp"
+        android:hint="Password"
+        android:paddingLeft="5dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/etregemail"
+        android:layout_above="@+id/etregpass"
+        android:layout_alignLeft="@+id/etregpass"
+        android:layout_alignStart="@+id/etregpass"
+        android:layout_alignRight="@+id/etregpass"
+        android:layout_alignEnd="@+id/etregpass"
+        android:background="@drawable/bluebuttonbackground"
+        android:layout_marginBottom="15dp"
+        android:hint="someone@somewhere.com"
+        android:paddingLeft="5dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView3"
+        android:src="@drawable/redf"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_above="@+id/textView17"
+        android:layout_alignRight="@+id/etregemail"
+        android:layout_alignLeft="@+id/textView17"
+        android:layout_marginBottom="5dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/etregisterzip"
+        android:layout_above="@+id/btnregister"
+        android:layout_alignLeft="@+id/btnregister"
+        android:layout_alignRight="@+id/btnregister"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/bluebuttonbackground"
+        android:paddingLeft="5dp"
+        android:hint="Zipcode(must be valid US only)" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="We currently only support users in the United States. Sorry for the inconvenience."
+        android:id="@+id/textView17"
+        android:layout_above="@+id/etregemail"
+        android:layout_alignLeft="@+id/etregemail"
+        android:layout_alignRight="@+id/etregemail" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Register"
+        android:id="@+id/btnregister"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/blackbuttonbackground"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+</RelativeLayout>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <com.swiftkaytech.findme.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ivmessageother"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvmessageothertime"
+        android:src="@drawable/ic_placeholder"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/tvmessageothermessage"
+        android:background="@drawable/messagebackgroundother"
+        android:gravity="center"
+        android:padding="15dp"
+        android:textColor="#ffffff"
+        android:layout_alignTop="@+id/ivmessageother"
+        android:layout_toRightOf="@+id/ivmessageother"
+        android:layout_toEndOf="@+id/ivmessageother"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/tvmessageothertime"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/ivmessageother"
+        android:layout_alignStart="@+id/ivmessageother" />
+</RelativeLayout>

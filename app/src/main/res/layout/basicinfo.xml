@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/holoblue">
+
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:id="@+id/etregfirstname"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bluebuttonbackground"
+        android:hint="Firstname"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="50dp"
+        android:textColorHint="#ffd3d3d3"
+        android:textColor="#ffffff"
+        android:layout_alignLeft="@+id/tvregdate"
+        android:layout_alignStart="@+id/tvregdate"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:singleLine="true"
+        android:inputType="textCapWords" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:id="@+id/etreglastname"
+        android:layout_below="@+id/etregfirstname"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bluebuttonbackground"
+        android:hint="Lastname"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:textColorHint="#ffd3d3d3"
+        android:textColor="#ffffff"
+        android:layout_alignLeft="@+id/etregfirstname"
+        android:layout_alignStart="@+id/etregfirstname"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:singleLine="true"
+        android:inputType="textCapWords" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/tvregdate"
+        android:background="@drawable/bluebuttonbackground"
+        android:textColorHint="#ffd3d3d3"
+        android:textColor="#ffffff"
+        android:singleLine="true"
+        android:paddingLeft="5dp"
+        android:inputType="text"
+        android:hint="Your Birthday"
+        android:gravity="center"
+        android:layout_below="@+id/etreglastname"
+        android:layout_alignLeft="@+id/btnbasicinfosubmit"
+        android:layout_alignStart="@+id/btnbasicinfosubmit"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Next"
+        android:id="@+id/btnbasicinfosubmit"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/blackbuttonbackground"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:id="@+id/etgenderselect"
+        android:background="@drawable/bluebuttonbackground"
+        android:hint="Gender"
+        android:paddingLeft="10dp"
+        android:textColorHint="#ffd3d3d3"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_below="@+id/tvregdate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:singleLine="true" />
+
+</RelativeLayout>

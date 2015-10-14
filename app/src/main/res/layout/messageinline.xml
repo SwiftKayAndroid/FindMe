@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lvmessagesinline"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/etmessaget"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:layout_alignParentTop="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etmessaget"
+        android:layout_alignParentBottom="true"
+        android:inputType="textMultiLine|textCapSentences"
+        android:layout_toStartOf="@+id/tvsendmessage"
+        android:layout_toLeftOf="@+id/tvsendmessage"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:hint="Type a message...." />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Photo"
+        android:id="@+id/tvsendmessage"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:padding="10dp"
+        android:layout_below="@+id/lvmessagesinline"
+        android:src="@drawable/camera"
+        android:layout_marginRight="5dp" />
+</RelativeLayout>

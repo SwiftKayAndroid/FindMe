@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    >
+
+    <com.swiftkaytech.findme.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ivmymatches"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_placeholder"
+        android:longClickable="true"
+        android:layout_margin="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Name"
+        android:id="@+id/tvmymatchesname"
+        android:layout_alignTop="@+id/ivmymatches"
+        android:layout_toRightOf="@+id/ivmymatches"
+        android:layout_toEndOf="@+id/ivmymatches"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="age/city"
+        android:id="@+id/tvmymatchesage"
+        android:layout_below="@+id/tvmymatchesname"
+        android:layout_alignLeft="@+id/tvmymatchesname"
+        android:layout_alignStart="@+id/tvmymatchesname" />
+</RelativeLayout>

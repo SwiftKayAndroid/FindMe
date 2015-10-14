@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#ffffff"
+        android:id="@+id/relativeLayout2">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Upload Image"
+            android:id="@+id/textView3"
+            android:layout_centerVertical="true"
+            android:textColor="#ffffff"
+            android:background="@color/holoblue"
+            android:layout_toLeftOf="@+id/tvuploadimageupload"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Upload"
+            android:id="@+id/tvuploadimageupload"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:background="@color/holoblue"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="1dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="252dp"
+        android:layout_below="@+id/relativeLayout2"
+        android:layout_centerHorizontal="true"
+        android:background="@color/holoblue"
+        android:id="@+id/relativeLayout4"
+        android:layout_marginTop="1dp">
+
+        <com.swiftkaytech.findme.CircleImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:id="@+id/ivuploadimageimage"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_placeholder"
+            android:scaleType="centerCrop"
+            android:layout_margin="10dp" />
+    </RelativeLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="textMultiLine|textCapSentences"
+        android:ems="10"
+        android:id="@+id/etuploadimagetext"
+        android:layout_below="@+id/relativeLayout4"
+        android:layout_centerHorizontal="true"
+        android:hint="Say something here....To change the image click on it"
+        android:padding="5dp"
+        android:textColor="#000000"
+        android:gravity="top"
+        android:background="#ffffff" />
+</RelativeLayout>

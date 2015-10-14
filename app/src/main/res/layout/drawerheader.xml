@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rldrawerheader"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <com.swiftkaytech.findme.CircleImageView
+        android:id="@+id/ivdrawerusersphoto"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_placeholder" />
+
+    <TextView
+        android:id="@+id/tvmatchmymatches"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivdrawerusersphoto"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:text="Users Name"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ffffff" />
+
+    <LinearLayout
+        android:id="@+id/fggf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvmatchmymatches">
+
+        <ImageView
+            android:id="@+id/ivdrawerheadermessages"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/chat_line"
+            android:padding="7dp" />
+
+        <ImageView
+            android:id="@+id/ivdrawerheadernotes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/bell_line"
+            android:padding="7dp" />
+
+        <ImageView
+            android:id="@+id/ivdrawerheadfriends"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/user_line"
+            android:padding="7dp" />
+
+        <ImageView
+            android:id="@+id/ivdrawerheadermatch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/heart"
+            android:padding="7dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

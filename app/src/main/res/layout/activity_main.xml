@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageView"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/redf"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="30dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:id="@+id/btnstartpagelogin"
+                android:background="@drawable/bluebuttonbackground"
+                android:textColor="#ffffff"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="50dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Account"
+                android:id="@+id/btnstartpageregister"
+                android:layout_above="@+id/btnstartpagelogin"
+                android:layout_alignLeft="@+id/btnstartpagelogin"
+                android:layout_alignStart="@+id/btnstartpagelogin"
+                android:layout_alignRight="@+id/btnstartpagelogin"
+                android:layout_alignEnd="@+id/btnstartpagelogin"
+                android:layout_marginBottom="15dp"
+                android:textColor="#ffffff"
+                android:background="@drawable/blackbuttonbackground" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/copyrightstring"
+                android:id="@+id/textView"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="2dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/sloganstring"
+                android:id="@+id/textView2"
+                android:layout_above="@+id/btnstartpageregister"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="15dp"
+                android:textStyle="italic"
+                android:gravity="center" />
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>
