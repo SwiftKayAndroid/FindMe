@@ -2,9 +2,7 @@ package com.swiftkaytech.findme.managers;
 
 import android.util.Base64;
 import android.util.Log;
-
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyStore;
+import java.util.HashMap;
 import java.util.Map;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -53,14 +51,15 @@ public class ConnectionManager {
     private String username;
     private String password;
 
-    public final String GET = "GET";
-    public final String POST = "POST";
-    public final String UTF8 = "UTF-8";
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+    public static final String UTF8 = "UTF-8";
 
     private static final String BOUNCY_CASTLE = "BKS";
 
     public ConnectionManager(){
         setMethod("GET");
+        params = new HashMap<>();
     }
 
     public String getMethod() {
@@ -115,6 +114,7 @@ public class ConnectionManager {
     public void setUseJson(boolean usejson){
         this.useJson = usejson;
     }
+
     public void useBasicAuth(boolean useAuth){
         this.basicAuth = useAuth;
     }
@@ -122,12 +122,15 @@ public class ConnectionManager {
     public void setPassword(String pass){
         this.password = pass;
     }
+
     public void setUsername(String username){
         this.username = username;
     }
+
     public String getUsername(){
         return this.username;
     }
+
     public String getPassword(){
         return this.password;
     }
@@ -141,7 +144,14 @@ public class ConnectionManager {
     }
 
     public String sendHttpRequest(String uri){
-        this.uri = uri;
+        if(uri != null) {
+            this.uri = uri;
+        }else if(this.uri == null){
+            err("Can't connect - missing URI");
+            return null;
+        }
+
+
         boolean redirect = false;
 
         BufferedReader reader = null;
@@ -156,9 +166,9 @@ public class ConnectionManager {
                     log("getting params");
                 }
                 log("no params set");
-
             }
 
+            log(uri);
             URL url = new URL(uri);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod(getMethod());
@@ -173,14 +183,12 @@ public class ConnectionManager {
             }
 
             if (redirect) {
-
                 // get redirect url from "location" header field
                 String newUrl = con.getHeaderField("Location");
 
                 url = new URL(newUrl);
                 con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod(getMethod());
-
             }
 
             //if USER NEEDS TO USE BASIC AUTHENTICATION
@@ -193,30 +201,25 @@ public class ConnectionManager {
                         .append(Base64.encodeToString(loginBytes, Base64.DEFAULT));
 
                 con.addRequestProperty("Authorization", loginBuilder.toString());
-
             }
 
             //POST METHOD
-            if(getMethod().equals(POST)){
+            if (getMethod().equals(POST)) {
 
                 log("Using POST METHOD");
                 con.setDoInput(true);
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
 
 
-                if(useJson){
+                if (useJson) {
                     JSONObject jobj = new JSONObject(getParams());
                     String params = "params=" + jobj.toString();
                     writer.write(params);
-
-                }else{
+                } else {
                     writer.write(getEncodedParams());
                 }
-
                 writer.flush();
-
             }
-
 
             StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));

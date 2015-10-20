@@ -10,6 +10,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.fragment.MessagesListFrag;
+import com.swiftkaytech.findme.utils.ImageLoader;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import java.util.List;
 
 /**

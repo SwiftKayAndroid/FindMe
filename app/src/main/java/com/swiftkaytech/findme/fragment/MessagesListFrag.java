@@ -16,6 +16,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.MessageThreadsAdapter;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -39,17 +44,17 @@ import java.util.List;
 public class MessagesListFrag extends Fragment {
 
 
-    class MessageThreads{
-        String uid;
-        String propicloc;
-        String time;
-        String message;
-        String name;
-        String threadid;
-        boolean readstat;
-        boolean seenstat;
-
+    public class MessageThreads{
+        public String uid;
+        public String propicloc;
+        public String time;
+        public String message;
+        public String name;
+        public String threadid;
+        public boolean readstat;
+        public boolean seenstat;
     }
+
     public static List<MessageThreads> mlist;
 
     //primitives

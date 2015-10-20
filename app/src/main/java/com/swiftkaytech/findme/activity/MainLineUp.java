@@ -1,61 +1,37 @@
 package com.swiftkaytech.findme.activity;
 
-import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.TypedArray;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.fragment.FindPeopleFrag;
+import com.swiftkaytech.findme.fragment.MessagesListFrag;
+import com.swiftkaytech.findme.fragment.NavigationDrawerFragment;
+import com.swiftkaytech.findme.fragment.NewsFeedFrag;
+import com.swiftkaytech.findme.fragment.NotificationsFrag;
+import com.swiftkaytech.findme.fragment.ViewPhotosFrag;
+import com.swiftkaytech.findme.utils.ImageLoader;
+import com.swiftkaytech.findme.utils.VarHolder;
 
 /**
  * Created by BN611 on 2/5/2015.
  */
 public class MainLineUp extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks{
-
-
 
     static class ProInfo{
         static String name;
@@ -81,8 +57,6 @@ public class MainLineUp extends AppCompatActivity implements NavigationDrawerFra
     ListView lv;
     DrawerLayout dl;
     //--------------------------------------------/>>
-
-
 
     //GUI COMPONENTS
     //'''''''''''''''''''''''''''''''''''''''''''''''''
@@ -187,7 +161,6 @@ public class MainLineUp extends AppCompatActivity implements NavigationDrawerFra
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -199,13 +172,10 @@ public class MainLineUp extends AppCompatActivity implements NavigationDrawerFra
         }
     };
 
-
     private String getUID() {//---------------------------------------------------------------------<<getUID>>
         String KEY = "uid";
         return prefs.getString(KEY,null);
     }//----------------------------------------------------------------------------------------------<</getUID>>
-
-
 
 
     /**
@@ -215,8 +185,6 @@ public class MainLineUp extends AppCompatActivity implements NavigationDrawerFra
         // update the main content by replacing fragments
         android.app.Fragment fragment = null;
         boolean restoring = false; //set to true if restoring fragment from backstack instead of new fragment
-
-
 
         switch (position) {
 

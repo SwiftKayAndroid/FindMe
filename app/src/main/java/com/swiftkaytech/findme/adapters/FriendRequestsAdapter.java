@@ -13,6 +13,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.fragment.FriendRequestsFrag;
+import com.swiftkaytech.findme.utils.ImageLoader;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;

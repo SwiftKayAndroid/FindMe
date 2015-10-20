@@ -8,6 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.fragment.Commentsfrag;
+import com.swiftkaytech.findme.utils.ImageLoader;
+
 import java.util.List;
 
 /**

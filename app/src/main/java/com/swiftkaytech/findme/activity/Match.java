@@ -13,17 +13,12 @@ import android.view.MenuItem;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.CardAdapter;
 import com.swiftkaytech.findme.flingswipe.SwipeFlingAdapterView;
+import com.swiftkaytech.findme.managers.ConnectionManager;
+import com.swiftkaytech.findme.utils.VarHolder;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,11 +32,11 @@ import java.util.List;
  */
 public class Match extends AppCompatActivity {
 
-    class Users{
-        String uid;
-        String name;
-        String propicloc;
-        String aboutme;
+    public class Users{
+        public String uid;
+       public String name;
+        public String propicloc;
+        public String aboutme;
 
 
     }
@@ -168,10 +163,7 @@ public class Match extends AppCompatActivity {
         return true;
     }
 
-
-
     private class GetMatches extends AsyncTask<String,String,String>{
-        String webResponse;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -179,31 +171,14 @@ public class Match extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
+            String uriAppend = "getmatches.php";
 
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(getString(R.string.ipaddress) + "getmatches.php");
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri(getString(R.string.ipaddress) + uriAppend);
+            connectionManager.addParam("uid", uid);
 
-            try{
-                List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-                nvps.add(new BasicNameValuePair("uid",uid));
-
-                httpPost.setEntity(new UrlEncodedFormEntity(nvps));
-
-
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                webResponse = httpclient.execute(httpPost, responseHandler);
-
-
-            }catch (ClientProtocolException e) {
-                e.printStackTrace();
-                webResponse = "error";
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                webResponse = "error";
-            }
-
-            return webResponse;
+            return connectionManager.sendHttpRequest(null);
         }
 
         @Override

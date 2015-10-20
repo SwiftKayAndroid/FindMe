@@ -21,6 +21,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.CommentsAdapter;
+import com.swiftkaytech.findme.utils.ImageLoader;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -43,14 +49,14 @@ import java.util.List;
 public class Commentsfrag extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     //comment objects are used to store in arraylist to display
-    class Comments{
+    public class Comments{
 
-        String name;            //commenting users name
-        String comment;         //comment
-        String propicloc;       //commenting users profile picture
-        String time;            //amount of time since the comment was posted
-        String commentid;       //unique id of the comment as stored in the database
-        String commentusersid;  //user id for the person who commented
+        public String name;            //commenting users name
+        public String comment;         //comment
+        public String propicloc;       //commenting users profile picture
+        public String time;            //amount of time since the comment was posted
+        public String commentid;       //unique id of the comment as stored in the database
+        public String commentusersid;  //user id for the person who commented
 
     }
 
@@ -131,7 +137,7 @@ public class Commentsfrag extends AppCompatActivity implements SwipeRefreshLayou
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container_comments);
 
         refreshLayout.setOnRefreshListener(this);
-        refreshLayout.setColorScheme(android.R.color.holo_blue_bright,
+        refreshLayout.setColorScheme(getResources().getColor(android.R.color.holo_blue_bright),
                 android.R.color.black,
                 android.R.color.holo_blue_bright,
                 android.R.color.black);

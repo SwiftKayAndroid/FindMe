@@ -4,7 +4,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.swiftkaytech.findme.NewsFeedFrag;
+import com.swiftkaytech.findme.fragment.NewsFeedFrag;
 import com.swiftkaytech.findme.R;
 
 /**

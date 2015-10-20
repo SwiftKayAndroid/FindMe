@@ -21,6 +21,10 @@ import android.content.Intent;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.tasks.AuthenticateUser;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 
 public class MainActivity extends Activity {
 
@@ -30,7 +34,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//Remove title bar
-
 
          //Intent i = new Intent("com.swiftkaytech.findme.MAINLINEUP");
         //startActivity(i);
@@ -84,9 +87,4 @@ public class MainActivity extends Activity {
             }
         });
     }
-
-
-
-
-
 }

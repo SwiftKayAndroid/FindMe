@@ -55,34 +55,36 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.NewsFeedAdapter;
 import com.swiftkaytech.findme.com.shamanland.fab.ShowHideOnScroll;
+import com.swiftkaytech.findme.utils.VarHolder;
 
 /**
  * Created by kevin haines on 2/8/2015.
  */
 public class NewsFeedFrag extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
-    class Posts{
-        String postinguserid;
-        String firstname;
-        String lastname;
-        String posttime;
-        String post;
-        String postimagelocation;
-        String postinguserslocation;
-        String numlikes;
-        String[] likeduserids;
-        String numcomments;
-        String propiclocation;
-        String postid;
-        boolean liked = false;
-        String lastcomment;
-        String lastcommentid;
-        String lastcommentuid;
-        String lastcommentpropicloc;
-        String lastcommentname;
-        String lastcommenttime;
-
+    public class Posts{
+        public String postinguserid;
+        public String firstname;
+        public String lastname;
+        public String posttime;
+        public String post;
+        public String postimagelocation;
+        public String postinguserslocation;
+        public String numlikes;
+        public String[] likeduserids;
+        public String numcomments;
+        public String propiclocation;
+        public String postid;
+        public boolean liked = false;
+        public String lastcomment;
+        public String lastcommentid;
+        public String lastcommentuid;
+        public String lastcommentpropicloc;
+        public String lastcommentname;
+        public String lastcommenttime;
     }
 
     //initialize prefs
@@ -128,7 +130,7 @@ public class NewsFeedFrag extends Fragment implements SwipeRefreshLayout.OnRefre
     int lastpos;
     int maxheight;
 
-    static boolean isActive;
+    public static boolean isActive;
 
     android.app.FragmentManager fragmentManager = getFragmentManager();
 

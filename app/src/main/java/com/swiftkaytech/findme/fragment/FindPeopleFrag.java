@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.FindPeopleAdapter;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -38,11 +41,11 @@ import java.util.List;
  */
 public class FindPeopleFrag extends Fragment {
 
-    class Peeps{
+    public class Peeps{
 
-        String uid;
-        String picloc;
-        String distance;
+        public String uid;
+        public String picloc;
+        public String distance;
     }
     List<Peeps> plist;
 
@@ -162,8 +165,7 @@ public class FindPeopleFrag extends Fragment {
                         plist.get(plist.size()-1).uid = childJSONObject.getString("uid");
                         plist.get(plist.size()-1).picloc = childJSONObject.getString("propicloc");
                         plist.get(plist.size()-1).distance = childJSONObject.getString("distance");
-
-
+                        
                     }
 
                     //choose your favorite adapter
@@ -172,30 +174,12 @@ public class FindPeopleFrag extends Fragment {
                     }else{
                         BaseAdapter a = (BaseAdapter) gv.getAdapter();
                         a.notifyDataSetChanged();
-
                     }
                     lastpost = plist.get(plist.size() - 1).uid;
-
-
-
-
-
-
-
-
-
-
-
-
                 }catch(JSONException e){
                     e.printStackTrace();
-
                 }
-
             }
         }
-
     }
-
-
 }

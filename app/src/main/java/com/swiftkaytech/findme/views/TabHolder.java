@@ -16,6 +16,9 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +35,7 @@ public class TabHolder extends RelativeLayout {
     int previouslocation = -1;
 
     View scroller;
-
+    public int currentSelected = 0;
 
     //demensions
     int linlayoutheight = 45;
@@ -44,7 +47,6 @@ public class TabHolder extends RelativeLayout {
         int x;
         int y;
     }
-    int currentSelected = 0;
 
     public TabHolder(Context context) {
         super(context);

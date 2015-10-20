@@ -7,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.fragment.ViewPhotosFrag;
+import com.swiftkaytech.findme.utils.ImageLoader;
+
 import java.util.List;
 
 /**

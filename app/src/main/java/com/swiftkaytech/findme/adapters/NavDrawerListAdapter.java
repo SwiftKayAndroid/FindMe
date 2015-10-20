@@ -11,7 +11,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
- 
+
+import com.swiftkaytech.findme.NavDrawerItem;
+import com.swiftkaytech.findme.R;
+
 public class NavDrawerListAdapter extends BaseAdapter {
      
     private Context context;

@@ -13,6 +13,11 @@ import android.view.MenuItem;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.MyMatchesAdapter;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -34,12 +39,12 @@ import java.util.List;
  */
 public class MyMatches  extends AppCompatActivity {
 
-    class Matches{
-        String uid;
-        String propicloc;
-        String name;
-        String dob;
-        String city;
+    public class Matches{
+        public String uid;
+        public String propicloc;
+        public String name;
+        public String dob;
+        public String city;
     }
 
     List<Matches> plist;
@@ -141,7 +146,6 @@ public class MyMatches  extends AppCompatActivity {
             }
             return webResponse;
         }
-
 
         @Override
         protected void onPostExecute(String result) {

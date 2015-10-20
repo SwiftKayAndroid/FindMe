@@ -30,6 +30,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.NavDrawerItem;
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.NavDrawerListAdapter;
+import com.swiftkaytech.findme.utils.ImageLoader;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +52,6 @@ public class NavigationDrawerFragment extends Fragment {
     ImageLoader imageloader;
     SharedPreferences prefs;
     String uid;//users id
-
 
     /**
      * Remember the position of the selected item.

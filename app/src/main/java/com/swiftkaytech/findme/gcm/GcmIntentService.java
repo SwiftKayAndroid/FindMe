@@ -1,5 +1,9 @@
 package com.swiftkaytech.findme.gcm;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.MainActivity;
+import com.swiftkaytech.findme.utils.GcmBroadcastReceiver;
+
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;

@@ -36,6 +36,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.tasks.ImageUploadTask;
+
 
 public class UploadService extends Activity {
 

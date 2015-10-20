@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -33,7 +36,7 @@ import java.util.List;
 public class Registration extends Activity {
 
 
-    EditText etemail,etpass,etpassconfirm,etzip;
+    EditText etemail, etpass, etpassconfirm, etzip;
     Button btnreg;
     ProgressDialog pDialog;
 
@@ -50,7 +53,7 @@ public class Registration extends Activity {
     }
 
 
-    public void setGUI(){
+    public void setGUI() {
 
         etemail = (EditText) findViewById(R.id.etregemail);
         etpass = (EditText) findViewById(R.id.etregpass);
@@ -61,7 +64,7 @@ public class Registration extends Activity {
 
     }
 
-    private void setListeners(){
+    private void setListeners() {
         btnreg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,21 +73,21 @@ public class Registration extends Activity {
                 String passcon = etpassconfirm.getText().toString();
                 String zip = etzip.getText().toString();
 
-                if(email.equals("")||!(email.contains("@"))){
+                if (email.equals("") || !(email.contains("@"))) {
                     etemail.setText("");
                     etemail.setHint("Invalid Email");
                     etemail.setHintTextColor(Color.RED);
 
 
-                }else if(pass.equals("")){
-                    Toast.makeText(Registration.this,"Please enter a password",Toast.LENGTH_LONG).show();
-                }else if(!(pass.equals(passcon))){
-                    Toast.makeText(Registration.this,"The passwords do not match",Toast.LENGTH_LONG).show();
-                }else if(zip.length()!=5){
-                    Toast.makeText(Registration.this,"Invalid Zip",Toast.LENGTH_LONG).show();
-                }else{
+                } else if (pass.equals("")) {
+                    Toast.makeText(Registration.this, "Please enter a password", Toast.LENGTH_LONG).show();
+                } else if (!(pass.equals(passcon))) {
+                    Toast.makeText(Registration.this, "The passwords do not match", Toast.LENGTH_LONG).show();
+                } else if (zip.length() != 5) {
+                    Toast.makeText(Registration.this, "Invalid Zip", Toast.LENGTH_LONG).show();
+                } else {
 
-                    new Register().execute(email,pass,zip);
+                    new Register().execute(email, pass, zip);
 
                 }
 
@@ -96,7 +99,7 @@ public class Registration extends Activity {
     }
 
 
-    private class Register extends AsyncTask<String,String,String> {
+    private class Register extends AsyncTask<String, String, String> {
         String webResponse;
 
         @Override
@@ -151,43 +154,31 @@ public class Registration extends Activity {
                 e.printStackTrace();
                 webResponse = "error";
                 Log.e("kevin", "error connection refused");
-
-
             } catch (IOException e) {
                 e.printStackTrace();
                 webResponse = "error";
-
             }
-
-
             return webResponse;
         }
 
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            // Dismiss the progress dialog
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            Log.e("kevin", result);
 
-            @Override
-            protected void onPostExecute(String result){
-                super.onPostExecute(result);
-                // Dismiss the progress dialog
-                if (pDialog.isShowing())
-                    pDialog.dismiss();
-                Log.e("kevin", result);
-
-                if(result.contains("accepted")){
-                    Toast.makeText(Registration.this,"Please confirm email and log in",Toast.LENGTH_LONG).show();
-                    Intent i = new Intent("com.swiftkaytech.findme.LOGINPAGE");
-                    startActivity(i);
-
-
-                }else{
-                    Toast.makeText(Registration.this,"There was an error setting up your account email may be in use",Toast.LENGTH_LONG).show();
-                }
+            if (result.contains("accepted")) {
+                Toast.makeText(Registration.this, "Please confirm email and log in", Toast.LENGTH_LONG).show();
+                Intent i = new Intent("com.swiftkaytech.findme.LOGINPAGE");
+                startActivity(i);
 
 
-
-
-
+            } else {
+                Toast.makeText(Registration.this, "There was an error setting up your account email may be in use", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
-
-    }
+}
