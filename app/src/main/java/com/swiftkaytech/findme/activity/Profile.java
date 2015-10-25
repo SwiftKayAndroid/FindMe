@@ -19,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.swiftkaytech.findme.R;
-import com.swiftkaytech.findme.adapters.NewsFeedAdapter;
+import com.swiftkaytech.findme.data.Post;
 import com.swiftkaytech.findme.fragment.NewsFeedFrag;
 import com.swiftkaytech.findme.utils.ImageLoader;
 import com.swiftkaytech.findme.utils.VarHolder;
@@ -48,7 +48,7 @@ public class Profile extends AppCompatActivity {
 
 
 
-    List<NewsFeedFrag.Posts> plist;
+    List<Post> plist;
 
     //profile information
     String name;
@@ -123,7 +123,7 @@ public class Profile extends AppCompatActivity {
         if(uid.equals(ouid)){
             self = true;
         }
-        plist = new ArrayList<NewsFeedFrag.Posts>();
+        plist = new ArrayList<Post>();
         imageLoader = new ImageLoader(context);
         setGUI();
 
@@ -252,22 +252,6 @@ public class Profile extends AppCompatActivity {
 
             lv.addHeaderView(getProfileHeader());
 
-            if(refreshing){
-
-                adapter = new NewsFeedAdapter(context, plist, uid, lv);
-                lv.setAdapter(adapter);
-
-                //else notifydatasetchanged
-            }else{
-                BaseAdapter a = (BaseAdapter) lv.getAdapter();
-                if(a == null) {
-                    adapter = new NewsFeedAdapter(context, plist, uid, lv);
-                    lv.setAdapter(adapter);
-                }else {
-                    a.notifyDataSetChanged();
-                    Log.e("kevin", "datasetchanged");
-                }
-            }
 
         }
     }
@@ -323,23 +307,6 @@ public class Profile extends AppCompatActivity {
             lv.setVisibility(View.VISIBLE);
 
             lv.addHeaderView(getProfileHeader());
-
-            if(refreshing){
-
-                adapter = new NewsFeedAdapter(context, plist, uid, lv);
-                lv.setAdapter(adapter);
-
-                //else notifydatasetchanged
-            }else{
-                BaseAdapter a = (BaseAdapter) lv.getAdapter();
-                if(a == null) {
-                    adapter = new NewsFeedAdapter(context, plist, uid, lv);
-                    lv.setAdapter(adapter);
-                }else {
-                    a.notifyDataSetChanged();
-                    Log.e("kevin", "datasetchanged");
-                }
-            }
 
         }
     }

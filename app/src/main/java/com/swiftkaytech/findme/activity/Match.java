@@ -178,7 +178,7 @@ public class Match extends AppCompatActivity {
             connectionManager.setUri(getString(R.string.ipaddress) + uriAppend);
             connectionManager.addParam("uid", uid);
 
-            return connectionManager.sendHttpRequest(null);
+            return connectionManager.sendHttpRequest();
         }
 
         @Override

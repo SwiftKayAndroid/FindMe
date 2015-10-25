@@ -1,8 +1,27 @@
+/*
+ *      Copyright (C) 2015 Kevin Haines
+ *
+ *     Licensed under the Apache License, Version 2.0 (the "License");
+ *     you may not use this file except in compliance with the License.
+ *      You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Unless required by applicable law or agreed to in writing, software
+ *     distributed under the License is distributed on an "AS IS" BASIS,
+ *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *      See the License for the specific language governing permissions and
+ *     limitations under the License.
+ *
+ */
+
 package com.swiftkaytech.findme.managers;
 
 import android.util.Base64;
 import android.util.Log;
+
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,29 +33,11 @@ import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
-
-/*
- *    Copyright (C) 2015 Kevin Haines
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *
- *
- *    Last update Sept 28 2015
- */
 
 public class ConnectionManager {
 
@@ -44,6 +45,7 @@ public class ConnectionManager {
     private String uri;
     private boolean useJson;
     private boolean basicAuth = false;
+    private String baseUrl = "http://192.168.1.115/";
 
 
     private boolean usePinnedCertifate = false;
@@ -75,7 +77,7 @@ public class ConnectionManager {
     }
 
     public void setUri(String uri) {
-        this.uri = uri;
+        this.uri = baseUrl + uri;
     }
 
     public Map<String, String> getParams() {
@@ -94,7 +96,7 @@ public class ConnectionManager {
         StringBuilder sb = new StringBuilder();
 
         for (String key:params.keySet()
-             ) {
+                ) {
             String val = null;
             try {
                 val = URLEncoder.encode(params.get(key), UTF8);
@@ -106,7 +108,7 @@ public class ConnectionManager {
                 sb.append("&");
             }
             sb.append(key + "=" + val);
-            
+
         }
         return sb.toString();
     }
@@ -143,10 +145,8 @@ public class ConnectionManager {
         this.usePinnedCertifate = usePinnedCertifate;
     }
 
-    public String sendHttpRequest(String uri){
-        if(uri != null) {
-            this.uri = uri;
-        }else if(this.uri == null){
+    public String sendHttpRequest(){
+        if(this.uri == null){
             err("Can't connect - missing URI");
             return null;
         }
@@ -172,23 +172,25 @@ public class ConnectionManager {
             URL url = new URL(uri);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod(getMethod());
+            con.setDoInput(true);
             log("Request Method is: " + getMethod());
-
-            int status = con.getResponseCode();
-            if (status != HttpURLConnection.HTTP_OK) {
-                if (status == HttpURLConnection.HTTP_MOVED_TEMP
-                        || status == HttpURLConnection.HTTP_MOVED_PERM
-                        || status == HttpURLConnection.HTTP_SEE_OTHER)
-                    redirect = true;
-            }
+//this throws an exception stating we are already connected when trying to do a post
+            //todo:figure out a way to implement this automatically without throwing this exception
+//            int status = con.getResponseCode();
+//            if (status != HttpURLConnection.HTTP_OK) {
+//                if (status == HttpURLConnection.HTTP_MOVED_TEMP
+//                        || status == HttpURLConnection.HTTP_MOVED_PERM
+//                        || status == HttpURLConnection.HTTP_SEE_OTHER)
+//                    redirect = true;
+//            }
 
             if (redirect) {
+                log("is redirect");
                 // get redirect url from "location" header field
                 String newUrl = con.getHeaderField("Location");
 
                 url = new URL(newUrl);
                 con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod(getMethod());
             }
 
             //if USER NEEDS TO USE BASIC AUTHENTICATION
@@ -207,7 +209,7 @@ public class ConnectionManager {
             if (getMethod().equals(POST)) {
 
                 log("Using POST METHOD");
-                con.setDoInput(true);
+                con.setDoOutput(true);
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
 
 
@@ -231,10 +233,10 @@ public class ConnectionManager {
 
             }
 
+            log("http request result: " + sb.toString());
             return  sb.toString();
         }catch(Exception e){
             e.printStackTrace();
-
 
         }finally {
             if(reader != null){
@@ -246,9 +248,9 @@ public class ConnectionManager {
                 }
             }
         }
-
         return null;
     }
+
     public String sendPinnedHttpsRequest(String uri,InputStream resourceStream,char[] key_password){
         this.uri = uri;
 
