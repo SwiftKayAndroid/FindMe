@@ -15,27 +15,11 @@
  *
  */
 
-package com.swiftkaytech.findme.data;
-
-import java.io.Serializable;
+package com.swiftkaytech.findme.views.tagview;
 
 /**
- * Created by Kevin Haines on 10/21/15.
+ * listener for tag delete
  */
-public class Country implements Serializable{
-
-    /**
-     * this class will be used to store the users country, get the country, determine country codes, country location data etc.
-     */
-
-    private String country;
-
-
-    public Country(String country) {
-        this.country = country;
-    }
-
-    public String getCountry() {
-        return country;
-    }
+public interface OnTagDeleteListener {
+	void onTagDeleted(Tag tag, int position);
 }

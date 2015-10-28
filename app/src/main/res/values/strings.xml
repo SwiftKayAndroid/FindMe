@@ -2,9 +2,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">Find Me</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
@@ -12,8 +9,6 @@
     <string name="copyrightstring">Copyright \u00a9 2015 SwiftKayDevelopment</string>
     <string name="sloganstring">The safest way \n to meet new people!</string>
     <string name="ipaddress">http://192.168.1.115/</string>
-    <string name="drawer_open">Slider Menu Opened</string>
-    <string name="drawer_close">Slider Menu Closed</string>
 
     <array name="nav_drawer_icons">
         <item>@drawable/home_line</item>

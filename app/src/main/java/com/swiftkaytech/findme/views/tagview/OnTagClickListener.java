@@ -15,14 +15,11 @@
  *
  */
 
-package com.swiftkaytech.findme.data;
+package com.swiftkaytech.findme.views.tagview;
 
 /**
- * Created by khaines178 on 10/21/15.
+ * listener for tag delete
  */
-public class Tags {
-    /**
-     * this class will be used to store information about a users
-     * interest tags.
-     */
+public interface OnTagClickListener {
+	void onTagClick(Tag tag, int position);
 }

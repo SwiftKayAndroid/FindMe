@@ -13,6 +13,7 @@ import com.swiftkaytech.findme.activity.BaseActivity;
 public class BaseFragment extends Fragment {
 
     protected static String TAG = "findme-basefragment";
+    public static final String ARG_UID = "ARG_UID";
     protected String uid;
 
     protected SharedPreferences getPrefs(){

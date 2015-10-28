@@ -39,7 +39,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        initializeUser();
+        uid = initializeUser();
+         if (uid == null) {
+             err("uid is null");
+         }
         createActivity();
     }
 

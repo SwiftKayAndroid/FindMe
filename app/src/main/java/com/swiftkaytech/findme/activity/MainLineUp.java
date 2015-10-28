@@ -129,7 +129,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
             case VarHolder.NEWSFEED:
 
                     //fragment = getSupportFragmentManager().findFragmentByTag(Integer.toString(position));
-                    fragment = new NewsFeedFrag();
+                    fragment = NewsFeedFrag.getInstance(uid);
 
                 break;
             case VarHolder.MESSAGES:
@@ -199,7 +199,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         if (fragment != null&&!restoring) {
             getSupportFragmentManager().beginTransaction()
                     .addToBackStack(Integer.toString(position))
-                    .replace(R.id.frame_container, fragment,Integer.toString(position)).commit();
+                    .replace(R.id.frame_container, fragment, Integer.toString(position)).commit();
 
             // update selected item and title, then close the drawer
             mNavigationDrawerFragment.getListView().setItemChecked(position, true);

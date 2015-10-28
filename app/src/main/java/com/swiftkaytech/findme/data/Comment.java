@@ -17,7 +17,9 @@
 
 package com.swiftkaytech.findme.data;
 
-public class Comment {
+import java.io.Serializable;
+
+public class Comment implements Serializable{
 
     public static final String TAG = "Comment";
     private String mCommentId;

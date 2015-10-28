@@ -15,27 +15,21 @@
  *
  */
 
-package com.swiftkaytech.findme.data;
+package com.swiftkaytech.findme.views.tagview;
 
-import java.io.Serializable;
+import android.content.Context;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
-/**
- * Created by Kevin Haines on 10/21/15.
- */
-public class Country implements Serializable{
+public class Utils {
 
-    /**
-     * this class will be used to store the users country, get the country, determine country codes, country location data etc.
-     */
-
-    private String country;
-
-
-    public Country(String country) {
-        this.country = country;
-    }
-
-    public String getCountry() {
-        return country;
+	public static int dpToPx(Context c, float dipValue) {
+		DisplayMetrics metrics = c.getResources().getDisplayMetrics();
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
+	}
+	
+	public static int spToPx(Context context, float spValue) {  
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, metrics);
     }
 }

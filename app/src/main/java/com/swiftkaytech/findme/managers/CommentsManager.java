@@ -44,8 +44,8 @@ public class CommentsManager {
         return manager;
     }
 
-    public List<Comment> fetchComments(String postid){
-        List<Comment> cList = new ArrayList<>();
+    public ArrayList<Comment> fetchComments(String postid){
+        ArrayList<Comment> cList = new ArrayList<>();
         mPostId = postid;
         try {
             cList = new FetchCommentsTask(postid).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
@@ -58,15 +58,15 @@ public class CommentsManager {
         return cList;
     }
 
-    private class FetchCommentsTask extends AsyncTask<Void,Void,List<Comment>>{
+    private class FetchCommentsTask extends AsyncTask<Void,Void,ArrayList<Comment>>{
         String postid;
 
         public FetchCommentsTask(String postid){
             this.postid = postid;
         }
         @Override
-        protected List<Comment> doInBackground(Void... params) {
-            List<Comment> cList = new ArrayList<>();
+        protected ArrayList<Comment> doInBackground(Void... params) {
+            ArrayList<Comment> cList = new ArrayList<>();
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.setUri("getcomments.php");

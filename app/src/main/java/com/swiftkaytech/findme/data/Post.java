@@ -22,12 +22,13 @@ import android.util.Log;
 
 import com.swiftkaytech.findme.managers.CommentsManager;
 import com.swiftkaytech.findme.managers.ConnectionManager;
+import com.swiftkaytech.findme.views.tagview.Tag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Kevin Haines on 10/21/15.
@@ -35,7 +36,7 @@ import java.util.List;
 public class Post implements Serializable{
     /**
      * this class will be used to store data about an individual post. will include all methods
-     * involved in handling posts such as like post, comment, report, unlike, getting information, disliking etc
+     * involved in handling posts such as checkmark_liked post, comment, report, unlike, getting information, disliking etc
      */
 
     public static final String TAG = "FindMe-Post";
@@ -46,8 +47,11 @@ public class Post implements Serializable{
     private String mPostText;
     private String mTime;
     private int mNumLikes;
+    private String mPostImage;
     private int mNumComments;
-    private List<Comment> comments;
+    private boolean mLiked;
+    private ArrayList<Comment> comments;
+    private ArrayList<Tag> mTags;
 
     public static Post createPost(String uid){
         Post post = new Post();
@@ -85,14 +89,16 @@ public class Post implements Serializable{
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.setUri("getpost.php");
             connectionManager.addParam("postid", postid);
+            connectionManager.addParam("uid", mUid);
 
             try {
                 JSONObject jsonObject = new JSONObject(connectionManager.sendHttpRequest());
                 post.setPostText(jsonObject.getString("post"));
                 post.setPostingUsersId(jsonObject.getString("postingusersid"));
-                post.setNumComments(jsonObject.getInt("numcomments"));
-                post.setNumLikes(jsonObject.getInt("numlikes"));
+                post.setNumComments(Integer.parseInt(jsonObject.getString("numcomments")));
+                post.setNumLikes(Integer.parseInt(jsonObject.getString("numlikes")));
                 post.setTime(jsonObject.getString("time"));
+                post.setLiked(jsonObject.getBoolean("liked"));
 
             } catch(JSONException e) {
                 e.printStackTrace();
@@ -110,11 +116,43 @@ public class Post implements Serializable{
     }
 
     /**
+     * sets the url location of the posts posted image
+     * @param imgloc url String pointing to posted image
+     */
+    public void setPostImage(String imgloc){
+        mPostImage = imgloc;
+    }
+
+    /**
+     * gets the string url location of the posted image
+     * @return url String location pointing to posted image
+     */
+    public String getPostImage(){
+        return mPostImage;
+    }
+
+    /**
      * gets the uid of the posting user
      * @return uid of posting user
      */
     public String getPostingUsersId(){
         return mPostingUsersId;
+    }
+
+    /**
+     * gets the list of tags for this post
+     * @return arraylist of tags
+     */
+    public ArrayList<Tag> getTags() {
+        return mTags;
+    }
+
+    /**
+     * sets the tags for this post
+     * @param mTags arraylist of tags
+     */
+    public void setTags(ArrayList<Tag> mTags) {
+        this.mTags = mTags;
     }
 
     /**
@@ -161,7 +199,7 @@ public class Post implements Serializable{
      * gets arraylist of comments for post
      * @return List of comments for post
      */
-    public List<Comment> getComments() {
+    public ArrayList<Comment> getComments() {
         return comments;
     }
 
@@ -169,7 +207,7 @@ public class Post implements Serializable{
      * sets the list of comments for post
      * @param comments List of comments
      */
-    public void setComments(List<Comment> comments) {
+    public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
 
@@ -227,6 +265,30 @@ public class Post implements Serializable{
      */
     public String getPostId(){
         return mPostId;
+    }
+
+    /**
+     * sets the id for this post
+     * @param postId String for post id
+     */
+    public void setPostId(String postId){
+        mPostId = postId;
+    }
+
+    /**
+     * sets whether the user has liked this post
+     * @param liked true if user has liked this post
+     */
+    public void setLiked(boolean liked){
+        mLiked = liked;
+    }
+
+    /**
+     * gets whether the user has liked this post
+     * @return true if user has liked this post
+     */
+    public boolean getLiked(){
+        return mLiked;
     }
 
 }

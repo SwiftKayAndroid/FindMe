@@ -2,15 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rlnewsfeed"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     android:layout_margin="10dp"
     android:background="#ffffff"
     android:orientation="vertical" >
 
     <RelativeLayout
         android:id="@+id/jkjkj"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_margin="2dp" >

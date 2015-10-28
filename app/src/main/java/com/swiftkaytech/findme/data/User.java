@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.swiftkaytech.findme.managers.ConnectionManager;
+import com.swiftkaytech.findme.views.tagview.Tag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +64,7 @@ public class User implements Serializable{
     private Orientation mOrientation;
     private OnlineStatus mOnlineStatus;
     private List<String> mPictures;
-    private List<Tags> mTags;
+    private List<Tag> mTags;
     private String mAboutMe;
     private InterestedIn mInterestIn;
 
@@ -260,7 +261,7 @@ public class User implements Serializable{
      * gets the list of mTags pertaining to things the user is interested in
      * @return list of users interest mTags
      */
-    public List<Tags> getTags() {
+    public List<Tag> getTags() {
         //todo: issue # 12 implement getting tags
         return mTags;
     }
@@ -270,7 +271,7 @@ public class User implements Serializable{
      * EX: netflix, outdoors, puppies, cats etc.
      * @param tags list of mTags
      */
-    public void setTags(List<Tags> tags) {
+    public void setTags(List<Tag> tags) {
         this.mTags = tags;
     }
 

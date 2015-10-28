@@ -17,10 +17,12 @@
 
 package com.swiftkaytech.findme.data;
 
+import java.io.Serializable;
+
 /**
  * Created by Kevin Haines on 10/21/15.
  */
-public class Location {
+public class Location implements Serializable{
 
     private float distance;
     private String city;
