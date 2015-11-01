@@ -84,7 +84,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
 
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setColorSchemeColors(android.R.color.holo_blue_bright,
+        swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.black,
                 android.R.color.holo_blue_bright,
                 android.R.color.black);

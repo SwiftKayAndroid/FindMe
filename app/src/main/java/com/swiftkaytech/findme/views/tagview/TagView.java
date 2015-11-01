@@ -177,111 +177,117 @@ public class TagView extends RelativeLayout {
 	 */
 	private void drawTags() {
 
-		if (!mInitialized) {
-			return;
-		}
+		if (mTags.size() < 1) {
+			//todo: show empty view
+            View emptyView = mInflater.inflate(R.layout.empty_tags_view, null);
+            addView(emptyView);
+		} else {
+			if (!mInitialized) {
+				return;
+			}
 
-		// clear all tag
-		removeAllViews();
+			// clear all tag
+			removeAllViews();
 
-		// layout padding left & layout padding right
-		float total = getPaddingLeft() + getPaddingRight();
+			// layout padding left & layout padding right
+			float total = getPaddingLeft() + getPaddingRight();
 
-		int listIndex = 1;// List Index
-		int index_bottom = 1;// The Tag to add below
-		int index_header = 1;// The header tag of this line
-		Tag tag_pre = null;
-		for (Tag item : mTags) {
-			final int position = listIndex - 1;
-			final Tag tag = item;
+			int listIndex = 1;// List Index
+			int index_bottom = 1;// The Tag to add below
+			int index_header = 1;// The header tag of this line
+			Tag tag_pre = null;
+			for (Tag item : mTags) {
+				final int position = listIndex - 1;
+				final Tag tag = item;
 
-			// inflate tag layout
-			View tagLayout = (View) mInflater.inflate(R.layout.tagview_item, null);
-			tagLayout.setId(listIndex);
-			tagLayout.setBackgroundDrawable(getSelector(tag));
+				// inflate tag layout
+				View tagLayout = (View) mInflater.inflate(R.layout.tagview_item, null);
+				tagLayout.setId(listIndex);
+				tagLayout.setBackgroundDrawable(getSelector(tag));
 
-			// tag text
-			TextView tagView = (TextView) tagLayout.findViewById(R.id.tv_tag_item_contain);
-			tagView.setText(tag.text);
-			//tagView.setPadding(textPaddingLeft, textPaddingTop, textPaddingRight, texPaddingBottom);
-			LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tagView.getLayoutParams();
-			params.setMargins(textPaddingLeft, textPaddingTop, textPaddingRight, texPaddingBottom);
-			tagView.setLayoutParams(params);
-			tagView.setTextColor(tag.tagTextColor);
-			tagView.setTextSize(TypedValue.COMPLEX_UNIT_SP, tag.tagTextSize);
-			tagLayout.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (mClickListener != null) {
-						mClickListener.onTagClick(tag, position);
-					}
-				}
-			});
-
-			// calculate　of tag layout width
-			float tagWidth = tagView.getPaint().measureText(tag.text) + textPaddingLeft + textPaddingRight;
-			// tagView padding (left & right)
-
-			// deletable text
-			TextView deletableView = (TextView) tagLayout.findViewById(R.id.tv_tag_item_delete);
-			if (tag.isDeletable) {
-				deletableView.setVisibility(View.VISIBLE);
-				deletableView.setText(tag.deleteIcon);
-				int offset = Utils.dpToPx(getContext(), 2f);
-				deletableView.setPadding(offset, textPaddingTop, textPaddingRight + offset, texPaddingBottom);
-				/*params = (LinearLayout.LayoutParams) deletableView.getLayoutParams();
-				params.setMargins(offset, textPaddingTop, textPaddingRight+offset, texPaddingBottom);
-				deletableView.setLayoutParams(params);*/
-				deletableView.setTextColor(tag.deleteIndicatorColor);
-				deletableView.setTextSize(TypedValue.COMPLEX_UNIT_SP, tag.deleteIndicatorSize);
-				deletableView.setOnClickListener(new OnClickListener() {
+				// tag text
+				TextView tagView = (TextView) tagLayout.findViewById(R.id.tv_tag_item_contain);
+				tagView.setText(tag.text);
+				//tagView.setPadding(textPaddingLeft, textPaddingTop, textPaddingRight, texPaddingBottom);
+				LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tagView.getLayoutParams();
+				params.setMargins(textPaddingLeft, textPaddingTop, textPaddingRight, texPaddingBottom);
+				tagView.setLayoutParams(params);
+				tagView.setTextColor(tag.tagTextColor);
+				tagView.setTextSize(TypedValue.COMPLEX_UNIT_SP, tag.tagTextSize);
+				tagLayout.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						TagView.this.remove(position);
-						if (mDeleteListener != null) {
-							mDeleteListener.onTagDeleted(tag, position);
+						if (mClickListener != null) {
+							mClickListener.onTagClick(tag, position);
 						}
 					}
 				});
-				tagWidth += deletableView.getPaint().measureText(tag.deleteIcon) + textPaddingLeft + textPaddingRight;
-				// deletableView Padding (left & right)
-			} else {
-				deletableView.setVisibility(View.GONE);
-			}
 
-			LayoutParams tagParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			//tagParams.setMargins(0, 0, 0, 0);
+				// calculate　of tag layout width
+				float tagWidth = tagView.getPaint().measureText(tag.text) + textPaddingLeft + textPaddingRight;
+				// tagView padding (left & right)
 
-			//add margin of each line
-			tagParams.bottomMargin = lineMargin;
-
-			if (mWidth <= total + tagWidth + Utils.dpToPx(this.getContext(), Constants.LAYOUT_WIDTH_OFFSET)) {
-				//need to add in new line
-				tagParams.addRule(RelativeLayout.BELOW, index_bottom);
-				// initialize total param (layout padding left & layout padding right)
-				total = getPaddingLeft() + getPaddingRight();
-				index_bottom = listIndex;
-				index_header = listIndex;
-			} else {
-				//no need to new line
-				tagParams.addRule(RelativeLayout.ALIGN_TOP, index_header);
-				//not header of the line
-				if (listIndex != index_header) {
-					tagParams.addRule(RelativeLayout.RIGHT_OF, listIndex - 1);
-					tagParams.leftMargin = tagMargin;
-					total += tagMargin;
-					if (tag_pre!=null && tag_pre.tagTextSize < tag.tagTextSize) {
-						index_bottom = listIndex;
-					}
+				// deletable text
+				TextView deletableView = (TextView) tagLayout.findViewById(R.id.tv_tag_item_delete);
+				if (tag.isDeletable) {
+					deletableView.setVisibility(View.VISIBLE);
+					deletableView.setText(tag.deleteIcon);
+					int offset = Utils.dpToPx(getContext(), 2f);
+					deletableView.setPadding(offset, textPaddingTop, textPaddingRight + offset, texPaddingBottom);
+				/*params = (LinearLayout.LayoutParams) deletableView.getLayoutParams();
+				params.setMargins(offset, textPaddingTop, textPaddingRight+offset, texPaddingBottom);
+				deletableView.setLayoutParams(params);*/
+					deletableView.setTextColor(tag.deleteIndicatorColor);
+					deletableView.setTextSize(TypedValue.COMPLEX_UNIT_SP, tag.deleteIndicatorSize);
+					deletableView.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							TagView.this.remove(position);
+							if (mDeleteListener != null) {
+								mDeleteListener.onTagDeleted(tag, position);
+							}
+						}
+					});
+					tagWidth += deletableView.getPaint().measureText(tag.deleteIcon) + textPaddingLeft + textPaddingRight;
+					// deletableView Padding (left & right)
+				} else {
+					deletableView.setVisibility(View.GONE);
 				}
 
+				LayoutParams tagParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				//tagParams.setMargins(0, 0, 0, 0);
+
+				//add margin of each line
+				tagParams.bottomMargin = lineMargin;
+
+				if (mWidth <= total + tagWidth + Utils.dpToPx(this.getContext(), Constants.LAYOUT_WIDTH_OFFSET)) {
+					//need to add in new line
+					tagParams.addRule(RelativeLayout.BELOW, index_bottom);
+					// initialize total param (layout padding left & layout padding right)
+					total = getPaddingLeft() + getPaddingRight();
+					index_bottom = listIndex;
+					index_header = listIndex;
+				} else {
+					//no need to new line
+					tagParams.addRule(RelativeLayout.ALIGN_TOP, index_header);
+					//not header of the line
+					if (listIndex != index_header) {
+						tagParams.addRule(RelativeLayout.RIGHT_OF, listIndex - 1);
+						tagParams.leftMargin = tagMargin;
+						total += tagMargin;
+						if (tag_pre != null && tag_pre.tagTextSize < tag.tagTextSize) {
+							index_bottom = listIndex;
+						}
+					}
+
+
+				}
+				total += tagWidth;
+				addView(tagLayout, tagParams);
+				tag_pre = tag;
+				listIndex++;
 
 			}
-			total += tagWidth;
-			addView(tagLayout, tagParams);
-			tag_pre = tag;
-			listIndex++;
-
 		}
 
 	}

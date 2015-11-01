@@ -109,11 +109,6 @@ public class PostManager {
 
                         pList.add(post);
                     }
-                    ((Activity) mContext).runOnUiThread(new Runnable() {
-                        public void run() {
-                            errorDisplayer.webErr(result, "");
-                        }
-                    });
                 } catch (final JSONException e) {
                     e.printStackTrace();
 

@@ -146,6 +146,7 @@
                 android:layout_below="@+id/cardViewPostContainer"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
+                android:visibility="gone"
                 android:src="@mipmap/ic_keyboard_arrow_down_black_24dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp" />
@@ -154,22 +155,29 @@
 
     </android.support.v7.widget.CardView>
 
-    <com.swiftkaytech.findme.views.CollapseLayout
+    <com.swiftkaytech.findme.views.ExpandableLinearLayout
         android:id="@+id/postExtrasContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@color/light_gray"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@null"
         android:layout_below="@+id/cardViewPostContainer">
 
-        <ListView
-            android:id="@+id/postItemListView"
-            android:layout_height="wrap_content"
-            android:divider="@null"
-            android:layout_width="match_parent" />
+        <com.swiftkaytech.findme.views.tagview.TagView
+            android:id="@+id/postTagView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:lineMargin="5dp"
+            app:tagMargin="3dp"
+            app:textPaddingBottom="3dp"
+            app:textPaddingLeft="10dp"
+            app:textPaddingRight="10dp"
+            app:textPaddingTop="3dp">
 
-    </com.swiftkaytech.findme.views.CollapseLayout>
+        </com.swiftkaytech.findme.views.tagview.TagView>
+
+    </com.swiftkaytech.findme.views.ExpandableLinearLayout>
 
 </RelativeLayout>
 
