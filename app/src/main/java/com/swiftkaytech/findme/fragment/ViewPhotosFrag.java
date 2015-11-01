@@ -11,6 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.SGVAdapter;
+import com.swiftkaytech.findme.utils.VarHolder;
 import com.swiftkaytech.findme.views.StaggeredGridView;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -37,11 +41,11 @@ public class ViewPhotosFrag extends Fragment {
     SharedPreferences prefs;
     SGVAdapter adapter;
 
-    class Pics{
-        String postpicloc;
-        String postid;
-        String post;
-        boolean lockedstatus;
+    public class Pics{
+        public String postpicloc;
+        public String postid;
+        public String post;
+        public boolean lockedstatus;
 
     }
 

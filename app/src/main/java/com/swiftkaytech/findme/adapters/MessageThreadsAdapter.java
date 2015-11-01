@@ -2,6 +2,7 @@ package com.swiftkaytech.findme.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,113 +11,139 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.data.Message;
+import com.swiftkaytech.findme.data.ThreadInfo;
+import com.swiftkaytech.findme.fragment.MessagesListFrag;
+import com.swiftkaytech.findme.utils.ImageLoader;
+import com.swiftkaytech.findme.utils.VarHolder;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by BN611 on 3/9/2015.
+ * Created by Kevin Haines on 3/9/2015.
  */
-public class MessageThreadsAdapter extends BaseAdapter {
+public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAdapter.MessageThreadsViewHolder> {
+    private static final String TAG = "MessageThreadsAdapter";
 
-
-    Context context;
-    List<MessagesListFrag.MessageThreads> mlist;
-    ListView lv;
-    private static LayoutInflater inflater = null;
+    private Context mContext;
+    List<ThreadInfo> mThreadList;
     ImageLoader imageLoader;
-    String uid;
+    String mUid;
 
-
-    public MessageThreadsAdapter(Context context,List<MessagesListFrag.MessageThreads> mlist,ListView lv,String uid){
-
-        this.context = context;
-        this.lv = lv;
-        this.mlist = mlist;
-        this.uid = uid;
+    public MessageThreadsAdapter(Context context, List<ThreadInfo> mlist, String uid){
+        this.mContext = context;
+        this.mThreadList = mlist;
+        this.mUid = uid;
         imageLoader = new ImageLoader(context);
-        inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-    }
-
-
-    @Override
-    public int getCount() {
-        return mlist.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return mlist.get(position);
+    public MessageThreadsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.messagethreadlistitem, parent, false);
+        return new MessageThreadsViewHolder(view);
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    public void onBindViewHolder(MessageThreadsViewHolder holder, int position) {
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-
-
-
-        final View row = inflater.inflate(R.layout.messagethreadlistitem, null);
-
-        final ViewHolder holder = new ViewHolder();
-
-
-
-        holder.ivpropic = (ImageView) row.findViewById(R.id.ivmessagethread);
-        holder.tvname = (TextView) row.findViewById(R.id.tvmessagethreadname);
-        holder.tvmessage = (TextView) row.findViewById(R.id.tvmessagethreadmessage);
-        holder.tvtime = (TextView) row.findViewById(R.id.tvmessagethreadtime);
-        holder.checkmark = (ImageView) row.findViewById(R.id.ivcheckmarkmessagethread);
-
-
-        row.setTag(holder);
-
-        final MessagesListFrag.MessageThreads thismess = mlist.get(position);
-        if(thismess != null){
-            if(!thismess.propicloc.equals("")){
-                imageLoader.DisplayImage(thismess.propicloc,holder.ivpropic,false);
+        final ThreadInfo thread = mThreadList.get(position);
+        if(thread != null){
+            if(!thread.threadUser.getPropicloc().equals("")){
+                imageLoader.DisplayImage(thread.threadUser.getPropicloc(), holder.ivpropic, false);
             }
-            holder.tvname.setText(thismess.name);
-            holder.tvmessage.setText(thismess.message);
-            holder.tvtime.setText(/*TimeManager.compareTimeToNow(*/thismess.time);
-            if(!thismess.readstat){
-//set the typeface of the textviews to bold....
+            holder.tvname.setText(thread.threadUser.getName());
+            holder.tvmessage.setText(thread.lastMessage);
+            holder.tvtime.setText(thread.time);
+            if(thread.readStatus == ThreadInfo.READ){
 
             }
-            if(thismess.seenstat){
-                //makecheckmark visible
+            if(thread.seenStatus == ThreadInfo.SEEN){
                 holder.checkmark.setVisibility(View.VISIBLE);
-
             }
 
             holder.ivpropic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    VarHolder.ouid = thismess.uid;
-                    Intent profile = new Intent("start.fragment.changeview");
-                    profile.putExtra("value", VarHolder.PROFILE);
-                    context.sendBroadcast(profile);
+                    //todo: start profile activity
                 }
             });
-
         }
-
-
-        return row;
     }
 
+    public void removeThread(ThreadInfo threadInfo) {
+        if (mThreadList.contains(threadInfo)) {
+            mThreadList.remove(threadInfo);
+            notifyDataSetChanged();
+        }
+    }
 
-    class ViewHolder{
+    public void removeAllThreads() {
+        if (mThreadList != null) {
+            mThreadList.clear();
+            notifyDataSetChanged();
+        }
+    }
+
+    public void addThreads(ArrayList<ThreadInfo> threadInfos) {
+        if (mThreadList == null) {
+            mThreadList = new ArrayList<>();
+        }
+        mThreadList.addAll(threadInfos);
+        notifyDataSetChanged();
+    }
+
+    public void addMessage(Message message) {
+        boolean messageFound = false;
+        if (mThreadList != null) {
+            for (ThreadInfo threadInfo : mThreadList) {
+                if (threadInfo.threadId.equals(message.getThreadId())) {
+                    threadInfo.lastMessage = message.getMessage();
+                    messageFound = true;
+                    break;
+                }
+            }
+            if (!messageFound) {
+                ThreadInfo threadInfo = ThreadInfo.instance(mUid);
+                threadInfo.lastMessage = message.getMessage();
+                threadInfo.threadId = message.getThreadId();
+                threadInfo.threadUser = message.getUser();
+                threadInfo.seenStatus = message.getSeenStatus();
+                threadInfo.ouid = message.getOuid();
+                threadInfo.readStatus = message.getReadStatus();
+                threadInfo.time = message.getTime();
+                mThreadList.add(threadInfo);
+                //todo: check to make sure that added thread shows up
+                //todo: at top of list
+            }
+            notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return mThreadList.size();
+    }
+
+    public class MessageThreadsViewHolder extends RecyclerView.ViewHolder{
+
         ImageView ivpropic;
         TextView tvname;
         TextView tvmessage;
         TextView tvtime;
         ImageView checkmark;
 
+        public MessageThreadsViewHolder(View itemView) {
+            super(itemView);
 
+            ivpropic = (ImageView) itemView.findViewById(R.id.ivmessagethread);
+            tvname = (TextView) itemView.findViewById(R.id.tvmessagethreadname);
+            tvmessage = (TextView) itemView.findViewById(R.id.tvmessagethreadmessage);
+            tvtime = (TextView) itemView.findViewById(R.id.tvmessagethreadtime);
+            checkmark = (ImageView) itemView.findViewById(R.id.ivcheckmarkmessagethread);
+            itemView.setTag(this);
+        }
     }
 }

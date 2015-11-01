@@ -15,9 +15,9 @@
         android:allowBackup="true"
         android:icon="@drawable/redf"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme.Light"  >
+        android:theme="@style/AppTheme"  >
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginPage"
+            android:name=".activity.LoginPage"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="com.swiftkaytech.findme.LOGINPAGE" />
@@ -35,13 +35,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Registration"
+            android:name=".activity.Registration"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="com.swiftkaytech.findme.REGISTRATION" />
+        </activity>
+        <activity
+            android:name=".activity.FindPeopleActivity"
+            android:label="@string/app_name" >
+        </activity>
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <activity
+            android:name=".activity.MessagesListActivity"
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".activity.BasicInfo"
@@ -53,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainLineUp"
+            android:name=".activity.MainLineUp"
             android:label="@string/app_name"
             android:configChanges="orientation"
             android:logo="@drawable/redfsmall">
@@ -64,7 +68,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UpdateStatus"
+            android:name=".activity.UpdateStatus"
             android:label="@string/app_name"
             android:configChanges="orientation">
             <intent-filter>
@@ -74,7 +78,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UploadService"
+            android:name=".services.UploadService"
             android:label="@string/app_name"
             android:configChanges="orientation">
             <intent-filter>
@@ -84,7 +88,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Match"
+            android:name=".activity.Match"
             android:label="@string/app_name"
             android:configChanges="orientation">
             <intent-filter>
@@ -93,18 +97,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Commentsfrag"
-            android:label="@string/app_name"
-            android:configChanges="orientation">
-            <intent-filter>
-                <action android:name="com.swiftkaytech.findme.COMMENTS" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity
-            android:name=".FriendsFrag"
+            android:name=".fragment.FriendsFrag"
             android:label="@string/app_name"
             android:configChanges="orientation">
             <intent-filter>
@@ -114,7 +109,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MyMatches"
+            android:name=".activity.MyMatches"
             android:label="@string/app_name"
             android:configChanges="orientation">
             <intent-filter>
@@ -124,7 +119,7 @@
             </intent-filter>
         </activity>
         <activity
-        android:name=".MessagesFrag"
+        android:name=".fragment.MessagesFrag"
         android:label="@string/app_name"
         android:configChanges="orientation">
         <intent-filter>
@@ -134,7 +129,7 @@
         </intent-filter>
     </activity>
         <activity
-            android:name=".Profile"
+            android:name=".activity.Profile"
             android:label="@string/app_name"
             android:configChanges="orientation">
             <intent-filter>
@@ -150,7 +145,7 @@
             android:value="@integer/google_play_services_version" />
 
         <receiver
-            android:name=".GcmBroadcastReceiver"
+            android:name=".utils.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -159,7 +154,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".GcmIntentService" />
+        <service android:name=".gcm.GcmIntentService" />
     </application>
 
 </manifest>

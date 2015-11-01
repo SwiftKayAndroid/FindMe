@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
@@ -30,6 +30,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.NavDrawerItem;
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.MessagesListActivity;
+import com.swiftkaytech.findme.adapters.NavDrawerListAdapter;
+import com.swiftkaytech.findme.utils.ImageLoader;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,13 +47,19 @@ import java.util.List;
  */
 public class NavigationDrawerFragment extends Fragment {
 
+    public interface NavigationDrawerCallbacks {
+        /**
+         * Called when an item in the navigation drawer is selected.
+         */
+        void onNavigationDrawerItemSelected(int position);
+    }
+
     //gui elements
     TextView tvname;
 
     ImageLoader imageloader;
     SharedPreferences prefs;
     String uid;//users id
-
 
     /**
      * Remember the position of the selected item.
@@ -87,11 +100,6 @@ public class NavigationDrawerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         imageloader = new ImageLoader(getActivity());
-        uid = getUID();
-
-
-        // Read in the flag indicating whether or not the user has demonstrated awareness of the
-        // drawer. See PREF_USER_LEARNED_DRAWER for details.
 
         mUserLearnedDrawer = prefs.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
@@ -107,7 +115,7 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Indicate that this fragment would like to influence the set of actions in the action bar.
+        // Indicate that this fragment would checkmark_liked to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
     }
 
@@ -122,8 +130,6 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-
-
 
         // load slide menu items
         String[] navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
@@ -144,7 +150,7 @@ public class NavigationDrawerFragment extends Fragment {
         // My Matches,
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
         // games
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), true, "Coming Soon"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), false, "Coming Soon"));
         // settings
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
 
@@ -179,18 +185,11 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
-        actionBar.setDisplayShowCustomEnabled(true);
-
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the navigation drawer and the action bar app icon.
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.redfsmall,             /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -250,7 +249,7 @@ public class NavigationDrawerFragment extends Fragment {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
         if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position,mDrawerListView,mDrawerLayout);
+            mCallbacks.onNavigationDrawerItemSelected(position);
         }
     }
 
@@ -297,11 +296,6 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerLayout != null && isDrawerOpen()) {
             inflater.inflate(R.menu.global, menu);
             showGlobalContextActionBar();
-        }else if(mDrawerLayout != null && !isDrawerOpen()){
-            getActionBar().setTitle(title);
-            getActionBar().setIcon(R.drawable.redfsmall);
-            getActionBar().setLogo(R.drawable.redfsmall);
-
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -325,34 +319,12 @@ public class NavigationDrawerFragment extends Fragment {
      * 'context', rather than just what's in the current screen.
      */
     private void showGlobalContextActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setTitle(title);
-        actionBar.setIcon(R.drawable.redfsmall);
-        actionBar.setLogo(R.drawable.redfsmall);
-    }
-
-    private ActionBar getActionBar() {
-        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+//todo: change to a different menu when open
     }
 
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public static interface NavigationDrawerCallbacks {
-        /**
-         * Called when an item in the navigation drawer is selected.
-         */
-        void onNavigationDrawerItemSelected(int position, ListView lv, DrawerLayout dl);
-    }
-
-
-    private String getUID() {//---------------------------------------------------------------------<<getUID>>
-        String KEY = "uid";
-        return prefs.getString(KEY,null);
-    }//----------------------------------------------------------------------------------------------<</getUID>>
-
 
     private View setHeader(){
         //------------------------------DRAWER HEADER------------------------------->>>
@@ -401,9 +373,7 @@ public class NavigationDrawerFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                Intent profile = new Intent("start.fragment.changeview");
-                profile.putExtra("value", VarHolder.MESSAGES);
-                getActivity().sendBroadcast(profile);
+                startActivity(MessagesListActivity.createIntent(getActivity()));
             }
         });
         headernotes.setOnClickListener(new View.OnClickListener() {
@@ -428,8 +398,6 @@ public class NavigationDrawerFragment extends Fragment {
 
 
     }
-
-
 
     public View addFooterView(){
         //-----------------DRAWER FOOTER----------------------------->>>>>

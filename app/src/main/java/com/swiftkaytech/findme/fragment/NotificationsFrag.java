@@ -11,6 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.NotificationsAdapter;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -33,12 +38,12 @@ import java.util.List;
  */
 public class NotificationsFrag extends Fragment {
 
-    class Notification{
-        String note;
-        String noteid;
-        String picloc;
-        String type;
-        String time;
+    public class Notification{
+        public String note;
+        public String noteid;
+        public String picloc;
+        public String type;
+        public String time;
     }
 
     List<Notification> nlist;

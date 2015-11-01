@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.R;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -23,7 +25,7 @@ import java.io.File;
 /**
  * Created by khaines178 on 9/7/15.
  */
-class ImageUploadTask extends AsyncTask<String, String, String> {
+public class ImageUploadTask extends AsyncTask<String, String, String> {
 
     String captiontext;
     String filepath;

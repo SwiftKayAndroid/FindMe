@@ -16,6 +16,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.FriendRequestsAdapter;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -38,16 +42,15 @@ import java.util.List;
  */
 public class FriendRequestsFrag extends Fragment {
 
-    class FriendRequests{
-        String name;
-        String uid;
-        String propicloc;
-        String location;
-        String dob;
-
+    public class FriendRequests{
+        public String name;
+        public String uid;
+        public String propicloc;
+        public String location;
+        public String dob;
     }
 
-    static List<FriendRequests> flist;
+    public static List<FriendRequests> flist;
 
     Context context;
     SharedPreferences prefs;
@@ -201,20 +204,10 @@ public class FriendRequestsFrag extends Fragment {
                         a.notifyDataSetChanged();
                         Log.e("kevin", "datasetchanged on friendrequests");
                     }
-
-
-
-
                 }catch(JSONException e){
                     e.printStackTrace();
-
                 }
-
             }
         }
-
     }
-
-
-
 }

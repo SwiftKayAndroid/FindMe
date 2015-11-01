@@ -46,18 +46,18 @@ public class VarHolder {
     public static status status = new status();
 
     public static class status{
-        String postinguserid;
-        String name;
-        String posttime;
-        String post;
-        String postimagelocation;
-        String postinguserslocation;
-        String numlikes;
-        String[] likeduserids;
-        String numcomments;
-        String propiclocation;
-        String postid;
-        boolean liked = false;
+        public String postinguserid;
+        public String name;
+        public String posttime;
+        public String post;
+        public String postimagelocation;
+        public String postinguserslocation;
+        public String numlikes;
+        public String[] likeduserids;
+        public String numcomments;
+        public String propiclocation;
+        public String postid;
+        public boolean liked = false;
 
     }
 

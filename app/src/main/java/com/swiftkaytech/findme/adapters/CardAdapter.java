@@ -10,6 +10,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.Match;
+import com.swiftkaytech.findme.activity.Match.Users;
+import com.swiftkaytech.findme.utils.ImageLoader;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import java.util.List;
 
 /**

@@ -17,15 +17,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.managers.ConnectionManager;
+import com.swiftkaytech.findme.tasks.AuthenticateUser;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,21 +32,16 @@ import java.util.List;
  */
 public class LoginPage extends Activity {
 
-
-
     //GUI ELEMENTS
-    Button btn;
-    EditText etemail,etpassword;
-    CheckBox cb;
+    private Button btn;
+    private EditText etemail,etpassword;
+    private CheckBox cb;
+    private
     TextView tvforgot;
 
     ProgressDialog pDialog;
 
-
-    //primitive data
-    boolean checked = false;
-
-
+    private boolean checked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +52,6 @@ public class LoginPage extends Activity {
 
         setGUI();//initialize ui elements
         setListeners();//set ui listeners
-
     }
 
     private void setGUI(){
@@ -137,23 +128,7 @@ public class LoginPage extends Activity {
         });
     }
 
-
-
     private class Recover extends AsyncTask<String,String,String> {
-        /**
-         * Recover
-         * this class performs an asyncronous call to httppost to request that the server
-         * send the current users password to their email address
-         *
-         * post info
-         * email
-         * authkey
-         *
-         * returned info
-         * "accepted"
-         * "denied"
-         * mysql error message
-         */
         String webResponse;
 
         @Override
@@ -170,46 +145,12 @@ public class LoginPage extends Activity {
         @Override
         protected String doInBackground(String...params) {
             String email = params[0];
-
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://pawnacity.com/swift/passwordrecover.php");
-
-
-
-            try {
-                // Add your data
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("email",email));
-
-
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                // Execute HTTP Post Request
-
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                webResponse = httpclient.execute(httppost, responseHandler);
-
-
-
-
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-                webResponse = "error";
-
-
-            } catch (IOException e) {
-
-                e.printStackTrace();
-                webResponse = "error";
-
-            }
-
-
+            ConnectionManager cm = new ConnectionManager();
+            cm.setMethod(ConnectionManager.POST);
+            cm.setUri("http://pawnacity.com/swift/passwordrecover.php");
+            //todo: impliment this functionality
 
             return webResponse;
-
         }
 
         @Override
@@ -232,19 +173,9 @@ public class LoginPage extends Activity {
                         })
 
                         .show();
-
             }else{
                 Toast.makeText(LoginPage.this, "There was an error processing your request", Toast.LENGTH_LONG).show();
-
             }
-
-
         }
-
     }
-
-
-
-
-
 }

@@ -18,6 +18,12 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.data.Post;
+import com.swiftkaytech.findme.fragment.NewsFeedFrag;
+import com.swiftkaytech.findme.utils.ImageLoader;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -42,7 +48,7 @@ public class Profile extends AppCompatActivity {
 
 
 
-    List<NewsFeedFrag.Posts> plist;
+    List<Post> plist;
 
     //profile information
     String name;
@@ -73,23 +79,6 @@ public class Profile extends AppCompatActivity {
     boolean refreshing;
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-
-        getMenuInflater().inflate(R.menu.matches_menu, menu);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.backbuttontwo);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        if(name != null) {
-            actionBar.setTitle(name);
-        }
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int itemId = item.getItemId();
@@ -117,7 +106,7 @@ public class Profile extends AppCompatActivity {
         if(uid.equals(ouid)){
             self = true;
         }
-        plist = new ArrayList<NewsFeedFrag.Posts>();
+        plist = new ArrayList<Post>();
         imageLoader = new ImageLoader(context);
         setGUI();
 
@@ -246,22 +235,6 @@ public class Profile extends AppCompatActivity {
 
             lv.addHeaderView(getProfileHeader());
 
-            if(refreshing){
-
-                adapter = new NewsFeedAdapter(context, plist, uid, lv);
-                lv.setAdapter(adapter);
-
-                //else notifydatasetchanged
-            }else{
-                BaseAdapter a = (BaseAdapter) lv.getAdapter();
-                if(a == null) {
-                    adapter = new NewsFeedAdapter(context, plist, uid, lv);
-                    lv.setAdapter(adapter);
-                }else {
-                    a.notifyDataSetChanged();
-                    Log.e("kevin", "datasetchanged");
-                }
-            }
 
         }
     }
@@ -317,23 +290,6 @@ public class Profile extends AppCompatActivity {
             lv.setVisibility(View.VISIBLE);
 
             lv.addHeaderView(getProfileHeader());
-
-            if(refreshing){
-
-                adapter = new NewsFeedAdapter(context, plist, uid, lv);
-                lv.setAdapter(adapter);
-
-                //else notifydatasetchanged
-            }else{
-                BaseAdapter a = (BaseAdapter) lv.getAdapter();
-                if(a == null) {
-                    adapter = new NewsFeedAdapter(context, plist, uid, lv);
-                    lv.setAdapter(adapter);
-                }else {
-                    a.notifyDataSetChanged();
-                    Log.e("kevin", "datasetchanged");
-                }
-            }
 
         }
     }

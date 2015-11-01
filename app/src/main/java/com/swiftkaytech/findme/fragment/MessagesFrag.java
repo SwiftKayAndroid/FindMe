@@ -34,6 +34,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.MessagesAdapter;
+import com.swiftkaytech.findme.utils.VarHolder;
+import com.swiftkaytech.findme.tasks.ImageUploadTask;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -59,17 +65,17 @@ import java.util.Random;
  */
 public class MessagesFrag extends AppCompatActivity {
 
-    class Messages{
-        String tag;
-        String senderid;
-        String propicloc;
-        String time;
-        String message;
-        String messageid;
-        String messageimageloc;
-        boolean justsent = false;
-
+    public class Messages{
+        public String tag;
+        public String senderid;
+        public String propicloc;
+        public String time;
+        public String message;
+        public String messageid;
+        public String messageimageloc;
+        public boolean justsent = false;
     }
+
     List<Messages> mlist;
 
     SharedPreferences prefs;
@@ -93,21 +99,11 @@ public class MessagesFrag extends AppCompatActivity {
 
     String pathToPicture;
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-
-        getMenuInflater().inflate(R.menu.messagesinlinemenu, menu);
-        actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.backbuttontwo);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setTitle(VarHolder.ouname);
-
-        return super.onCreateOptionsMenu(menu);
+    public static MessagesFrag instance() {
+        MessagesFrag frag = new MessagesFrag();
+        return frag;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -173,10 +169,10 @@ public class MessagesFrag extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if(etmessage.length()>0&&!iconchanged){
-                    ivsend.setImageResource(R.drawable.sendicon);
+                    ivsend.setImageResource(R.mipmap.ic_send_white_24dp);
                     iconchanged = true;
                 }else if(etmessage.length()==0&&iconchanged){
-                    ivsend.setImageResource(R.drawable.camera);
+                    ivsend.setImageResource(R.mipmap.ic_photo_camera_white_24dp);
                     iconchanged = false;
                 }
             }

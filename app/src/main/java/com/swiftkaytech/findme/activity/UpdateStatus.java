@@ -8,15 +8,22 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.utils.VarHolder;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -34,12 +41,12 @@ import java.util.List;
 /**
  * Created by swift on 6/30/2015.
  */
-public class UpdateStatus extends Activity {
+public class UpdateStatus extends AppCompatActivity {
 
     TextView tvcounter;
     EditText etstatus;
     ProgressDialog pDialog;
-    ImageView ivpost;
+    Toolbar mToolbar;
 
     String uid;
 
@@ -47,21 +54,43 @@ public class UpdateStatus extends Activity {
     int textcount = 0;
     final int STARTCOUNT = 2000;
 
-
     SharedPreferences prefs;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.updateStatusSend) {
+            if (etstatus.toString().equals("")) {
+                //todo: add error message
+            } else {
+                new PostStatus().execute(etstatus.getText().toString());
+            }
+        } else if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.update_status_menu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.updatestatus);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         uid = getUID();
         tvcounter = (TextView) findViewById(R.id.tvupdatestatuscounter);
         etstatus = (EditText) findViewById(R.id.etupdatestatus);
-        ivpost = (ImageView) findViewById(R.id.ivupdatestatussend);
+        mToolbar = (Toolbar) findViewById(R.id.updateStatusToolbar);
 
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        mToolbar.setTitle("Update Status");
+
+        setSupportActionBar(mToolbar);
 
         etstatus.addTextChangedListener(new TextWatcher() {
             @Override
@@ -89,21 +118,6 @@ public class UpdateStatus extends Activity {
 
             }
         });
-        ivpost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //check for blank status
-                //post status
-                //php will check for vulgarity and disallowed phrases
-                if(etstatus.toString().equals("")){
-
-
-                }else{
-                    new PostStatus().execute(etstatus.getText().toString());
-                }
-            }
-        });
-
     }
 
     private String getUID() {//---------------------------------------------------------------------<<getUID>>

@@ -2,26 +2,21 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">Find Me</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
     <string name="copyrightstring">Copyright \u00a9 2015 SwiftKayDevelopment</string>
     <string name="sloganstring">The safest way \n to meet new people!</string>
-    <string name="ipaddress">http://192.168.1.115/</string>
-    <string name="drawer_open">Slider Menu Opened</string>
-    <string name="drawer_close">Slider Menu Closed</string>
+    <string name="ipaddress">http://www.swiftkay.com/findme/</string>
 
     <array name="nav_drawer_icons">
-        <item>@drawable/home_line</item>
-        <item>@drawable/search</item>
-        <item>@drawable/camera_line</item>
-        <item>@drawable/heart_line</item>
-        <item>@drawable/eye_line</item>
-        <item>@drawable/settingsv2</item>
+        <item>@mipmap/ic_home_black_24dp</item>
+        <item>@mipmap/ic_people_black_24dp</item>
+        <item>@mipmap/ic_collections_black_24dp</item>
+        <item>@mipmap/ic_heart_black_24dp</item>
+        <item>@mipmap/ic_remove_red_eye_black_24dp</item>
+        <item>@mipmap/ic_settings_black_24dp</item>
     </array>
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">

@@ -15,6 +15,10 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.FriendsAdapter;
+import com.swiftkaytech.findme.utils.VarHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -38,16 +42,15 @@ import java.util.List;
 public class FriendsListFrag extends Fragment {
 
 
-    class Friends{
-        String name;
-        String uid;
-        String propicloc;
-        String location;
-        String dob;
-
+    public class Friends{
+        public String name;
+        public String uid;
+        public String propicloc;
+        public String location;
+        public String dob;
     }
 
-    static List<Friends> flist;
+    public static List<Friends> flist;
     Context context;
     String uid;
     SharedPreferences prefs;

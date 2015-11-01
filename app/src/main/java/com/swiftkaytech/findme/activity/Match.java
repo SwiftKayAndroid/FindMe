@@ -13,17 +13,12 @@ import android.view.MenuItem;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.CardAdapter;
 import com.swiftkaytech.findme.flingswipe.SwipeFlingAdapterView;
+import com.swiftkaytech.findme.managers.ConnectionManager;
+import com.swiftkaytech.findme.utils.VarHolder;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,11 +32,11 @@ import java.util.List;
  */
 public class Match extends AppCompatActivity {
 
-    class Users{
-        String uid;
-        String name;
-        String propicloc;
-        String aboutme;
+    public class Users{
+        public String uid;
+       public String name;
+        public String propicloc;
+        public String aboutme;
 
 
     }
@@ -75,10 +70,6 @@ public class Match extends AppCompatActivity {
     void setGUI(){
         flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
 
-
-        new GetMatches().execute();
-
-
         adapter = new CardAdapter(this,ulist);
         flingContainer.setAdapter(adapter);
 
@@ -110,7 +101,6 @@ public class Match extends AppCompatActivity {
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
 
-               new GetMatches().execute();
                 adapter.notifyDataSetChanged();
                 Log.d("LIST", "notified. ulist size: " + Integer.toString(ulist.size()));
 
@@ -130,22 +120,6 @@ public class Match extends AppCompatActivity {
         return prefs.getString(KEY, null);
     }//----------------------------------------------------------------------------------------------<</getUID>>
 
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-
-        getMenuInflater().inflate(R.menu.matches_menu, menu);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.backbuttontwo);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setTitle("Match");
-
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -167,79 +141,59 @@ public class Match extends AppCompatActivity {
 
         return true;
     }
-
-
-
-    private class GetMatches extends AsyncTask<String,String,String>{
-        String webResponse;
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(getString(R.string.ipaddress) + "getmatches.php");
-
-            try{
-                List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-                nvps.add(new BasicNameValuePair("uid",uid));
-
-                httpPost.setEntity(new UrlEncodedFormEntity(nvps));
-
-
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                webResponse = httpclient.execute(httpPost, responseHandler);
-
-
-            }catch (ClientProtocolException e) {
-                e.printStackTrace();
-                webResponse = "error";
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                webResponse = "error";
-            }
-
-            return webResponse;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            Log.w(VarHolder.TAG,"Getmatches result: " + result);
-
-            if(result.equals("error")){
-                Toast.makeText(Match.this, "Could't connect to Find Me", Toast.LENGTH_LONG).show();
-            }else {
-
-                //initialize json objects
-                try {
-
-                    JSONObject obj = new JSONObject(result);
-                    JSONArray jarray = obj.getJSONArray("ppl");
-                    //add data to plist
-
-                    for (int i = 0; i < jarray.length(); i++) {
-                        JSONObject childJSONObject = jarray.getJSONObject(i);
-                        ulist.add(new Users());
-                        ulist.get(ulist.size() - 1).uid = childJSONObject.getString("uid");
-                        ulist.get(ulist.size() - 1).name = childJSONObject.getString("name");
-                        ulist.get(ulist.size() - 1).aboutme = childJSONObject.getString("aboutme");
-                        ulist.get(ulist.size() - 1).propicloc = childJSONObject.getString("propicloc");
-
-
-                    }
-
-                    BaseAdapter a = (BaseAdapter) flingContainer.getAdapter();
-                    a.notifyDataSetChanged();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+//
+//    private class GetMatches extends AsyncTask<String,String,String>{
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... params) {
+//            String uriAppend = "getmatches.php";
+//
+//            ConnectionManager connectionManager = new ConnectionManager();
+//            connectionManager.setMethod(ConnectionManager.POST);
+//            connectionManager.setUri(getString(R.string.ipaddress) + uriAppend);
+//            connectionManager.addParam("uid", uid);
+//
+//            return connectionManager.sendHttpRequest();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            super.onPostExecute(result);
+//            Log.w(VarHolder.TAG,"Getmatches result: " + result);
+//
+//            if(result.equals("error")){
+//                Toast.makeText(Match.this, "Could't connect to Find Me", Toast.LENGTH_LONG).show();
+//            }else {
+//
+//                //initialize json objects
+//                try {
+//
+//                    JSONObject obj = new JSONObject(result);
+//                    JSONArray jarray = obj.getJSONArray("ppl");
+//                    //add data to plist
+//
+//                    for (int i = 0; i < jarray.length(); i++) {
+//                        JSONObject childJSONObject = jarray.getJSONObject(i);
+//                        ulist.add(new Users());
+//                        ulist.get(ulist.size() - 1).uid = childJSONObject.getString("uid");
+//                        ulist.get(ulist.size() - 1).name = childJSONObject.getString("name");
+//                        ulist.get(ulist.size() - 1).aboutme = childJSONObject.getString("aboutme");
+//                        ulist.get(ulist.size() - 1).propicloc = childJSONObject.getString("propicloc");
+//
+//
+//                    }
+//
+//                    BaseAdapter a = (BaseAdapter) flingContainer.getAdapter();
+//                    a.notifyDataSetChanged();
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 }

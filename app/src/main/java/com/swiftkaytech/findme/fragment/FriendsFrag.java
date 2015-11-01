@@ -18,6 +18,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.adapters.MyAdapter;
+import com.swiftkaytech.findme.views.TabHolder;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -51,20 +56,6 @@ public class FriendsFrag extends AppCompatActivity {
 
     public FriendsFrag(){}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.main, menu);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.backbuttontwo);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setTitle("Friends");
-
-        return true;
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -1,7 +1,27 @@
+/*
+ *      Copyright (C) 2015 Kevin Haines
+ *
+ *     Licensed under the Apache License, Version 2.0 (the "License");
+ *     you may not use this file except in compliance with the License.
+ *      You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Unless required by applicable law or agreed to in writing, software
+ *     distributed under the License is distributed on an "AS IS" BASIS,
+ *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *      See the License for the specific language governing permissions and
+ *     limitations under the License.
+ *
+ */
+
 package com.swiftkaytech.findme.managers;
 
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
+
+import com.swiftkaytech.findme.utils.ErrorDisplayer;
 
 import org.json.JSONObject;
 
@@ -14,6 +34,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyStore;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -21,46 +42,30 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
-/*
- *    Copyright (C) 2015 Kevin Haines
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *
- *
- *    Last update Sept 28 2015
- */
-
 public class ConnectionManager {
 
     private String method;
     private String uri;
     private boolean useJson;
     private boolean basicAuth = false;
+    private String baseUrl = "http://www.swiftkay.com/findme/";
 
 
     private boolean usePinnedCertifate = false;
     private Map<String,String> params;
     private String username;
     private String password;
+    private ErrorDisplayer errorDisplayer;
 
-    public final String GET = "GET";
-    public final String POST = "POST";
-    public final String UTF8 = "UTF-8";
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+    public static final String UTF8 = "UTF-8";
 
     private static final String BOUNCY_CASTLE = "BKS";
 
     public ConnectionManager(){
         setMethod("GET");
+        params = new HashMap<>();
     }
 
     public String getMethod() {
@@ -76,7 +81,7 @@ public class ConnectionManager {
     }
 
     public void setUri(String uri) {
-        this.uri = uri;
+        this.uri = baseUrl + uri;
     }
 
     public Map<String, String> getParams() {
@@ -87,15 +92,15 @@ public class ConnectionManager {
         this.params = params;
     }
 
-    public void addParam(String key,String val){
-        params.put(key,val);
+    public void addParam(String key, String val){
+        log("addParam Key->" + key + " val->" + val);
+        params.put(key, val);
     }
 
     public String getEncodedParams(){
         StringBuilder sb = new StringBuilder();
 
-        for (String key:params.keySet()
-             ) {
+        for (String key : params.keySet()) {
             String val = null;
             try {
                 val = URLEncoder.encode(params.get(key), UTF8);
@@ -103,18 +108,19 @@ public class ConnectionManager {
                 e.printStackTrace();
             }
 
-            if(sb.length()>0){
+            if (sb.length() > 0) {
                 sb.append("&");
             }
             sb.append(key + "=" + val);
-            
         }
+
         return sb.toString();
     }
 
     public void setUseJson(boolean usejson){
         this.useJson = usejson;
     }
+
     public void useBasicAuth(boolean useAuth){
         this.basicAuth = useAuth;
     }
@@ -122,12 +128,15 @@ public class ConnectionManager {
     public void setPassword(String pass){
         this.password = pass;
     }
+
     public void setUsername(String username){
         this.username = username;
     }
+
     public String getUsername(){
         return this.username;
     }
+
     public String getPassword(){
         return this.password;
     }
@@ -140,8 +149,13 @@ public class ConnectionManager {
         this.usePinnedCertifate = usePinnedCertifate;
     }
 
-    public String sendHttpRequest(String uri){
-        this.uri = uri;
+    public String sendHttpRequest(){
+        if(this.uri == null){
+            err("Can't connect - missing URI");
+            return null;
+        }
+
+
         boolean redirect = false;
 
         BufferedReader reader = null;
@@ -156,31 +170,31 @@ public class ConnectionManager {
                     log("getting params");
                 }
                 log("no params set");
-
             }
 
+            log(uri);
             URL url = new URL(uri);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod(getMethod());
+            con.setDoInput(true);
             log("Request Method is: " + getMethod());
-
-            int status = con.getResponseCode();
-            if (status != HttpURLConnection.HTTP_OK) {
-                if (status == HttpURLConnection.HTTP_MOVED_TEMP
-                        || status == HttpURLConnection.HTTP_MOVED_PERM
-                        || status == HttpURLConnection.HTTP_SEE_OTHER)
-                    redirect = true;
-            }
+//this throws an exception stating we are already connected when trying to do a post
+            //todo:figure out a way to implement this automatically without throwing this exception
+//            int status = con.getResponseCode();
+//            if (status != HttpURLConnection.HTTP_OK) {
+//                if (status == HttpURLConnection.HTTP_MOVED_TEMP
+//                        || status == HttpURLConnection.HTTP_MOVED_PERM
+//                        || status == HttpURLConnection.HTTP_SEE_OTHER)
+//                    redirect = true;
+//            }
 
             if (redirect) {
-
+                log("is redirect");
                 // get redirect url from "location" header field
                 String newUrl = con.getHeaderField("Location");
 
                 url = new URL(newUrl);
                 con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod(getMethod());
-
             }
 
             //if USER NEEDS TO USE BASIC AUTHENTICATION
@@ -193,30 +207,25 @@ public class ConnectionManager {
                         .append(Base64.encodeToString(loginBytes, Base64.DEFAULT));
 
                 con.addRequestProperty("Authorization", loginBuilder.toString());
-
             }
 
             //POST METHOD
-            if(getMethod().equals(POST)){
+            if (getMethod().equals(POST)) {
 
                 log("Using POST METHOD");
-                con.setDoInput(true);
+                con.setDoOutput(true);
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
 
 
-                if(useJson){
+                if (useJson) {
                     JSONObject jobj = new JSONObject(getParams());
                     String params = "params=" + jobj.toString();
                     writer.write(params);
-
-                }else{
+                } else {
                     writer.write(getEncodedParams());
                 }
-
                 writer.flush();
-
             }
-
 
             StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -228,10 +237,10 @@ public class ConnectionManager {
 
             }
 
+            log("http request result: " + sb.toString());
             return  sb.toString();
         }catch(Exception e){
             e.printStackTrace();
-
 
         }finally {
             if(reader != null){
@@ -243,9 +252,9 @@ public class ConnectionManager {
                 }
             }
         }
-
         return null;
     }
+
     public String sendPinnedHttpsRequest(String uri,InputStream resourceStream,char[] key_password){
         this.uri = uri;
 

@@ -15,8 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
-import com.swiftkaytech.findme.VarHolder;
-
+import com.swiftkaytech.findme.utils.VarHolder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,15 +34,15 @@ public class BasicInfo extends Activity{
     private Button btnnext;         //check for correct input in all fields. Sends user to Registration.java
 
     //String Values
-    String dob;             //users date of birth, retrieved from tvdate
-    String gender;          //users gender, retrieved from genderet
-    String firstname;       //users firstname, retrieved from etfirstname
-    String lastname;        //users lastname, retrieved from
+    private String dob;             //users date of birth, retrieved from tvdate
+    private String gender;          //users gender, retrieved from genderet
+    private String firstname;       //users firstname, retrieved from etfirstname
+    private String lastname;        //users lastname, retrieved from
 
     //date formatting
     private DateFormat dateFormat;
     private Calendar calendar;
-    Calendar myCalendar = Calendar.getInstance();
+    private Calendar myCalendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,8 +148,7 @@ public class BasicInfo extends Activity{
         }else if(VarHolder.gender.equals("")){
             Toast.makeText(this,"Please select gender",Toast.LENGTH_LONG).show();
         }else {
-            Intent i = new Intent("com.swiftkaytech.findme.REGISTRATION");
-            startActivity(i);
+            startActivity(Registration.createIntent(this));
         }
     }
 }
