@@ -2,62 +2,42 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@color/holoblue"
-        android:id="@+id/relativeLayout10">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Update Status"
-            android:id="@+id/tvupdatestatustitle"
-            android:textColor="#ffffff"
-            android:layout_marginLeft="10dp"
-            android:layout_centerVertical="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="2000"
-            android:id="@+id/tvupdatestatuscounter"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/tvupdatestatustitle"
-            android:layout_toEndOf="@+id/tvupdatestatustitle"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:layout_marginLeft="10dp" />
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/ivupdatestatussend"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/sendicon"
-            android:padding="8dp"
-            android:layout_marginRight="10dp" />
-
-    </RelativeLayout>
+    <android.support.v7.widget.Toolbar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/updateStatusToolbar"
+        android:background="@color/base_green"
+        android:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:titleTextColor="@color/white"
+        app:contentInsetEnd="0dp"
+        app:theme="@style/FindMeToolBar"
+        android:title="Update Status"
+        app:contentInsetStart="0dp"/>
 
 
     <EditText
         android:id="@+id/etupdatestatus"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/relativeLayout10"
         android:hint="Type Status Here...."
         android:gravity="left|top"
         android:inputType="textCapSentences"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:layout_below="@+id/updateStatusToolbar" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="2000"
+        android:id="@+id/tvupdatestatuscounter"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/updateStatusToolbar"
+        android:layout_marginRight="50dp" />
 
 
 </RelativeLayout>

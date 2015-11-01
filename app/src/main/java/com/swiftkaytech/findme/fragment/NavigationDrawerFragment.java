@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.swiftkaytech.findme.NavDrawerItem;
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.MessagesListActivity;
 import com.swiftkaytech.findme.adapters.NavDrawerListAdapter;
 import com.swiftkaytech.findme.utils.ImageLoader;
 import com.swiftkaytech.findme.utils.VarHolder;
@@ -50,7 +51,7 @@ public class NavigationDrawerFragment extends Fragment {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(int position, ListView lv, DrawerLayout dl);
+        void onNavigationDrawerItemSelected(int position);
     }
 
     //gui elements
@@ -149,7 +150,7 @@ public class NavigationDrawerFragment extends Fragment {
         // My Matches,
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
         // games
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), true, "Coming Soon"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), false, "Coming Soon"));
         // settings
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
 
@@ -248,7 +249,7 @@ public class NavigationDrawerFragment extends Fragment {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
         if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position,mDrawerListView,mDrawerLayout);
+            mCallbacks.onNavigationDrawerItemSelected(position);
         }
     }
 
@@ -372,9 +373,7 @@ public class NavigationDrawerFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                Intent profile = new Intent("start.fragment.changeview");
-                profile.putExtra("value", VarHolder.MESSAGES);
-                getActivity().sendBroadcast(profile);
+                startActivity(MessagesListActivity.createIntent(getActivity()));
             }
         });
         headernotes.setOnClickListener(new View.OnClickListener() {

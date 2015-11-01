@@ -50,8 +50,8 @@ public class MessagesManager {
     private static MessagesManager manager = null;
     private ArrayList<Message> mMessages;
 
-    private CopyOnWriteArrayList<MessageThreadListener> mMessageThreadListeners;
-    private CopyOnWriteArrayList<MessagesListener> mMessagesListeners;
+    private CopyOnWriteArrayList<MessageThreadListener> mMessageThreadListeners = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<MessagesListener> mMessagesListeners = new CopyOnWriteArrayList<>();
 
     public static MessagesManager getInstance(String uid){
         if (manager == null) {
@@ -59,6 +59,14 @@ public class MessagesManager {
         }
         manager.mUid = uid;
         return manager;
+    }
+
+    public void addThreadsListener(MessageThreadListener listener) {
+        mMessageThreadListeners.add(listener);
+    }
+
+    public void removeThreadsListener(MessageThreadListener listener) {
+        mMessageThreadListeners.remove(listener);
     }
 
     public void refreshMessages(ThreadInfo threadInfo){
@@ -210,33 +218,39 @@ public class MessagesManager {
         @Override
         protected ArrayList<ThreadInfo> doInBackground(Void... params) {
             ArrayList<ThreadInfo> tList = new ArrayList<>();
+
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", mUid);
             connectionManager.addParam("lastthread", lastThread);
             connectionManager.setUri("getmessagethreads.php");
 
-            try {
-                JSONObject jsonObject = new JSONObject(connectionManager.sendHttpRequest());
-                JSONArray jsonArray = jsonObject.getJSONArray("threads");
-                int length = jsonArray.length();
-                for (int i = 0; i < length; i++) {
-                    JSONObject child = jsonArray.getJSONObject(i);
-                    ThreadInfo t = ThreadInfo.instance(mUid);
-                    t.ouid = child.getString("ouid");
-                    t.lastMessage = child.getString("message");
-                    if (child.getString("readstatus").equals("read")) {
-                        t.readStatus = 1;
-                    } else {
-                        t.readStatus = 0;
+            final String result = connectionManager.sendHttpRequest();
+
+            if (result != null) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("threads");
+                    int length = jsonArray.length();
+                    for (int i = 0; i < length; i++) {
+                        JSONObject child = jsonArray.getJSONObject(i);
+                        ThreadInfo t = ThreadInfo.instance(mUid);
+                        t.ouid = child.getString("ouid");
+                        t.lastMessage = child.getString("message");
+                        if (child.getString("readstat").equals("read")) {
+                            t.readStatus = 1;
+                        } else {
+                            t.readStatus = 0;
+                        }
+                        t.threadId = child.getString("threadid");
+                        t.threadUser = User.createUser(mUid).fetchUser(child.getString("ouid"));
+                        t.time = child.getString("time");
+                        tList.add(t);
                     }
-                    t.threadId = child.getString("threadid");
-                    t.threadUser = User.createUser(mUid).fetchUser(child.getString("ouid"));
-                    t.time = child.getString("time");
-                    tList.add(t);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
             return tList;
         }
@@ -245,9 +259,11 @@ public class MessagesManager {
         protected void onPostExecute(ArrayList<ThreadInfo> threadInfos) {
             super.onPostExecute(threadInfos);
 
-            for (MessageThreadListener l : mMessageThreadListeners) {
-                l.onRetrieveMoreThreads(threadInfos);
-            }
+                for (MessageThreadListener l : mMessageThreadListeners) {
+                    if (l != null) {
+                        l.onRetrieveMoreThreads(threadInfos);
+                    }
+                }
         }
     }
 

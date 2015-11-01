@@ -22,6 +22,8 @@ public class ThreadInfo {
     public static final String  TAG     = "ThreadInfo";
     public static final int     READ    = 1;
     public static final int     UNREAD  = 0;
+    public static final int     SEEN    = 1;
+    public static final int     UNSEEN  = 0;
 
     public String   threadId;
     public String   mUid;
@@ -30,6 +32,7 @@ public class ThreadInfo {
     public String   time;
     public String   lastMessage;
     public int      readStatus;
+    public int      seenStatus;
 
     public static ThreadInfo instance(String uid) {
         ThreadInfo threadInfo = new ThreadInfo();

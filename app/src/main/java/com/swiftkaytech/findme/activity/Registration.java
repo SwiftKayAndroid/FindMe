@@ -2,6 +2,7 @@ package com.swiftkaytech.findme.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -40,28 +41,23 @@ public class Registration extends Activity {
     Button btnreg;
     ProgressDialog pDialog;
 
+    public static Intent createIntent(Context context) {
+        Intent i = new Intent(context, Registration.class);
+        return i;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//Remove title bar
         setContentView(R.layout.registration);
 
-        setGUI();
-        setListeners();
-
-
-    }
-
-
-    public void setGUI() {
-
         etemail = (EditText) findViewById(R.id.etregemail);
         etpass = (EditText) findViewById(R.id.etregpass);
         etpassconfirm = (EditText) findViewById(R.id.etregpassconfirm);
         etzip = (EditText) findViewById(R.id.etregisterzip);
         btnreg = (Button) findViewById(R.id.btnregister);
-
-
+        setListeners();
     }
 
     private void setListeners() {
@@ -90,14 +86,9 @@ public class Registration extends Activity {
                     new Register().execute(email, pass, zip);
 
                 }
-
-
             }
         });
-
-
     }
-
 
     private class Register extends AsyncTask<String, String, String> {
         String webResponse;
@@ -105,12 +96,10 @@ public class Registration extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // Showing progress dialog
             pDialog = new ProgressDialog(Registration.this);
             pDialog.setMessage("Please wait...");
             pDialog.setCancelable(false);
             pDialog.show();
-
         }
 
         @Override
@@ -140,7 +129,7 @@ public class Registration extends Activity {
                 nameValuePairs.add(new BasicNameValuePair("lastname", lastname));
                 nameValuePairs.add(new BasicNameValuePair("dob", newdob));
                 nameValuePairs.add(new BasicNameValuePair("gender", gender));
-                nameValuePairs.add(new BasicNameValuePair("authkey", "1781"));
+                nameValuePairs.add(new BasicNameValuePair("authkey", "findme_authkey_1781_authentication_token=17811781"));
 
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
@@ -148,7 +137,6 @@ public class Registration extends Activity {
 
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 webResponse = httpclient.execute(httppost, responseHandler);
-
 
             } catch (ClientProtocolException e) {
                 e.printStackTrace();

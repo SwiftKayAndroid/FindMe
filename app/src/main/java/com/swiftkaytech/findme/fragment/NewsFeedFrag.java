@@ -1,6 +1,9 @@
 package com.swiftkaytech.findme.fragment;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,6 +29,7 @@ import java.util.List;
  */
 public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener{
 
+    public static final String TAG = "NewsFeedFrag";
     public static final String ARG_POSTS_LIST = "ARG_POSTS_LIST";
     private String lp = "0";
     private ProgressBar         pb;
@@ -63,7 +67,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            mPostsList = PostManager.getInstance(uid).getPosts(getActivity());
+            mPostsList = PostManager.getInstance(uid, getActivity()).getPosts(getActivity());
         }
     }
 
@@ -85,6 +89,10 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
                 android.R.color.holo_blue_bright,
                 android.R.color.black);
 
+        fab.setOnClickListener(this);
+        fabstatus.setOnClickListener(this);
+        fabphoto.setOnClickListener(this);
+
         return layout;
     }
 
@@ -98,20 +106,23 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            mPostsList = PostManager.getInstance(uid).getPosts(getActivity());
+            mPostsList = PostManager.getInstance(uid, getActivity()).getPosts(getActivity());
         }
         Log.d(VarHolder.TAG, "view is created newsfeedfrag");
 
-        if (mPostAdapter == null) {
-            mPostAdapter = new PostAdapter(getActivity(), mPostsList);
-        }
+        if (uid != null) {
 
-        pb.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mPostAdapter);
-        Snackbar.make(view, Integer.toString(mPostsList.size()), Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+            if (mPostAdapter == null) {
+                mPostAdapter = new PostAdapter(getActivity(), mPostsList);
+            }
+
+            pb.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mRecyclerView.setAdapter(mPostAdapter);
+            Snackbar.make(view, Integer.toString(mPostsList.size()), Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
     }
 
     @Override
@@ -124,8 +135,12 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     public void onResume() {
         Log.d(VarHolder.TAG, "onResume of newsfeedfrag");
         super.onResume();
-        fabstatus.setVisibility(View.GONE);
-        fabphoto.setVisibility(View.GONE);
+
+        if (fab.getRotation() > 0) {
+            rotate(fab);
+        }
+        fabstatus.setVisibility(View.INVISIBLE);
+        fabphoto.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -138,15 +153,48 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         swipeLayout.setRefreshing(true);
-        PostManager.getInstance(uid).clearPosts();
+        PostManager.getInstance(uid, getActivity()).clearPosts();
         mPostsList.clear();
-        mPostsList = PostManager.getInstance(uid).getPosts(getActivity());
+        mPostsList = PostManager.getInstance(uid, getActivity()).getPosts(getActivity());
         mPostAdapter.clearAdapter();
         mPostAdapter.addPosts(mPostsList);
         swipeLayout.setRefreshing(false);
     }
 
+    private void rotate(View v) {
+        AnimatorSet set = new AnimatorSet();
+        float startRotation = v.getRotation();
+        float endRotation = 0;
+        if (startRotation == 0) {
+            endRotation = 45;
+        }
+        set.play(ObjectAnimator.ofFloat(v, View.ROTATION, startRotation, endRotation));
+        set.setDuration(200);
+        set.start();
+    }
 
+    /**
+     * Animates the fabstatus and fabphoto when the base fab
+     * is clicked
+     */
+    private void fabClickAnimation() {
+        float startRotation = fab.getRotation();
+        float endRotation = 0;
+        if (startRotation == 0) {
+            endRotation = 45;
+        }
+
+        AnimatorSet set = new AnimatorSet();
+        ObjectAnimator outAnimFabStatus = ObjectAnimator.ofFloat(fabstatus, View.Y, fab.getTop(), fabstatus.getTop());
+        ObjectAnimator outAnimFabPhoto = ObjectAnimator.ofFloat(fabphoto, View.X, fab.getLeft(), fabphoto.getLeft());
+        ObjectAnimator inAnimFabStatus = ObjectAnimator.ofFloat(fabstatus, View.Y, fabphoto.getTop(), fab.getTop());
+        ObjectAnimator inAnimFabPhoto = ObjectAnimator.ofFloat(fabphoto, View.X, fabphoto.getLeft(), fab.getLeft());
+        set.play(outAnimFabStatus)
+                .with(outAnimFabPhoto)
+                .with(ObjectAnimator.ofFloat(fab, View.ROTATION, startRotation, endRotation));
+        set.setDuration(500);
+        set.start();
+    }
 
     @Override
     public void onClick(View v) {
@@ -157,12 +205,14 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             Intent i = new Intent("com.swiftkaytech.findme.UPDATESTATUS");
             startActivity(i);
         } else if (v.getId() == R.id.fab) {
-            if (fabstatus.getVisibility() == View.GONE) {
+            if (fabstatus.getVisibility() == View.INVISIBLE) {
                 fabstatus.setVisibility(View.VISIBLE);
                 fabphoto.setVisibility(View.VISIBLE);
+                fabClickAnimation();
             } else {
-                fabstatus.setVisibility(View.GONE);
-                fabphoto.setVisibility(View.GONE);
+                fabstatus.setVisibility(View.INVISIBLE);
+                fabphoto.setVisibility(View.INVISIBLE);
+                rotate(v);
             }
         }
     }

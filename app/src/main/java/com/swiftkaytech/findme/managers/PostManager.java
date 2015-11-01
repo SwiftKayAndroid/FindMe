@@ -17,12 +17,16 @@
 
 package com.swiftkaytech.findme.managers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 import com.swiftkaytech.findme.data.Post;
 import com.swiftkaytech.findme.data.User;
+import com.swiftkaytech.findme.utils.ErrorDisplayer;
 import com.swiftkaytech.findme.utils.VarHolder;
 import com.swiftkaytech.findme.views.tagview.Tag;
 
@@ -32,6 +36,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 public class PostManager {
     public static final String TAG = "FindMe-PostManager";
@@ -39,12 +45,16 @@ public class PostManager {
     private String mUid;
     private ArrayList<Post> mPosts;
     private static PostManager manager = null;
+    private static ErrorDisplayer errorDisplayer;
+    private static Context mContext;
 
-    public static PostManager getInstance(String uid){
+    public static PostManager getInstance(String uid, Context context){
         if (manager == null) {
             manager = new PostManager();
         }
         manager.mUid = uid;
+        mContext = context;
+        errorDisplayer = ErrorDisplayer.getInstance(context);
         return manager;
     }
 
@@ -79,25 +89,40 @@ public class PostManager {
             connectionManager.addParam("lp","0");
             ArrayList<Post> pList = new ArrayList<>();
 
-            try {
-                JSONObject jsonObject = new JSONObject(connectionManager.sendHttpRequest());
-                JSONArray jsonArray = jsonObject.getJSONArray("posts");
+            final String result = connectionManager.sendHttpRequest();
 
-                for(int i = 0; i<jsonArray.length();i++){
-                    JSONObject child = jsonArray.getJSONObject(i);
-                    Post post = Post.createPost(mUid);
-                    post.setPostText(child.getString("post"));
-                    post.setPostingUsersId(child.getString("postingusersid"));
-                    post.setNumComments(child.getInt("numcomments"));
-                    post.setNumLikes(child.getInt("numlikes"));
-                    post.setTime(child.getString("time"));
-                    post.setPostId(child.getString("postid"));
-                    post.setLiked(child.getBoolean("liked"));
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("posts");
 
-                    pList.add(post);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject child = jsonArray.getJSONObject(i);
+                        Post post = Post.createPost(mUid);
+                        post.setPostText(child.getString("post"));
+                        post.setPostingUsersId(child.getString("postingusersid"));
+                        post.setNumComments(child.getInt("numcomments"));
+                        post.setNumLikes(child.getInt("numlikes"));
+                        post.setTime(child.getString("time"));
+                        post.setPostId(child.getString("postid"));
+                        post.setLiked(child.getBoolean("liked"));
+
+                        pList.add(post);
+                    }
+                    ((Activity) mContext).runOnUiThread(new Runnable() {
+                        public void run() {
+                            errorDisplayer.webErr(result, "");
+                        }
+                    });
+                } catch (final JSONException e) {
+                    e.printStackTrace();
+
+                    ((Activity) mContext).runOnUiThread(new Runnable() {
+                        public void run() {
+                            errorDisplayer.webErr(result, e.getMessage());
+                        }
+                    });
                 }
-            } catch(JSONException e) {
-                e.printStackTrace();
             }
             return pList;
         }

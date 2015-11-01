@@ -79,23 +79,6 @@ public class Profile extends AppCompatActivity {
     boolean refreshing;
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-
-        getMenuInflater().inflate(R.menu.matches_menu, menu);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.backbuttontwo);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        if(name != null) {
-            actionBar.setTitle(name);
-        }
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int itemId = item.getItemId();

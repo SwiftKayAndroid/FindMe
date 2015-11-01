@@ -73,7 +73,7 @@ public class Post implements Serializable{
         return this;
     }
 
-    private class FetchPostTask extends AsyncTask<Void,Void,Post>{
+    private static class FetchPostTask extends AsyncTask<Void,Void,Post> implements  Serializable{
         String postid;
         Post post;
         public FetchPostTask(String postid,Post post){

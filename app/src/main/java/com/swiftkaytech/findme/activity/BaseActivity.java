@@ -8,6 +8,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 /**
@@ -25,14 +27,19 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private String initializeUser() {
         String KEY = "uid";
-        return prefs.getString(KEY,null);
+        if (prefs != null) {
+            return prefs.getString(KEY, null);
+        }
+        err("prefs is null");
+        return null;
     }
     public SharedPreferences getPrefs(){return prefs;}
 
     public String getUid(){return uid;}
     public void setUid(String s){uid = s;}
 
-    protected abstract void createActivity();
+    protected abstract void createActivity(Bundle inState);
+    protected abstract Bundle saveState(Bundle b);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +47,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayoutResource());
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         uid = initializeUser();
-         if (uid == null) {
+         if (uid == null || uid.isEmpty()) {
              err("uid is null");
          }
-        createActivity();
+        createActivity(savedInstanceState);
+        checkForNullUID();
     }
 
     protected void writePref(String key,boolean value){
@@ -63,6 +71,17 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void writePref(String key,Long value){
         SharedPreferences.Editor editor = getPrefs().edit();
         editor.putLong(key, value);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(saveState(outState));
+    }
+
+    private void checkForNullUID(){
+        if (uid == null || uid.isEmpty()) {
+            warn("WARNING UID IS NULL...WARNING UID IS NULL....WARNING...WARNING..");
+        }
     }
 
     protected void err(String message){

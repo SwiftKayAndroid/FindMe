@@ -148,8 +148,7 @@ public class BasicInfo extends Activity{
         }else if(VarHolder.gender.equals("")){
             Toast.makeText(this,"Please select gender",Toast.LENGTH_LONG).show();
         }else {
-            Intent i = new Intent("com.swiftkaytech.findme.REGISTRATION");
-            startActivity(i);
+            startActivity(Registration.createIntent(this));
         }
     }
 }

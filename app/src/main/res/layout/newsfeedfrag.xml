@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-     
-        android:id="@+id/rlnewsfeed"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/gray"
-        android:focusableInTouchMode="false"
-        android:orientation="vertical" >
+
+    android:id="@+id/rlnewsfeed"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    android:focusableInTouchMode="false"
+    android:orientation="vertical" >
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
@@ -31,58 +31,55 @@
 
         </android.support.v7.widget.RecyclerView>
 
-
     </android.support.v4.widget.SwipeRefreshLayout>
 
-        <ProgressBar
-            android:id="@+id/pbnewsfeed"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="visible" />
+    <ProgressBar
+        android:id="@+id/pbnewsfeed"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="visible" />
 
-    <com.swiftkaytech.findme.com.shamanland.fab.FloatingActionButton
-    android:id="@+id/fab"
-    android:layout_width="55dp"
-    android:layout_height="55dp"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentEnd="true"
-    android:layout_marginRight="16dp"
-    android:layout_marginBottom="20dp"
-    android:src="@drawable/plus"
-        app:floatingActionButtonColor="#59b1eb"
-        android:scaleType="center"
-        android:padding="20dp"
-        />
-    <com.swiftkaytech.findme.com.shamanland.fab.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:src="@mipmap/ic_add_white_24dp"
+        android:layout_marginRight="35dp"
+        app:backgroundTint="@color/base_green"
+        android:layout_marginBottom="35dp"
+        app:fabSize="normal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="43dp" />
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabpencil"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:src="@drawable/pen"
-        android:visibility="gone"
-        app:floatingActionButtonColor="#FF07FF04"
-        android:scaleType="center"
-        android:padding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_edit_dark"
+        android:layout_alignParentRight="true"
+        app:backgroundTint="@color/base_green"
+        android:layout_alignParentEnd="true"
         android:layout_above="@+id/fab"
-        android:layout_alignLeft="@+id/fab"
-        android:layout_alignStart="@+id/fab"
-        android:layout_marginBottom="10dp" />
-    <com.swiftkaytech.findme.com.shamanland.fab.FloatingActionButton
-        android:id="@+id/fabcamera"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:src="@drawable/cam"
-        app:floatingActionButtonColor="#FFFF990A"
-        android:scaleType="center"
-        android:visibility="gone"
-        android:padding="20dp"
-        android:layout_above="@+id/fabpencil"
-        android:layout_alignLeft="@+id/fabpencil"
-        android:layout_alignStart="@+id/fabpencil"
-        android:layout_marginBottom="10dp" />
+        app:fabSize="normal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="35dp" />
 
-        
-    </RelativeLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabcamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_photo_camera_white_24dp"
+        android:padding="20dp"
+        app:fabSize="normal"
+        app:backgroundTint="@color/base_green"
+        android:layout_alignTop="@+id/fab"
+        android:layout_toLeftOf="@+id/fab"
+        android:layout_marginRight="10dp" />
+
+</RelativeLayout>

@@ -32,17 +32,14 @@ import com.swiftkaytech.findme.utils.VarHolder;
 /**
  * Created by Kevin Haines on 2/5/2015.
  */
-public class MainLineUp extends BaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks{
+public class MainLineUp extends BaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    static class ProInfo{
-        static String name;
-        static String propicloc;
-        static String activestatus;
-        static String backgroundphoto;
-    }
+    private static final int NEWSFEED = 1;
+    private static final int FINDPEOPLE = 2;
+    private static final int MESSAGETHREADS = 7;
 
     public static Intent createIntent(Context context){
-        Intent i = new Intent(context,MainLineUp.class);
+        Intent i = new Intent(context, MainLineUp.class);
         return i;
     }
 
@@ -50,27 +47,16 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     public int getLayoutResource() {
         return R.layout.mainlineup;
     }
+
     @Override
     protected Context getContext() {
         return this;
     }
 
-    private ImageLoader imageloader;
-
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private ListView mListView;//changed from lv
-    private DrawerLayout mDrawerLayout;//changed from dl
-
-    ImageView messages,friendrequests,more,notifications,love;
-    private ProgressBar loadingmorepb;
-    private TextView mTvName;//changed from tvname
-    public ImageView mIvUsersPhoto;//changed from ivusersphoto
-
-
 
     @Override
-    protected void createActivity() {
-        imageloader = new ImageLoader(this);
+    protected void createActivity(Bundle b) {
         mToolbar = (Toolbar) findViewById(R.id.toolbarNavigation);
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         setSupportActionBar(mToolbar);
@@ -78,12 +64,17 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         initializeDrawer();
 
         int displayvalue = getIntent().getIntExtra("displayvalue", 0);
-        if(displayvalue != 0){
+        if (displayvalue != 0) {
             displayView(displayvalue);
         }
         else{
             displayView(VarHolder.NEWSFEED);
         }
+    }
+
+    @Override
+    protected Bundle saveState(Bundle b) {
+        return b;
     }
 
     public void initializeDrawer(){
@@ -96,7 +87,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position,ListView lv,DrawerLayout dl) {
+    public void onNavigationDrawerItemSelected(int position) {
         displayView(position);
     }
 
@@ -119,93 +110,29 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         return super.onOptionsItemSelected(item);
     }
 
-    void displayView(int position) {
-        // update the main content by replacing fragments
+    private void displayView(int position) {
         Fragment fragment = null;
-        boolean restoring = false; //set to true if restoring fragment from backstack instead of new fragment
 
         switch (position) {
-
             case VarHolder.NEWSFEED:
-
-                    //fragment = getSupportFragmentManager().findFragmentByTag(Integer.toString(position));
                     fragment = NewsFeedFrag.getInstance(uid);
-
                 break;
-            case VarHolder.MESSAGES:
-
+            case FINDPEOPLE:
+                startActivity(FindPeopleActivity.createIntent(MainLineUp.this));
                 break;
-
-            case VarHolder.NOTIFICATIONS:
-
-                break;
-            case VarHolder.FRIENDS: {
-                Intent i = new Intent("com.swiftkaytech.findme.FRIENDS");
-                startActivity(i);
-            }
-                break;
-//            case VarHolder.FINDPEOPLE:
-//                fragment = new FindPeopleFrag();
-//                break;
-            case VarHolder.PROFILE:{
-            }
-            break;
-
-            case VarHolder.USERSPHOTOS:{
-
-                //this will be its own activity, not a fragment
-                VarHolder.ouid = uid;
-
-            }
-            break;
-            case VarHolder.MATCHES:{
-
-                //this will be its own activity
-                Intent i = new Intent("com.swiftkaytech.findme.MATCH");
-                startActivity(i);
-            }
-            break;
-            case VarHolder.SETTINGS:{
-                //this will be its own activity
-
-            }
-            break;
-            case VarHolder.UPDATESTATUS:{
-                //this is its own activity
-                Intent i = new Intent("com.swiftkaytech.findme.UPDATESTATUS");
-                startActivity(i);
-            }
-            break;
-            case VarHolder.EARNFREECREDITS:{
-                //fragment = new EarnFreeCreditsFrag(this,mDrawerLayout,mDrawerList);
-            }
-            break;
-
-            case VarHolder.STATUSPHOTO:{
-                Intent i = new Intent("com.swiftkaytech.findme.UPLOADSERVICE");
-                startActivity(i);
-            }
-            break;
-            case VarHolder.COMMENTS:{
-
-                Intent i = new Intent("com.swiftkaytech.findme.COMMENTS");
-                startActivity(i);
-            }
 
             default:
                 break;
         }
 
-        if (fragment != null&&!restoring) {
+        if (fragment != null) {
             getSupportFragmentManager().beginTransaction()
                     .addToBackStack(Integer.toString(position))
-                    .replace(R.id.frame_container, fragment, Integer.toString(position)).commit();
+                    .replace(R.id.frame_container, fragment, NewsFeedFrag.TAG)
+                    .commit();
 
-            // update selected item and title, then close the drawer
             mNavigationDrawerFragment.getListView().setItemChecked(position, true);
             mNavigationDrawerFragment.getListView().setSelection(position);
-
-
             mNavigationDrawerFragment.getDrawerLayout().closeDrawer(mNavigationDrawerFragment.getListView());
         } else {
             // error in creating fragment

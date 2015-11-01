@@ -4,8 +4,8 @@
     android:layout_height="match_parent">
 
     <include
-        layout="@layout/base_toolbar"
-        android:id="@+id/include" />
+        android:id="@+id/include"
+        layout="@layout/base_toolbar" />
 
     <FrameLayout
         android:id="@+id/activityContainer"

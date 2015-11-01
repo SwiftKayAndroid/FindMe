@@ -43,48 +43,6 @@
         <item name="android:windowExitAnimation">@animator/pop_hide</item>
     </style>
 
-
-
-    <style name="AppTheme.Dark" parent="android:Theme">
-        <item name="icActionEdit">@drawable/ic_action_edit_dark</item>
-        <item name="floatingActionButtonStyle">@style/AppTheme.Fab.Light</item>
-    </style>
-
-
-
-
-    <style name="AppTheme.Fab.Light" parent="FloatingActionButton">
-        <item name="floatingActionButtonColor">@color/fab_light</item>
-    </style>
-
-    <style name="AppTheme.Fab.Dark" parent="FloatingActionButton">
-        <item name="floatingActionButtonColor">@color/fab_dark</item>
-    </style>
-
-    <style name="FloatingActionButton" parent="android:Widget.ImageButton">
-        <item name="floatingActionButtonSize">normal</item>
-    </style>
-
-    <style name="FloatingActionButton.Mini" parent="FloatingActionButton">
-        <item name="floatingActionButtonSize">mini</item>
-    </style>
-
-    <style name="FloatingActionButton.Light" parent="FloatingActionButton">
-        <item name="floatingActionButtonColor">@android:color/primary_text_dark</item>
-    </style>
-
-    <style name="FloatingActionButton.Light.Mini" parent="FloatingActionButton.Mini">
-        <item name="floatingActionButtonColor">@android:color/primary_text_dark</item>
-    </style>
-
-    <style name="FloatingActionButton.Dark" parent="FloatingActionButton">
-        <item name="floatingActionButtonColor">@android:color/tab_indicator_text</item>
-    </style>
-
-    <style name="FloatingActionButton.Dark.Mini" parent="FloatingActionButton.Mini">
-        <item name="floatingActionButtonColor">@android:color/tab_indicator_text</item>
-    </style>
-
     <!-- the theme applied to the application or activity -->
     <style name="AppTheme.Light"
         parent="@style/Theme.AppCompat.Light.DarkActionBar">
@@ -98,11 +56,6 @@
     <style name="MyActionBar"
         parent="@style/SwipeFlingStyle">
         <item name="android:background">@color/holoblue</item>
-        <item name="icActionEdit">@drawable/ic_action_edit_light</item>
-        <item name="floatingActionButtonStyle">@style/AppTheme.Fab.Light</item>
-
-
-        <!-- Support library compatibility -->
         <item name="background">@color/holoblue</item>
     </style>
 

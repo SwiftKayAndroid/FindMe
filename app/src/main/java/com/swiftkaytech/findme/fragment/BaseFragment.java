@@ -1,8 +1,10 @@
 package com.swiftkaytech.findme.fragment;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.swiftkaytech.findme.activity.BaseActivity;
@@ -25,23 +27,35 @@ public class BaseFragment extends Fragment {
         editor.putString(key, value);
     }
 
-    protected void writePref(String key,boolean value){
+    protected void writePref(String key, boolean value){
         SharedPreferences.Editor editor = getPrefs().edit();
         editor.putBoolean(key, value);
     }
 
-    protected void writePref(String key,int value){
+    protected void writePref(String key, int value){
         SharedPreferences.Editor editor = getPrefs().edit();
         editor.putInt(key, value);
     }
-    protected void writePref(String key,float value){
+    protected void writePref(String key, float value){
         SharedPreferences.Editor editor = getPrefs().edit();
         editor.putFloat(key, value);
     }
 
-    protected void writePref(String key,Long value){
+    protected void writePref(String key, Long value){
         SharedPreferences.Editor editor = getPrefs().edit();
         editor.putLong(key, value);
+    }
+
+    private void checkForNullUID(){
+        if (uid == null || uid.isEmpty()) {
+            warn("WARNING UID IS NULL...WARNING UID IS NULL....WARNING...WARNING..");
+        }
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        checkForNullUID();
     }
 
     protected void err(String message){
@@ -54,6 +68,6 @@ public class BaseFragment extends Fragment {
         Log.i(TAG, message);
     }
     protected void toast(String message){
-        Toast.makeText(getActivity(),message,Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 }

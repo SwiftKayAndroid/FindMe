@@ -33,34 +33,30 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);//Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-         //Intent i = new Intent("com.swiftkaytech.findme.MAINLINEUP");
-        //startActivity(i);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean saved = prefs.getBoolean("loginsaved",false);
 
-        if(saved){
+        if (saved) {
+            VarHolder.credemail = prefs.getString("email", "error");
+            VarHolder.credpassword = prefs.getString("password", "error");
 
-            VarHolder.credemail = prefs.getString("email","error");
-            VarHolder.credpassword = prefs.getString("password","error");
-
-            if(VarHolder.credemail.equals("error")||VarHolder.credpassword.equals("error")){
+            if (VarHolder.credemail.equals("error") || VarHolder.credpassword.equals("error")) {
                 Log.e(VarHolder.TAG,"There was an issue obtaining credentials from sharedPreferences. email : " + VarHolder.credemail +
                 " Password : " + VarHolder.credpassword + " loginsaved is changed to false. ");
                 SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
                 SharedPreferences.Editor editor = mPreferences.edit();
-                editor.putBoolean("loginsaved",false);
+                editor.putBoolean("loginsaved", false);
+                editor.commit();
                 setGUI();
-            }else {
-              AuthenticateUser au = new AuthenticateUser(this,this);
-                au.execute();
             }
-        }else {
-
+            AuthenticateUser au = new AuthenticateUser(this,this);
+            au.execute();
+            startActivity(MainLineUp.createIntent(this));
+        } else {
             setGUI();
-
         }
 
     }

@@ -4,27 +4,28 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
     <include
         android:id="@+id/toolbarNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/base_toolbar"/>
 
-    <!-- Framelayout to display Fragments -->
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     </LinearLayout>
 
-
     <fragment android:id="@+id/navigation_drawer"
         android:layout_width="@dimen/navigation_drawer_width" android:layout_height="match_parent"
         android:background="@color/holoblue"
         android:layout_gravity="start" android:name="com.swiftkaytech.findme.fragment.NavigationDrawerFragment"
         tools:layout="@layout/fragment_navigation_drawer" />
+
 </android.support.v4.widget.DrawerLayout>

@@ -80,20 +80,7 @@ public class MyMatches  extends AppCompatActivity {
         return prefs.getString(KEY, null);
     }//----------------------------------------------------------------------------------------------<</getUID>>
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
 
-
-        getMenuInflater().inflate(R.menu.simplemenu, menu);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.backbuttontwo);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setTitle("My Matches");
-
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

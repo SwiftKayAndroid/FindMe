@@ -94,7 +94,7 @@ public class User implements Serializable{
     /**
      * class to fetch all of the users details
      */
-    private class FetchUserTask extends AsyncTask<Void,Void,User>{
+    private static class FetchUserTask extends AsyncTask<Void,Void,User> implements Serializable{
         String uid;
         User user;
         public FetchUserTask(String uid, User user){
@@ -139,7 +139,7 @@ public class User implements Serializable{
      * sets the gender enum based on a string
      * @param gender Gender object representing the users gender
      */
-    public Gender setGenderFromString(String gender){
+    public static Gender setGenderFromString(String gender){
         switch (gender){
             case "Male":{
                 return Gender.MALE;
@@ -158,7 +158,7 @@ public class User implements Serializable{
      * @param orientation string to be used to set orientation
      * @return Orientation enum from string
      */
-    public Orientation setOrientationFromString(String orientation) {
+    public static Orientation setOrientationFromString(String orientation) {
         if (orientation.equalsIgnoreCase("Straight")) {
             return Orientation.STRAIGHT;
         } else if (orientation.equalsIgnoreCase("Gay")) {
@@ -177,7 +177,7 @@ public class User implements Serializable{
      * @param status string to be used to set online status
      * @return OnlineStatus enum from string value
      */
-    public OnlineStatus setOnlineStatusFromString(String status) {
+    public static OnlineStatus setOnlineStatusFromString(String status) {
         if (status.equals("online")) {
             return OnlineStatus.ONLINE;
         } else if (status.equals("offline")) {
@@ -189,7 +189,7 @@ public class User implements Serializable{
         }
     }
 
-    public InterestedIn setInterestedInFromString(String interest) {
+    public static InterestedIn setInterestedInFromString(String interest) {
         if (interest.equals("Men")) {
             return InterestedIn.MEN;
         } else if (interest.equals("Women")) {
@@ -199,7 +199,7 @@ public class User implements Serializable{
         }
     }
 
-    public Location setLocationFromArray(JSONObject array) throws JSONException{
+    public static Location setLocationFromArray(JSONObject array) throws JSONException{
         //todo: this is going to be changed to geocoding
         String city = array.getString("city");
         String distance = array.getString("distance");

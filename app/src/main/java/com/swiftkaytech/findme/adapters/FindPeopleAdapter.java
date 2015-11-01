@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.data.User;
 import com.swiftkaytech.findme.fragment.FindPeopleFrag;
 import com.swiftkaytech.findme.utils.ImageLoader;
 
@@ -21,12 +22,12 @@ public class FindPeopleAdapter extends BaseAdapter {
 
 
     Context context;
-    List<FindPeopleFrag.Peeps> plist;
+    List<User> plist;
     String uid;
     private static LayoutInflater inflater = null;
     ImageLoader imageLoader;
 
-    public FindPeopleAdapter(Context context,List<FindPeopleFrag.Peeps> plist,String uid){
+    public FindPeopleAdapter(Context context,List<User> plist,String uid){
         this.context = context;
         this.plist = plist;
         this.uid = uid;
@@ -57,14 +58,14 @@ public class FindPeopleAdapter extends BaseAdapter {
         View row;
         row = inflater.inflate(R.layout.findpeoplegriditem, null);
         ImageView iv = (ImageView) row.findViewById(R.id.ivpicsgrid);
-        if(plist.get(position).picloc.equals("")){
-            iv.setImageResource(R.drawable.ic_placeholder);
-        }else {
-            imageLoader.DisplayImage(plist.get(position).picloc, iv, false);
-        }
-        TextView tv = (TextView) row.findViewById(R.id.tvfindpeople);
-        String dis = String.format("%.1f", Float.valueOf(plist.get(position).distance));
-        tv.setText(dis);
+//        if(plist.get(position).picloc.equals("")){
+//            iv.setImageResource(R.drawable.ic_placeholder);
+//        }else {
+//            imageLoader.DisplayImage(plist.get(position).picloc, iv, false);
+//        }
+//        TextView tv = (TextView) row.findViewById(R.id.tvfindpeople);
+//        String dis = String.format("%.1f", Float.valueOf(plist.get(position).distance));
+//        tv.setText(dis);
 
 
         return row;

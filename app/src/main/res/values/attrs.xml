@@ -24,21 +24,6 @@
         <attr name="collapseDuration" format="integer"/>
     </declare-styleable>
 
-    <declare-styleable name="Emojicon">
-        <attr name="emojiconSize" format="dimension"/>
-        <attr name="emojiconTextStart" format="integer"/>
-        <attr name="emojiconTextLength" format="integer"/>
-        <attr name="emojiconUseSystemDefault" format="boolean"/>
-    </declare-styleable>
-
-    <!--this is used for floating action button-->
-    <attr name="icActionEdit" format="reference"/>
-
-    <!-- Default style attribute which will be used during construction of FloatingActionButton. -->
-    <attr name="floatingActionButtonStyle" format="reference"/>
-
-
-
     <declare-styleable name="StaggeredGridView">
         <attr name="drawSelectorOnTop" format="boolean" />
         <attr name="numColumns" format="integer" />

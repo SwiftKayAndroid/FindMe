@@ -86,7 +86,7 @@
         android:layout_toLeftOf="@+id/btn_sep_2"
         android:background="?android:attr/selectableItemBackground"
         android:padding="10dp"
-        android:src="@drawable/camera"/>
+        android:src="@mipmap/ic_photo_camera_white_24dp"/>
 
     <View
         android:id="@+id/btn_sep_2"

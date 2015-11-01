@@ -46,10 +46,8 @@ public class AuthenticateUser extends AsyncTask<String,String,String> {
 
 
     public AuthenticateUser(Context context,Activity activity){
-
         this.context = context;
         this.activity = activity;
-
     }
 
     @Override
@@ -64,7 +62,6 @@ public class AuthenticateUser extends AsyncTask<String,String,String> {
         email = VarHolder.credemail;
         password = VarHolder.credpassword;
         authkey = VarHolder.authkey;
-
     }
 
     @Override
@@ -101,8 +98,6 @@ public class AuthenticateUser extends AsyncTask<String,String,String> {
         return response;
     }
 
-
-
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
@@ -114,18 +109,17 @@ public class AuthenticateUser extends AsyncTask<String,String,String> {
             pDialog.dismiss();
 
         //check http post returned data for result
-        if(result.equals("denied")){
+        if (result.equals("denied")) {
             //this code runs if the users login info doesn't match what's in the database
             Toast.makeText(context, "Your details do not match what is on file", Toast.LENGTH_LONG).show();
 
-        }else if(result.equals("reg")) {
+        } else if(result.equals("reg")) {
             //this code is run if the server returns that the user hasnt verified their email
             Toast.makeText(context, "You must verify your email first.", Toast.LENGTH_LONG).show();
 
         } else{
 
             try {
-
                 //obtain the values from the json array
                 JSONObject obj = new JSONObject(result);
                 String uid = obj.getJSONObject("info").getString("uid");
@@ -163,10 +157,10 @@ public class AuthenticateUser extends AsyncTask<String,String,String> {
 
                 //send user to home page
                 Toast.makeText(context, "Login successful.", Toast.LENGTH_LONG).show();
-                Intent home = new Intent("com.swiftkaytech.findme.MAINLINEUP");
-                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                context.startActivity(home);
-                activity.finish();
+//                Intent home = new Intent("com.swiftkaytech.findme.MAINLINEUP");
+//                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                context.startActivity(home);
+//                activity.finish();
 
             } catch (JSONException e) {
 

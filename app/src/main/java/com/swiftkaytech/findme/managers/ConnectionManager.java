@@ -17,8 +17,11 @@
 
 package com.swiftkaytech.findme.managers;
 
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
+
+import com.swiftkaytech.findme.utils.ErrorDisplayer;
 
 import org.json.JSONObject;
 
@@ -45,13 +48,14 @@ public class ConnectionManager {
     private String uri;
     private boolean useJson;
     private boolean basicAuth = false;
-    private String baseUrl = "http://192.168.1.115/";
+    private String baseUrl = "http://www.swiftkay.com/findme/";
 
 
     private boolean usePinnedCertifate = false;
     private Map<String,String> params;
     private String username;
     private String password;
+    private ErrorDisplayer errorDisplayer;
 
     public static final String GET = "GET";
     public static final String POST = "POST";
@@ -88,15 +92,15 @@ public class ConnectionManager {
         this.params = params;
     }
 
-    public void addParam(String key,String val){
-        params.put(key,val);
+    public void addParam(String key, String val){
+        log("addParam Key->" + key + " val->" + val);
+        params.put(key, val);
     }
 
     public String getEncodedParams(){
         StringBuilder sb = new StringBuilder();
 
-        for (String key:params.keySet()
-                ) {
+        for (String key : params.keySet()) {
             String val = null;
             try {
                 val = URLEncoder.encode(params.get(key), UTF8);
@@ -104,12 +108,12 @@ public class ConnectionManager {
                 e.printStackTrace();
             }
 
-            if(sb.length()>0){
+            if (sb.length() > 0) {
                 sb.append("&");
             }
             sb.append(key + "=" + val);
-
         }
+
         return sb.toString();
     }
 

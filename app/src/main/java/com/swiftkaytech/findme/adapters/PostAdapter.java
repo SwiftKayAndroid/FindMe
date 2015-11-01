@@ -108,11 +108,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
 
             holder.tvPost.setText(post.getPostText());
-            holder.tvLocation.setText(String.valueOf(post.getUser().getLocation().getDistance()));
+            int distance = (int) post.getUser().getLocation().getDistance();
+            String append = "";
+            if (distance == 1) {
+                append = " mile away";
+            } else {
+                append = " miles away";
+            }
+            holder.tvLocation.setText(Integer.toString(distance) + append);
             holder.tvName.setText(post.getUser().getName());
             holder.tvTime.setText(post.getTime());
             ImageLoader imageLoader = new ImageLoader(mContext);
-            imageLoader.DisplayImage(post.getUser().getPropicloc(), holder.ivProfilePicture, false);
+            if (post.getUser().getPropicloc().equals("")) {
+                holder.ivProfilePicture.setImageResource(R.drawable.ic_placeholder);
+            } else {
+                imageLoader.DisplayImage(post.getUser().getPropicloc(), holder.ivProfilePicture, false);
+            }
             imageLoader.DisplayImage(post.getPostImage(), holder.ivPostImage, true);
             holder.ivPostLike.setTag(position);
             if (mPostList.get(position).getLiked()) {
@@ -128,15 +139,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 @Override
                 public void onClick(View v) {
                     rotate(v);
-                    Log.i(TAG,"onclick of item");
+                    Log.i(TAG, "onclick of item");
                     switch (holder.extrasContainer.getState()) {
                         case Close: {
-                            Log.i(TAG,"Layout is Close - opening");
+                            Log.i(TAG, "Layout is Close - opening");
                             setExtrasContainer(position, holder);
                         }
                         break;
                         case Open: {
-                            Log.i(TAG,"Layout is Open - closing");
+                            Log.i(TAG, "Layout is Open - closing");
                             holder.extrasContainer.close();
                         }
                         break;
@@ -275,10 +286,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             int pos = (Integer) v.getTag();
             Post p = mPostList.get(pos);
             if (!p.getLiked()) {
-                PostManager.getInstance(p.getUid()).likePost(p.getPostId());
+                PostManager.getInstance(p.getUid(), mContext).likePost(p.getPostId());
                 ((ImageView) v).setImageResource(R.drawable.checkmark_liked);
             } else {
-                PostManager.getInstance(p.getUid()).unLikePost(p.getPostId());
+                PostManager.getInstance(p.getUid(), mContext).unLikePost(p.getPostId());
                 ((ImageView) v).setImageResource(R.drawable.checkmark);
             }
             p.setLiked(!p.getLiked());

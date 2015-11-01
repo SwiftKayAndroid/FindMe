@@ -20,10 +20,12 @@ package com.swiftkaytech.findme.views.tagview;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 
+import java.io.Serializable;
+
 /**
  * Tag Entity
  */
-public class Tag {
+public class Tag implements Serializable{
 
 	public int     id;
 	public String  text;
