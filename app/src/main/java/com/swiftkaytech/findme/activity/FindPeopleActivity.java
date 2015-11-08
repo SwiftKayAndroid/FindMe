@@ -40,16 +40,11 @@ public class FindPeopleActivity extends BaseActivity {
     @Override
     protected void createActivity(Bundle inState) {
 
-        mToolbar = (Toolbar) findViewById(R.id.include);
+        mToolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         mFindPeopleFragment = FindPeopleFrag.newInstance(uid);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.activityContainer, mFindPeopleFragment, "tag")
                 .commit();
-    }
-
-    @Override
-    protected Bundle saveState(Bundle b) {
-        return b;
     }
 }

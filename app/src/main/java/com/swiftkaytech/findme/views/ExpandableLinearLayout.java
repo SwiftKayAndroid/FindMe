@@ -4,11 +4,15 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 /**
  * Created by Kevin Haines on 10/25/15.
@@ -32,6 +36,7 @@ import android.widget.LinearLayout;
  * Class Description:
  */
 public class ExpandableLinearLayout extends LinearLayout {
+    public static final String TAG = "expandableLinearLayout";
 
     private boolean isExpanded = false;
     private final int DURATION = 200;
@@ -67,12 +72,28 @@ public class ExpandableLinearLayout extends LinearLayout {
     public void expand(){
         setVisibility(View.VISIBLE);
         int childCount = this.getChildCount();
-        int finishsize = 0;
-        for (int i = 0; i < childCount; i++) {
-            finishsize += this.getChildAt(i).getMeasuredHeight();
-        }
+//        float finishsize = 0;
+//        int dp = 35;
+//
+//        Resources resources = this.getContext().getResources();
+//        DisplayMetrics metrics = resources.getDisplayMetrics();
+//        float px = dp * (metrics.densityDpi / 160f);
+//
+//        if (childCount > 0) {
+//            ListView child = (ListView) this.getChildAt(0);
+//            child.getParent().getParent().requestDisallowInterceptTouchEvent(true);
+//            int listItemCount = child.getAdapter().getCount();
+//            Log.e(TAG, "listitemcount " + Integer.toString(listItemCount));
+//            if (listItemCount > 8) {
+//                finishsize = 8 * px;
+//            } else {
+//                finishsize = listItemCount * px;
+//            }
+//        }
+
 
         AnimatorSet set = new AnimatorSet();
+//        this.getLayoutParams().height = (int) finishsize;
         set.play(ObjectAnimator.ofFloat(this, View.SCALE_Y, 0, 1));
         setPivotY(0);
         set.setDuration(DURATION);

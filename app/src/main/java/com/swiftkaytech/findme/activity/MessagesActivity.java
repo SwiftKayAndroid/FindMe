@@ -17,14 +17,31 @@
 
 package com.swiftkaytech.findme.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.data.Message;
+import com.swiftkaytech.findme.data.User;
 import com.swiftkaytech.findme.fragment.MessagesFrag;
+import com.swiftkaytech.findme.managers.MessagesManager;
 
-public class MessagesActivity extends BaseActivity{
+import java.util.ArrayList;
+
+public class MessagesActivity extends BaseActivity implements MessagesManager.MessagesListener{
     private static final String TAG = "MessagesActivity";
+    private static final String ARG_USER = "ARG_USER";
+
+    private User user;
+
+    private MessagesFrag mMessagesFrag;
 
     @Override
     protected int getLayoutResource() {
@@ -36,13 +53,104 @@ public class MessagesActivity extends BaseActivity{
         return this;
     }
 
-    @Override
-    protected void createActivity(Bundle inState) {
-        MessagesFrag messagesFrag = MessagesFrag.instance();
+    public static Intent createIntent(Context context, User user) {
+        Intent i = new Intent(context, MessagesActivity.class);
+        i.putExtra(ARG_USER, user);
+        return i;
     }
 
     @Override
-    protected Bundle saveState(Bundle b) {
-        return b;
+    protected void createActivity(Bundle inState) {
+
+        if (inState != null) {
+            user = (User) inState.getSerializable(ARG_USER);
+        } else {
+            user = (User) getIntent().getExtras().getSerializable(ARG_USER);
+        }
+        if (mMessagesFrag == null) {
+            mMessagesFrag = MessagesFrag.instance(uid, user);
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.activityContainer, mMessagesFrag, MessagesFrag.TAG)
+                .addToBackStack(null)
+                .commit();
+        setUpToolbar();
+
+    }
+
+    /**
+     * Sets up the toolbar for this Activity
+     */
+    private void setUpToolbar() {
+        mToolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        mToolbar.inflateMenu(R.menu.messages_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.messagesThreadDeleteAllMessages) {
+
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        MessagesManager.getInstance(uid, this).addMessagesListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MessagesManager.getInstance(uid, this).removeMessagesListener(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(ARG_USER, user);
+        outState.putString(ARG_UID, uid);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRetrieveMoreMessages(ArrayList<Message> moreMessages) {
+        if (moreMessages != null) {
+            mMessagesFrag.updateMessages(moreMessages);
+        }
+    }
+
+    @Override
+    public void onMessageDeleted(Message message) {
+
+    }
+
+    @Override
+    public void onMessageSentComplete(Message message) {
+        mMessagesFrag.notifyNewMessage(message);
+    }
+
+    @Override
+    public void onMessageUnsent(Message message) {
+
+    }
+
+    @Override
+    public void onMessageReceived(final Message message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMessagesFrag.notifyNewMessage(message);
+            }
+        });
+
     }
 }

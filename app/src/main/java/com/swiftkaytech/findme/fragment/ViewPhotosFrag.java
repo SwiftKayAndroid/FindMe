@@ -7,15 +7,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.swiftkaytech.findme.R;
-import com.swiftkaytech.findme.adapters.SGVAdapter;
-import com.swiftkaytech.findme.utils.VarHolder;
-import com.swiftkaytech.findme.views.StaggeredGridView;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -28,6 +25,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +37,6 @@ public class ViewPhotosFrag extends Fragment {
 
     Context context;
     SharedPreferences prefs;
-    SGVAdapter adapter;
 
     public class Pics{
         public String postpicloc;
@@ -59,7 +56,6 @@ public class ViewPhotosFrag extends Fragment {
     String lp;//this is the id for the last picture we received from the server
 
     //gui elements
-    StaggeredGridView sgv;
     ProgressDialog pDialog;
 
     public ViewPhotosFrag(){}
@@ -70,26 +66,12 @@ public class ViewPhotosFrag extends Fragment {
         View layout = inflater.inflate(R.layout.viewpicturesfrag,container,false);//set the fragment layout
         context = getActivity();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        uid = getUID();
-        ouid = VarHolder.ouid;
         lp = "0";
         plist = new ArrayList<Pics>();
 
-        setGUI(layout);
 
         return layout;
     }
-
-    void setGUI(View layout){
-
-        sgv = (StaggeredGridView) layout.findViewById(R.id.sgvphotos);
-
-    }
-
-    private String getUID() {//---------------------------------------------------------------------<<getUID>>
-        String KEY = "uid";
-        return prefs.getString(KEY,null);
-    }//----------------------------------------------------------------------------------------------<</getUID>>
 
 
     public void getPics(){
@@ -156,8 +138,6 @@ public class ViewPhotosFrag extends Fragment {
             if(pDialog.isShowing())
                 pDialog.dismiss();
 
-            Log.w(VarHolder.TAG,result);//log what the server returned to us
-
             try {
 
                 /**
@@ -182,14 +162,6 @@ public class ViewPhotosFrag extends Fragment {
                     }
                 }
 
-                //assign or notify adapter of data
-                if(adapter != null){
-                    adapter.notifyDataSetChanged();
-
-                }else {
-                    adapter = new SGVAdapter(context, plist);
-                    sgv.setAdapter(adapter);
-                }
 
             }catch(JSONException e){
                 e.printStackTrace();

@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -21,16 +19,52 @@ import android.widget.Toast;
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.managers.ConnectionManager;
 import com.swiftkaytech.findme.tasks.AuthenticateUser;
-import com.swiftkaytech.findme.utils.VarHolder;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Kevin Haines on 2/5/2015.
  */
-public class LoginPage extends Activity {
+public class LoginPage extends Activity implements AuthenticateUser.AuthenticationCompleteListener{
+
+    @Override
+    public void onAuthenticationComplete(int status) {
+        switch (status) {
+            case AuthenticateUser.RESULT_ERROR: {
+                Toast.makeText(this, "There was an error logging you in", Toast.LENGTH_LONG).show();
+            }
+            break;
+            case AuthenticateUser.RESULT_SUCCESSFUL: {
+                startActivity(MainLineUp.createIntent(this));
+            }
+            break;
+            case AuthenticateUser.RESULT_FAILED: {
+                Toast.makeText(this, "Email or password incorrect", Toast.LENGTH_LONG).show();
+            }
+            break;
+            case AuthenticateUser.RESULT_REGISTRATION_NOT_COMPLETE: {
+                //todo: show alert dialog with option to resend email
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Registration incomplete");
+                builder.setMessage("You haven't confirmed your email yet!");
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.setNegativeButton("Resend Email", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //todo: implement resending email
+                    }
+                });
+            }
+            break;
+            default: {
+
+            }
+            break;
+        }
+    }
 
     //GUI ELEMENTS
     private Button btn;
@@ -45,7 +79,6 @@ public class LoginPage extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);//Remove title bar
         setContentView(R.layout.loginpage);
@@ -78,7 +111,7 @@ public class LoginPage extends Activity {
                 String e = etemail.getText().toString();//email
                 String p = etpassword.getText().toString();//password
 
-                if(e.equals("")||p.equals("")){
+                if(e.equals("") || p.equals("")){
                     Toast.makeText(LoginPage.this, "Please make sure all fields are filled in.", Toast.LENGTH_LONG).show();
 
                 }else{
@@ -93,10 +126,9 @@ public class LoginPage extends Activity {
                         editor.putBoolean("loginsaved", false);
                         editor.apply();
                     }
-                    VarHolder.credemail = e;
-                    VarHolder.credpassword = p;
-                    AuthenticateUser au = new AuthenticateUser(LoginPage.this,LoginPage.this);
-                    au.execute();
+                    AuthenticateUser au = AuthenticateUser.getInstance(LoginPage.this);
+                    au.authenticate(e, p);
+                    au.addListener(LoginPage.this);
                 }
             }
         });
@@ -108,7 +140,6 @@ public class LoginPage extends Activity {
             public void onClick(View v) {
 
                 checked = ((CheckBox)v).isChecked();
-                Log.d(VarHolder.TAG,"Checked: " + String.valueOf(checked));
             }
         });
 

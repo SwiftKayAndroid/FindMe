@@ -1,8 +1,6 @@
 package com.swiftkaytech.findme.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -15,15 +13,11 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -34,6 +28,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +179,6 @@ public class UpdateStatus extends AppCompatActivity {
             if (pDialog.isShowing()) {
                 pDialog.dismiss();
             }
-            Log.w(VarHolder.TAG,s);
             if(s.equals("accepted")){
                 Toast.makeText(UpdateStatus.this,"Status uploaded successfully!", Toast.LENGTH_LONG).show();
                 finish();

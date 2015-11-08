@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
-import com.swiftkaytech.findme.utils.VarHolder;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -134,21 +134,21 @@ public class BasicInfo extends Activity{
 
     //set the variables held in the VarHolder class
     public void setVariables(){
-        VarHolder.firstname = firstname = etfirstname.getText().toString();
-        VarHolder.lastname = lastname = etlastname.getText().toString();
-        VarHolder.dob = dob = tvdate.getText().toString();
-        VarHolder.gender = gender = genderet.getText().toString();
+        String firstname = firstname = etfirstname.getText().toString();
+        String lastname = lastname = etlastname.getText().toString();
+        String dob = dob = tvdate.getText().toString();
+        String gender = gender = genderet.getText().toString();
 
-        if(VarHolder.firstname.equals("")){
+        if(firstname.equals("")){
             Toast.makeText(this,"Please enter firstname",Toast.LENGTH_LONG).show();
-        }else if(VarHolder.lastname.equals("")){
+        }else if(lastname.equals("")){
             Toast.makeText(this,"Please enter lastname",Toast.LENGTH_LONG).show();
-        }else if(VarHolder.dob.equals("")){
+        }else if(dob.equals("")){
             Toast.makeText(this,"Please select Date of Birth",Toast.LENGTH_LONG).show();
-        }else if(VarHolder.gender.equals("")){
+        }else if(gender.equals("")){
             Toast.makeText(this,"Please select gender",Toast.LENGTH_LONG).show();
         }else {
-            startActivity(Registration.createIntent(this));
+            startActivity(Registration.createIntent(this, firstname, lastname, dob, gender));
         }
     }
 }

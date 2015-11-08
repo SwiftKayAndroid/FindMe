@@ -17,27 +17,18 @@
 
 package com.swiftkaytech.findme.managers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 
 import com.swiftkaytech.findme.data.Post;
 import com.swiftkaytech.findme.data.User;
-import com.swiftkaytech.findme.utils.ErrorDisplayer;
-import com.swiftkaytech.findme.utils.VarHolder;
-import com.swiftkaytech.findme.views.tagview.Tag;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 public class PostManager {
     public static final String TAG = "FindMe-PostManager";
@@ -45,7 +36,6 @@ public class PostManager {
     private String mUid;
     private ArrayList<Post> mPosts;
     private static PostManager manager = null;
-    private static ErrorDisplayer errorDisplayer;
     private static Context mContext;
 
     public static PostManager getInstance(String uid, Context context){
@@ -54,7 +44,6 @@ public class PostManager {
         }
         manager.mUid = uid;
         mContext = context;
-        errorDisplayer = ErrorDisplayer.getInstance(context);
         return manager;
     }
 
@@ -65,12 +54,27 @@ public class PostManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (Post post : mPosts) {
-            post.setUser(User.createUser(mUid).fetchUser(post.getPostingUsersId()));
-            post.setComments(CommentsManager.getInstance(mUid).fetchComments(post.getPostId()));
-            TagManager.getInstance(mUid).fetchTags(post.getPostId(), context, post);
-        }
+//        for (Post post : mPosts) {
+//            //TagManager.getInstance(mUid).fetchTags(post.getPostId(), context, post);
+//        }
         return mPosts;
+    }
+
+    public ArrayList<Post> fetchUserPosts(Context context, User user, String lastpost, boolean refreshing) {
+        try {
+            ArrayList<Post> plist = new FetchUserPosts(user, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
+
+            if (refreshing) {
+                user = User.createUser(mUid, context).fetchUser(user.getOuid(), context);
+                for (Post post : plist) {
+                    post.setUser(user);
+                }
+            }
+            return plist;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+       return null;
     }
 
     private class FetchPostsTask extends AsyncTask<Void,Void,ArrayList<Post>> {
@@ -98,7 +102,7 @@ public class PostManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        Post post = Post.createPost(mUid);
+                        Post post = Post.createPost(mUid, mContext);
                         post.setPostText(child.getString("post"));
                         post.setPostingUsersId(child.getString("postingusersid"));
                         post.setNumComments(child.getInt("numcomments"));
@@ -106,22 +110,71 @@ public class PostManager {
                         post.setTime(child.getString("time"));
                         post.setPostId(child.getString("postid"));
                         post.setLiked(child.getBoolean("liked"));
+                        User u = User.createUser(mUid, mContext);
+                        JSONObject user = child.getJSONObject("user");
+                        u.setInterestedIn(User.setInterestedInFromString(user.getString("looking_for_gender")));
+                        u.setOuid(user.getString("uid"));
+                        u.setFirstname(user.getString("firstname"));
+                        u.setLastname(user.getString("lastname"));
+                        u.setGender(User.setGenderFromString(user.getString("gender")));
+                        u.setIsBlocked(false);
+                        u.setOrientation(User.setOrientationFromString(user.getString("orientation")));
+                        u.setPropicloc(user.getString("propicloc"));
+                        post.setUser(u);
+                        u.setLocation(User.setLocationFromArray(user.getJSONObject("location")));
 
                         pList.add(post);
                     }
-                    ((Activity) mContext).runOnUiThread(new Runnable() {
-                        public void run() {
-                            errorDisplayer.webErr(result, "");
-                        }
-                    });
                 } catch (final JSONException e) {
                     e.printStackTrace();
+                }
+            }
+            return pList;
+        }
+    }
 
-                    ((Activity) mContext).runOnUiThread(new Runnable() {
-                        public void run() {
-                            errorDisplayer.webErr(result, e.getMessage());
-                        }
-                    });
+    private class FetchUserPosts extends AsyncTask<Void, Void, ArrayList<Post>> {
+        User user;
+        String lastpost;
+
+        public FetchUserPosts(User user, String lastpost) {
+            this.user = user;
+            this.lastpost = lastpost;
+        }
+
+        @Override
+        protected ArrayList<Post> doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("getprofileposts.php");
+            connectionManager.addParam("ouid", user.getOuid());
+            connectionManager.addParam("uid", mUid);
+            connectionManager.addParam("lp", "0");
+            ArrayList<Post> pList = new ArrayList<>();
+
+            final String result = connectionManager.sendHttpRequest();
+
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("posts");
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject child = jsonArray.getJSONObject(i);
+                        Post post = Post.createPost(mUid, mContext);
+                        post.setPostText(child.getString("post"));
+                        post.setPostingUsersId(child.getString("postingusersid"));
+                        post.setNumComments(child.getInt("numcomments"));
+                        post.setNumLikes(child.getInt("numlikes"));
+                        post.setTime(child.getString("time"));
+                        post.setPostId(child.getString("postid"));
+                        post.setLiked(child.getBoolean("liked"));
+                        post.setUser(user);
+                        pList.add(post);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
             return pList;

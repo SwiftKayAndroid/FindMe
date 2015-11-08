@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.tasks.AuthenticateUser;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 
 public class MainActivity extends Activity {
@@ -39,21 +38,20 @@ public class MainActivity extends Activity {
         boolean saved = prefs.getBoolean("loginsaved",false);
 
         if (saved) {
-            VarHolder.credemail = prefs.getString("email", "error");
-            VarHolder.credpassword = prefs.getString("password", "error");
+            String credemail = prefs.getString("email", null);
+            String credpassword = prefs.getString("password", null);
 
-            if (VarHolder.credemail.equals("error") || VarHolder.credpassword.equals("error")) {
-                Log.e(VarHolder.TAG,"There was an issue obtaining credentials from sharedPreferences. email : " + VarHolder.credemail +
-                " Password : " + VarHolder.credpassword + " loginsaved is changed to false. ");
+            if (credemail == null || credpassword == null) {
                 SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
                 SharedPreferences.Editor editor = mPreferences.edit();
                 editor.putBoolean("loginsaved", false);
-                editor.commit();
+                editor.apply();
                 setGUI();
             }
-            AuthenticateUser au = new AuthenticateUser(this,this);
-            au.execute();
+
+            AuthenticateUser au = AuthenticateUser.getInstance(this);
+            au.authenticate(prefs.getString("email", null), prefs.getString("password", null));
             startActivity(MainLineUp.createIntent(this));
         } else {
             setGUI();

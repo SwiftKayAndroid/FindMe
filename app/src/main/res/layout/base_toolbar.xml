@@ -8,5 +8,6 @@
     android:titleTextColor="@color/white"
     app:contentInsetEnd="0dp"
     app:theme="@style/FindMeToolBar"
+    app:popupTheme="@style/AppTheme.PopupOverlay"
     android:title="Find Me"
     app:contentInsetStart="0dp"/>

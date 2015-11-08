@@ -7,6 +7,10 @@
     android:background="#ffffff"
     android:orientation="vertical" >
 
+    <include
+        layout="@layout/base_toolbar"
+        android:id="@+id/baseActivityToolbar" />
+
     <TableLayout
         android:id="@+id/tbcomment"
         android:layout_width="match_parent"
@@ -56,7 +60,8 @@
         android:id="@+id/commentpopcenterrel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/tbcomment">
+        android:layout_above="@+id/tbcomment"
+        android:layout_below="@+id/baseActivityToolbar">
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_container_comments"
@@ -68,10 +73,8 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:divider="@null"
-                android:dividerHeight="0dp"
-                android:visibility="visible" >
+                android:dividerHeight="0dp" />
 
-            </ListView>
         </android.support.v4.widget.SwipeRefreshLayout>
 
     </RelativeLayout>

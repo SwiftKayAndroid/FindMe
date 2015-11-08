@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.adapters.FriendRequestsAdapter;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -84,9 +83,9 @@ public class FriendRequestsFrag extends Fragment {
 
             new GetFriendrequests().execute();
         }else{
-            Log.d(VarHolder.TAG, "restoring active friendslistfrag");
+
             BaseAdapter a = (BaseAdapter) lv.getAdapter();
-            Log.w(VarHolder.TAG,Integer.toString(flist.size()));
+
             if(a == null) {
                 adapter = new FriendRequestsAdapter(context, flist, lv, uid);
                 lv.setAdapter(adapter);
@@ -168,7 +167,7 @@ public class FriendRequestsFrag extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.w(VarHolder.TAG,"Get FriendRequests: " + result);
+
 
             if (result.equals("error")) {
                 Toast.makeText(context, "Could't connect to Find Me", Toast.LENGTH_LONG).show();
@@ -196,7 +195,6 @@ public class FriendRequestsFrag extends Fragment {
 
                     //choose your favorite adapter
                     BaseAdapter a = (BaseAdapter) lv.getAdapter();
-                    Log.w(VarHolder.TAG, Integer.toString(flist.size()));
                     if(a == null) {
                         adapter = new FriendRequestsAdapter(context, flist, lv, uid);
                         lv.setAdapter(adapter);

@@ -18,6 +18,7 @@ import android.widget.Toast;
 public abstract class BaseActivity extends AppCompatActivity {
 
     public static final String TAG = "findme-baseactivity";
+    protected static final String ARG_UID = "ARG_UID";
     protected Toolbar mToolbar;
     protected SharedPreferences prefs;
     protected String uid;
@@ -39,7 +40,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setUid(String s){uid = s;}
 
     protected abstract void createActivity(Bundle inState);
-    protected abstract Bundle saveState(Bundle b);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +75,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(saveState(outState));
+        super.onSaveInstanceState(outState);
     }
 
     private void checkForNullUID(){

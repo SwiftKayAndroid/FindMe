@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +19,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.fragment.FindPeopleFrag;
 import com.swiftkaytech.findme.fragment.MessagesListFrag;
@@ -26,8 +30,10 @@ import com.swiftkaytech.findme.fragment.NavigationDrawerFragment;
 import com.swiftkaytech.findme.fragment.NewsFeedFrag;
 import com.swiftkaytech.findme.fragment.NotificationsFrag;
 import com.swiftkaytech.findme.fragment.ViewPhotosFrag;
+import com.swiftkaytech.findme.gcm.QuickstartPreferences;
+import com.swiftkaytech.findme.gcm.RegistrationIntentService;
 import com.swiftkaytech.findme.utils.ImageLoader;
-import com.swiftkaytech.findme.utils.VarHolder;
+
 
 /**
  * Created by Kevin Haines on 2/5/2015.
@@ -37,6 +43,9 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     private static final int NEWSFEED = 1;
     private static final int FINDPEOPLE = 2;
     private static final int MESSAGETHREADS = 7;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     public static Intent createIntent(Context context){
         Intent i = new Intent(context, MainLineUp.class);
@@ -68,13 +77,66 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
             displayView(displayvalue);
         }
         else{
-            displayView(VarHolder.NEWSFEED);
+            displayView(NEWSFEED);
+        }
+
+        registerGCMReceiver();
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
         }
     }
 
     @Override
-    protected Bundle saveState(Bundle b) {
-        return b;
+    protected void onPostResume() {
+        super.onPostResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
+
+    private void registerGCMReceiver() {
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                if (sentToken) {
+                    Toast.makeText(MainLineUp.this, getString(R.string.gcm_send_message),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainLineUp.this, getString(R.string.token_error_message), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+    }
+
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     public void initializeDrawer(){
@@ -114,7 +176,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         Fragment fragment = null;
 
         switch (position) {
-            case VarHolder.NEWSFEED:
+            case NEWSFEED:
                     fragment = NewsFeedFrag.getInstance(uid);
                 break;
             case FINDPEOPLE:

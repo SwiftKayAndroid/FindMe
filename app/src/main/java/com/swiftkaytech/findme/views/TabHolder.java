@@ -1,6 +1,5 @@
 package com.swiftkaytech.findme.views;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -9,7 +8,6 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -17,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.swiftkaytech.findme.R;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +81,6 @@ public class TabHolder extends RelativeLayout {
 
         int px = (int) Math.ceil(linlayoutheight * logicalDensity);
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,px);
-        Log.d(VarHolder.TAG,"Linear Layout Height: " + Integer.toString(px));
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         tabhost.setLayoutParams(params);
         tabhost.setOrientation(LinearLayout.HORIZONTAL);
@@ -109,7 +105,6 @@ public class TabHolder extends RelativeLayout {
         int scrollerWidth = width/tabs.size();
         int px = (int) Math.ceil(scrollerheight * logicalDensity);
         LayoutParams params = new LayoutParams(scrollerWidth,px);
-        Log.d(VarHolder.TAG,"Scroller Height: " + Integer.toString(px));
         int[] locs = new int[2];
 //currentSelected = tabs.size() - 1;
         tabs.get(currentSelected).getLocationOnScreen(locs);

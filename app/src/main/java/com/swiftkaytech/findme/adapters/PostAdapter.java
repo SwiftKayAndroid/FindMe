@@ -20,27 +20,27 @@ package com.swiftkaytech.findme.adapters;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.ProfileActivity;
 import com.swiftkaytech.findme.data.Comment;
 import com.swiftkaytech.findme.data.Post;
-import com.swiftkaytech.findme.managers.CustomLinearLayoutManager;
+import com.swiftkaytech.findme.fragment.CommentsDialog;
 import com.swiftkaytech.findme.managers.PostManager;
-import com.swiftkaytech.findme.managers.TagManager;
 import com.swiftkaytech.findme.utils.ImageLoader;
-import com.swiftkaytech.findme.views.CollapseLayout;
 import com.swiftkaytech.findme.views.ExpandableLinearLayout;
 import com.swiftkaytech.findme.views.tagview.Tag;
 import com.swiftkaytech.findme.views.tagview.TagView;
+
 import java.util.ArrayList;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements View.OnClickListener{
@@ -125,14 +125,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 imageLoader.DisplayImage(post.getUser().getPropicloc(), holder.ivProfilePicture, false);
             }
             imageLoader.DisplayImage(post.getPostImage(), holder.ivPostImage, true);
+            holder.ivProfilePicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContext.startActivity(ProfileActivity.createIntent(mContext, mPostList.get(position).getUser()));
+                }
+            });
             holder.ivPostLike.setTag(position);
             if (mPostList.get(position).getLiked()) {
                 holder.ivPostLike.setImageResource(R.drawable.checkmark_liked);
             } else {
                 holder.ivPostLike.setImageResource(R.drawable.checkmark);
             }
-            holder.extrasContainer.setVisibility(View.GONE);
-            holder.extrasContainer.close();
+
+            holder.tvNumComments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //todo: move this to an interface call
+                    CommentsDialog dialog = CommentsDialog.newInstance(mPostList.get(position).getPostId());
+                    dialog.show(((AppCompatActivity) mContext).getSupportFragmentManager(), CommentsDialog.TAG);
+                }
+            });
+
             holder.ivPostToggle.setRotation(0);
             holder.ivPostLike.setOnClickListener(this);
             holder.ivPostToggle.setOnClickListener(new View.OnClickListener() {
@@ -140,17 +154,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 public void onClick(View v) {
                     rotate(v);
                     Log.i(TAG, "onclick of item");
-                    switch (holder.extrasContainer.getState()) {
-                        case Close: {
-                            Log.i(TAG, "Layout is Close - opening");
-                            setExtrasContainer(position, holder);
-                        }
-                        break;
-                        case Open: {
-                            Log.i(TAG, "Layout is Open - closing");
-                            holder.extrasContainer.close();
-                        }
-                        break;
+
+                    if (holder.extrasContainer.isExpanded()) {
+                        holder.extrasContainer.retract();
+                    } else {
+                        setExtrasContainer(position, holder);
                     }
                 }
             });
@@ -159,7 +167,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     private void setExtrasContainer(int pos, PostAdapter.PostViewHolder holder) {
-        Log.i(TAG,"setting extras container");
+        Log.i(TAG, "setting extras container");
 
         if (mPostList.get(pos).getTags() != null) {
             holder.tagView.removeAllTags();
@@ -167,9 +175,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 holder.tagView.addTag(tag);
             }
         }
-        ArrayList<Comment> cList = mPostList.get(pos).getComments();
-        holder.lv.setAdapter(new CommentAdapter(mContext, cList, mPostList.get(pos).getPostId()));
-        holder.extrasContainer.open();
+        holder.extrasContainer.expand();
     }
 
     /**
@@ -218,9 +224,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //contentview
         TextView tvName, tvTime, tvLocation, tvPost, tvNumLikes, tvNumComments;
         ImageView ivProfilePicture, ivPostImage, ivPostLike, ivPostToggle;
-        CollapseLayout extrasContainer;
-        ListView lv;
-        View header;
+        ExpandableLinearLayout extrasContainer;
         TagView tagView;
 
         public int viewType;
@@ -250,16 +254,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             ivPostLike = (ImageView) v.findViewById(R.id.ivPostLike);
             ivPostImage = (ImageView) v.findViewById(R.id.postImage);
             ivProfilePicture = (ImageView) v.findViewById(R.id.ivPostProfilePicture);
-            extrasContainer = (CollapseLayout) v.findViewById(R.id.postExtrasContainer);
+            extrasContainer = (ExpandableLinearLayout) v.findViewById(R.id.postExtrasContainer);
             ivPostToggle = (ImageView) v.findViewById(R.id.ivPostToggleButton);
-            lv = (ListView) v.findViewById(R.id.postItemListView);
-            header = ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                    .inflate(R.layout.commentsheader, null);
-            tagView = (TagView) header.findViewById(R.id.postTagView);
-            lv.addHeaderView(header);
-            extrasContainer.setCollapseMode(CollapseLayout.CollapseMode.LayDown);
-            extrasContainer.setInterpolator(new LinearInterpolator());
-            extrasContainer.setCollapseOrientation(CollapseLayout.Orientation.Vertical);
+            tagView = (TagView) v.findViewById(R.id.postTagView);
+            ivPostImage.setVisibility(View.GONE);
         }
 
         private void setUpHeader(View v) {

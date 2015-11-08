@@ -3,26 +3,22 @@ package com.swiftkaytech.findme.fragment;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
+
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.adapters.PostAdapter;
 import com.swiftkaytech.findme.data.Post;
 import com.swiftkaytech.findme.managers.PostManager;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by kevin haines on 2/8/2015.
@@ -84,7 +80,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
 
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setColorSchemeColors(android.R.color.holo_blue_bright,
+        swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.black,
                 android.R.color.holo_blue_bright,
                 android.R.color.black);
@@ -108,13 +104,10 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             }
             mPostsList = PostManager.getInstance(uid, getActivity()).getPosts(getActivity());
         }
-        Log.d(VarHolder.TAG, "view is created newsfeedfrag");
 
         if (uid != null) {
 
-            if (mPostAdapter == null) {
-                mPostAdapter = new PostAdapter(getActivity(), mPostsList);
-            }
+            mPostAdapter = new PostAdapter(getActivity(), mPostsList);
 
             pb.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
@@ -128,12 +121,11 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(VarHolder.TAG, "pausing newsfeedfrag");
     }
 
     @Override
     public void onResume() {
-        Log.d(VarHolder.TAG, "onResume of newsfeedfrag");
+
         super.onResume();
 
         if (fab.getRotation() > 0) {
