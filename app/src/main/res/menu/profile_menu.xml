@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<item-->
+        <!--android:id="@+id/profileMenuPictures"-->
+        <!--android:title="user photos"-->
+        <!--app:showAsAction="always"-->
+        <!--android:icon="@mipmap/ic_photo_camera_white_24dp" />-->
+
+    <item
+        android:id="@+id/profileReportProfile"
+        android:title="Report"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/profileBlockUser"
+        android:title="Block"
+        app:showAsAction="never"
+        />
+
+</menu>

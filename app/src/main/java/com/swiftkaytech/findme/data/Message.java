@@ -82,6 +82,10 @@ public class Message implements Serializable{
         return mOuid;
     }
 
+    public String getSenderId() { return mSenderId; }
+
+    public void setSenderId(String id) { mSenderId = id; }
+
     public void setOuid(String mOuid) {
         this.mOuid = mOuid;
     }

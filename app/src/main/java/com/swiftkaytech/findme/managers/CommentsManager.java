@@ -17,6 +17,7 @@
 
 package com.swiftkaytech.findme.managers;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.swiftkaytech.findme.data.Comment;
@@ -35,12 +36,14 @@ public class CommentsManager {
     private String mUid;
     private String mPostId;
     private static CommentsManager manager = null;
+    private static Context mContext;
 
-    public static CommentsManager getInstance(String uid){
+    public static CommentsManager getInstance(String uid, Context context){
         if (manager == null) {
             manager = new CommentsManager();
         }
         manager.mUid = uid;
+        mContext = context;
         return manager;
     }
 
@@ -53,7 +56,7 @@ public class CommentsManager {
             e.printStackTrace();
         }
         for (Comment comment : cList) {
-            comment.setUser(User.createUser(mUid).fetchUser(comment.getCommentUserId()));
+            comment.setUser(User.createUser(mUid, mContext).fetchUser(comment.getCommentUserId(), mContext));
         }
         return cList;
     }

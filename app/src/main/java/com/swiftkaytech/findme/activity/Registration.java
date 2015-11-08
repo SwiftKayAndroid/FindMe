@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
-import com.swiftkaytech.findme.utils.VarHolder;
+import com.swiftkaytech.findme.managers.ConnectionManager;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -41,8 +41,13 @@ public class Registration extends Activity {
     Button btnreg;
     ProgressDialog pDialog;
 
-    public static Intent createIntent(Context context) {
+    public static Intent createIntent(Context context, String firstname, String lastname,
+                                      String dob, String gender) {
         Intent i = new Intent(context, Registration.class);
+        i.putExtra("firstname", firstname);
+        i.putExtra("lastname", lastname);
+        i.putExtra("dob", dob);
+        i.putExtra("gender", gender);
         return i;
     }
 
@@ -83,15 +88,34 @@ public class Registration extends Activity {
                     Toast.makeText(Registration.this, "Invalid Zip", Toast.LENGTH_LONG).show();
                 } else {
 
-                    new Register().execute(email, pass, zip);
+                    register(email, pass, zip);
 
                 }
             }
         });
     }
 
+    private void register(String email, String pass, String zip) {
+        String firstname = getIntent().getExtras().getString("firstname");
+        String lastname = getIntent().getExtras().getString("lastname");
+        String dob = getIntent().getExtras().getString("dob");
+        String gender = getIntent().getExtras().getString("gender");
+        new Register(gender, dob, lastname, firstname).execute(email, pass, zip);
+    }
+
     private class Register extends AsyncTask<String, String, String> {
         String webResponse;
+        String firstname;
+        String lastname;
+        String dob;
+        String gender;
+
+        public Register(String gender, String dob, String lastname, String firstname) {
+            this.gender = gender;
+            this.dob = dob;
+            this.lastname = lastname;
+            this.firstname = firstname;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -104,49 +128,28 @@ public class Registration extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
-
             String email = params[0];
             String password = params[1];
             String zip = params[2];
-            String firstname = VarHolder.firstname;
-            String lastname = VarHolder.lastname;
-            String dob = VarHolder.dob;
-            String gender = VarHolder.gender;
+            dob = dob.replace("/", "-");
 
-            String[] dobarray = dob.split("/");
-            String newdob = dobarray[2] + "-" + dobarray[0] + "-" + dobarray[1];
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(getString(R.string.ipaddress) + "register.php");
-
-            try {
-                // Add your data
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("email", email));
-                nameValuePairs.add(new BasicNameValuePair("password", password));
-                nameValuePairs.add(new BasicNameValuePair("zip", zip));
-                nameValuePairs.add(new BasicNameValuePair("firstname", firstname));
-                nameValuePairs.add(new BasicNameValuePair("lastname", lastname));
-                nameValuePairs.add(new BasicNameValuePair("dob", newdob));
-                nameValuePairs.add(new BasicNameValuePair("gender", gender));
-                nameValuePairs.add(new BasicNameValuePair("authkey", "findme_authkey_1781_authentication_token=17811781"));
-
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                // Execute HTTP Post Request
-
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                webResponse = httpclient.execute(httppost, responseHandler);
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-                webResponse = "error";
-                Log.e("kevin", "error connection refused");
-            } catch (IOException e) {
-                e.printStackTrace();
-                webResponse = "error";
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.addParam("email", email);
+            connectionManager.addParam("password", password);
+            connectionManager.addParam("zip", zip);
+            connectionManager.addParam("firstname", firstname);
+            connectionManager.addParam("lastname", lastname);
+            connectionManager.addParam("dob", dob);
+            connectionManager.addParam("gender", gender);
+            connectionManager.addParam("authkey", "findme_authkey_1781_authentication_token=17811781");
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("register.php");
+            String result = connectionManager.sendHttpRequest();
+            if (result != null) {
+                return result;
+            } else {
+                return "error";
             }
-            return webResponse;
         }
 
         @Override

@@ -1,52 +1,28 @@
 package com.swiftkaytech.findme.fragment;
 
-import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.MessagesActivity;
 import com.swiftkaytech.findme.adapters.MessageThreadsAdapter;
 import com.swiftkaytech.findme.data.Message;
 import com.swiftkaytech.findme.data.ThreadInfo;
 import com.swiftkaytech.findme.managers.MessagesManager;
-import com.swiftkaytech.findme.utils.VarHolder;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by BN611 on 3/9/2015.
  */
-public class MessagesListFrag extends BaseFragment implements MessagesManager.MessageThreadListener{
+public class MessagesListFrag extends BaseFragment implements MessagesManager.MessageThreadListener,
+        MessageThreadsAdapter.ThreadSelectedListener{
     private static final String     TAG = "MessagesListFrag";
     private static final String     ARG_THREAD_LIST = "ARG_THREAD_LIST";
 
@@ -56,7 +32,6 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     private MessageThreadsAdapter   mMessagesAdapter;
 
     private boolean                 mRefreshing;
-
     private RecyclerView            mRecyclerView;
 
     public static MessagesListFrag getInstance(String uid) {
@@ -68,8 +43,6 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
         frag.setArguments(b);
         return frag;
     }
-
-    public MessagesListFrag(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,7 +68,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
             if (uid == null || uid.isEmpty()) {
                 err("uid is null or empty on view created");
             }
-            MessagesManager.getInstance(uid).refreshThreads();
+            MessagesManager.getInstance(uid, getActivity()).refreshThreads(getActivity());
         }
         super.onViewCreated(view, savedInstanceState);
     }
@@ -115,13 +88,19 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        MessagesManager.getInstance(uid).addThreadsListener(this);
+        MessagesManager.getInstance(uid, getActivity()).addThreadsListener(this);
+        if (mMessagesAdapter != null) {
+            mMessagesAdapter.setThreadSelectedListener(this);
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        MessagesManager.getInstance(uid).removeThreadsListener(this);
+        MessagesManager.getInstance(uid, getActivity()).removeThreadsListener(this);
+        if (mMessagesAdapter != null) {
+            mMessagesAdapter.setThreadSelectedListener(null);
+        }
     }
 
     @Override
@@ -129,6 +108,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
 
         if (mMessagesAdapter == null) {
             mMessagesAdapter = new MessageThreadsAdapter(getActivity(), threadInfos, uid);
+            mMessagesAdapter.setThreadSelectedListener(this);
             mRecyclerView.setAdapter(mMessagesAdapter);
         }
         if (mRefreshing) {
@@ -147,5 +127,15 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     public void onMessageUnsent(Message message) {
         //todo: will complete this after we find a way
         //todo: to retrieve the last last message
+    }
+
+    @Override
+    public void onThreadSelected(ThreadInfo threadInfo) {
+        startActivity(MessagesActivity.createIntent(getActivity(), threadInfo.threadUser));
+    }
+
+    @Override
+    public void onMessageRecevied(Message message) {
+        mMessagesAdapter.addMessage(message);
     }
 }

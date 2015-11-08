@@ -17,6 +17,8 @@
 
 package com.swiftkaytech.findme.data;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -37,10 +39,45 @@ public class User implements Serializable{
     public static final String TAG = "FindMe - User";
 
     public enum Gender{
-        MALE, FEMALE
+        MALE {
+            @Override
+            public String toString() {
+                return "Male";
+            }
+        }, FEMALE {
+            @Override
+            public String toString() {
+                return "Female";
+            }
+        }
     }
     public enum Orientation{
-        STRAIGHT, GAY, LESBIAN, BISEXUAL, OTHER
+        STRAIGHT {
+            @Override
+            public String toString() {
+                return "Straight";
+            }
+        }, GAY {
+            @Override
+            public String toString() {
+                return "Interested in men";
+            }
+        }, LESBIAN {
+            @Override
+            public String toString() {
+                return "Interested in women";
+            }
+        }, BISEXUAL {
+            @Override
+            public String toString() {
+                return "Interested in both";
+            }
+        }, OTHER {
+            @Override
+            public String toString() {
+                return "";
+            }
+        }
     }
     public enum OnlineStatus{
         ONLINE, OFFLINE, HIDDEN, UNKNOWN
@@ -68,20 +105,24 @@ public class User implements Serializable{
     private String mAboutMe;
     private InterestedIn mInterestIn;
 
+    private static Context mContext;
+
     /**
      * creates a new instance of a user
      * @param uid the current device users unique id
      * @return new instance of User
      */
-    public static User createUser(String uid){
+    public static User createUser(String uid, Context context){
         User user = new User();
         mUid = uid;
+        mContext = context;
         return user;
     }
 
-    public User fetchUser(String ouid){
+    public User fetchUser(String ouid, Context context){
         Log.i(TAG,"fetchUser");
         mOuid = ouid;
+        mContext = context;
         try {
             return new FetchUserTask(ouid,this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
         } catch (Exception e) {
@@ -110,26 +151,30 @@ public class User implements Serializable{
             connectionManager.setUri("getuser.php");
             connectionManager.addParam("uid",mUid);
             connectionManager.addParam("ouid",uid);
+            final String result = connectionManager.sendHttpRequest();
 
-            try {
-                JSONObject jsonObject = new JSONObject(connectionManager.sendHttpRequest());
-                user.setName(jsonObject.getString("name"));
-                user.setFirstname(jsonObject.getString("firstname"));
-                user.setLastname(jsonObject.getString("lastname"));
-                user.setGender(setGenderFromString(jsonObject.getString("gender")));
-                user.setPropicloc(jsonObject.getString("propicloc"));
-                user.setAge(Integer.parseInt(jsonObject.getString("age")));
-                user.setIsFriend(jsonObject.getBoolean("isfriend"));
-                user.setIsBlocked(jsonObject.getBoolean("isblocked"));
-                user.setIsMatch(jsonObject.getBoolean("ismatch"));
-                user.setOrientation(setOrientationFromString(jsonObject.getString("orientation")));
-                user.setOnlineStatus(setOnlineStatusFromString(jsonObject.getString("onlinestatus")));
-                user.setAboutMe(jsonObject.getString("aboutme"));
-                user.setInterestedIn(setInterestedInFromString(jsonObject.getString("looking_for_gender")));
-                user.setLocation(setLocationFromArray(jsonObject.getJSONObject("location")));
+            if (result != null) {
 
-            } catch(JSONException e) {
-                e.printStackTrace();
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    user.setName(jsonObject.getString("name"));
+                    user.setFirstname(jsonObject.getString("firstname"));
+                    user.setLastname(jsonObject.getString("lastname"));
+                    user.setGender(setGenderFromString(jsonObject.getString("gender")));
+                    user.setPropicloc(jsonObject.getString("propicloc"));
+                    user.setAge(Integer.parseInt(jsonObject.getString("age")));
+                    user.setIsFriend(jsonObject.getBoolean("isfriend"));
+                    user.setIsBlocked(jsonObject.getBoolean("isblocked"));
+                    user.setIsMatch(jsonObject.getBoolean("ismatch"));
+                    user.setOrientation(setOrientationFromString(jsonObject.getString("orientation")));
+                    user.setOnlineStatus(setOnlineStatusFromString(jsonObject.getString("onlinestatus")));
+                    user.setAboutMe(jsonObject.getString("aboutme"));
+                    user.setInterestedIn(setInterestedInFromString(jsonObject.getString("looking_for_gender")));
+                    user.setLocation(setLocationFromArray(jsonObject.getJSONObject("location")));
+
+                } catch (final JSONException e) {
+                    e.printStackTrace();
+                }
             }
             return user;
         }
@@ -440,8 +485,8 @@ public class User implements Serializable{
     public void setLastname(String lastname) {
         this.mLastname = lastname;
 
-        if ((!mFirstname.equals("")) && (mName.equals(""))) {
-            mName = mFirstname + " " + lastname;
+        if (mFirstname != null && !mFirstname.isEmpty()) {
+                mName = mFirstname + " " + lastname;
         }
     }
 

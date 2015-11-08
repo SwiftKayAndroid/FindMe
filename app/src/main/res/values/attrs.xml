@@ -8,30 +8,4 @@
         <attr name="max_visible" format="integer"/>
     </declare-styleable>
 
-    <declare-styleable name="CollapseLayout">
-        <attr name="collapseOrientation">
-            <enum name="vertical" value="0" />
-            <enum name="horizontal" value="1" />
-        </attr>
-        <attr name="collapseMode">
-            <enum name="pullout" value="0"/>
-            <enum name="laydown" value="1"/>
-        </attr>
-        <attr name="state">
-            <enum name="open" value="0"/>
-            <enum name="close" value="1"/>
-        </attr>
-        <attr name="collapseDuration" format="integer"/>
-    </declare-styleable>
-
-    <declare-styleable name="StaggeredGridView">
-        <attr name="drawSelectorOnTop" format="boolean" />
-        <attr name="numColumns" format="integer" />
-        <attr name="itemMargin" format="dimension" />
-    </declare-styleable>
-
-    <declare-styleable name="TabHolder">
-        <attr name="numberOfTabs" format="integer"/>
-    </declare-styleable>
-
 </resources>

@@ -20,6 +20,7 @@ package com.swiftkaytech.findme.adapters;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,8 +31,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.ProfileActivity;
 import com.swiftkaytech.findme.data.Comment;
 import com.swiftkaytech.findme.data.Post;
+import com.swiftkaytech.findme.fragment.CommentsDialog;
 import com.swiftkaytech.findme.managers.PostManager;
 import com.swiftkaytech.findme.utils.ImageLoader;
 import com.swiftkaytech.findme.views.ExpandableLinearLayout;
@@ -122,12 +125,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 imageLoader.DisplayImage(post.getUser().getPropicloc(), holder.ivProfilePicture, false);
             }
             imageLoader.DisplayImage(post.getPostImage(), holder.ivPostImage, true);
+            holder.ivProfilePicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContext.startActivity(ProfileActivity.createIntent(mContext, mPostList.get(position).getUser()));
+                }
+            });
             holder.ivPostLike.setTag(position);
             if (mPostList.get(position).getLiked()) {
                 holder.ivPostLike.setImageResource(R.drawable.checkmark_liked);
             } else {
                 holder.ivPostLike.setImageResource(R.drawable.checkmark);
             }
+
+            holder.tvNumComments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //todo: move this to an interface call
+                    CommentsDialog dialog = CommentsDialog.newInstance(mPostList.get(position).getPostId());
+                    dialog.show(((AppCompatActivity) mContext).getSupportFragmentManager(), CommentsDialog.TAG);
+                }
+            });
 
             holder.ivPostToggle.setRotation(0);
             holder.ivPostLike.setOnClickListener(this);

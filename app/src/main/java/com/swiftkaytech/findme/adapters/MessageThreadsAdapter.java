@@ -1,22 +1,18 @@
 package com.swiftkaytech.findme.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.data.Message;
 import com.swiftkaytech.findme.data.ThreadInfo;
-import com.swiftkaytech.findme.fragment.MessagesListFrag;
 import com.swiftkaytech.findme.utils.ImageLoader;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +21,13 @@ import java.util.List;
  * Created by Kevin Haines on 3/9/2015.
  */
 public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAdapter.MessageThreadsViewHolder> {
+
+    public interface ThreadSelectedListener{
+        void onThreadSelected(ThreadInfo threadInfo);
+    }
     private static final String TAG = "MessageThreadsAdapter";
+
+    private ThreadSelectedListener mListener;
 
     private Context mContext;
     List<ThreadInfo> mThreadList;
@@ -39,6 +41,10 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
         imageLoader = new ImageLoader(context);
     }
 
+    public void setThreadSelectedListener(ThreadSelectedListener listener) {
+        mListener = listener;
+    }
+
     @Override
     public MessageThreadsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
@@ -47,7 +53,7 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
     }
 
     @Override
-    public void onBindViewHolder(MessageThreadsViewHolder holder, int position) {
+    public void onBindViewHolder(MessageThreadsViewHolder holder, final int position) {
 
         final ThreadInfo thread = mThreadList.get(position);
         if(thread != null){
@@ -68,6 +74,16 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
                 @Override
                 public void onClick(View v) {
                     //todo: start profile activity
+                }
+            });
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        Log.i(TAG, "message clicked");
+                        mListener.onThreadSelected(mThreadList.get(position));
+                    }
                 }
             });
         }

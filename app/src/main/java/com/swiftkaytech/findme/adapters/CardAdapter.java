@@ -14,7 +14,7 @@ import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.activity.Match;
 import com.swiftkaytech.findme.activity.Match.Users;
 import com.swiftkaytech.findme.utils.ImageLoader;
-import com.swiftkaytech.findme.utils.VarHolder;
+
 
 import java.util.List;
 
@@ -84,25 +84,9 @@ public class CardAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                VarHolder.ouid = ulist.get(position).uid;
-                Intent i = new Intent("com.swiftkaytech.findme.MESSAGESINLINE");
-                context.startActivity(i);
+
             }
         });
-
-
-        //go to the current users photos
-        holder.ibphotos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                VarHolder.ouid = ulist.get(position).uid;
-               // Intent i = new Intent();
-                //context.startActivity(i);
-            }
-        });
-
-
-
 
         return row;
     }

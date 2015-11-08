@@ -17,6 +17,7 @@
 
 package com.swiftkaytech.findme.data;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -52,10 +53,12 @@ public class Post implements Serializable{
     private boolean mLiked;
     private ArrayList<Comment> comments;
     private ArrayList<Tag> mTags;
+    private static Context mContext;
 
-    public static Post createPost(String uid){
+    public static Post createPost(String uid, Context context){
         Post post = new Post();
         mUid = uid;
+        mContext = context;
         return post;
     }
 
@@ -63,8 +66,8 @@ public class Post implements Serializable{
         mPostId = postid;
         try {
             new FetchPostTask(postid, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,null).get();
-            setUser(User.createUser(mUid).fetchUser(getPostingUsersId()));
-            setComments(CommentsManager.getInstance(mUid).fetchComments(mPostId));
+            setUser(User.createUser(mUid, mContext).fetchUser(getPostingUsersId(), mContext));
+            setComments(CommentsManager.getInstance(mUid, mContext).fetchComments(mPostId));
             return this;
         } catch (Exception e) {
             e.printStackTrace();

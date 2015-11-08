@@ -1,7 +1,6 @@
 package com.swiftkaytech.findme.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.fragment.FriendsListFrag;
 import com.swiftkaytech.findme.utils.ImageLoader;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -92,10 +90,7 @@ public class FriendsAdapter extends BaseAdapter {
         holder.iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VarHolder.ouid = flist.get(position).uid;
-                Intent profile = new Intent("start.fragment.changeview");
-                profile.putExtra("value", VarHolder.PROFILE);
-                context.sendBroadcast(profile);
+
             }
         });
 

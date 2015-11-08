@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.swiftkaytech.findme.R;
@@ -50,25 +51,36 @@ public class MessagesListActivity extends BaseActivity {
     @Override
     protected void createActivity(Bundle inState) {
         mMessagesListFrag = MessagesListFrag.getInstance(uid);
-        mToolbar = (Toolbar) findViewById(R.id.include);
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        ft.replace(R.id.activityContainer, mMessagesListFrag)
+                .addToBackStack(null)
+                .commit();
+        setUpToolbar();
+    }
+
+    /**
+     * Sets up the toolbar for this Activity
+     */
+    private void setUpToolbar() {
+        mToolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                finish();
             }
         });
+        mToolbar.inflateMenu(R.menu.messages_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.messagesThreadDeleteAllMessages) {
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-        ft
-                .replace(R.id.activityContainer, mMessagesListFrag)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    protected Bundle saveState(Bundle b) {
-        return b;
+                }
+                return true;
+            }
+        });
     }
 }

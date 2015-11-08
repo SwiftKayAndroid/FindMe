@@ -17,8 +17,22 @@
 
 package com.swiftkaytech.findme.managers;
 
+import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.MainLineUp;
+import com.swiftkaytech.findme.activity.MessagesActivity;
 import com.swiftkaytech.findme.data.Message;
 import com.swiftkaytech.findme.data.ThreadInfo;
 import com.swiftkaytech.findme.data.User;
@@ -31,12 +45,14 @@ import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MessagesManager {
+    public static final String TAG = "MessagesManager";
 
     public interface MessagesListener{
         void onRetrieveMoreMessages(ArrayList<Message> moreMessages);
         void onMessageDeleted(Message message);
         void onMessageSentComplete(Message message);
         void onMessageUnsent(Message message);
+        void onMessageReceived(Message message);
     }
 
     public interface MessageThreadListener{
@@ -44,20 +60,23 @@ public class MessagesManager {
         void onRetrieveMoreThreads(ArrayList<ThreadInfo> threadInfos);
         void onMessageSentComplete(Message message);
         void onMessageUnsent(Message message);
+        void onMessageRecevied(Message message);
     }
 
     private static String mUid;
     private static MessagesManager manager = null;
     private ArrayList<Message> mMessages;
+    private static Context mContext;
 
-    private CopyOnWriteArrayList<MessageThreadListener> mMessageThreadListeners = new CopyOnWriteArrayList<>();
-    private CopyOnWriteArrayList<MessagesListener> mMessagesListeners = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<MessageThreadListener> mMessageThreadListeners = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<MessagesListener> mMessagesListeners = new CopyOnWriteArrayList<>();
 
-    public static MessagesManager getInstance(String uid){
+    public static MessagesManager getInstance(String uid, Context context){
         if (manager == null) {
             manager = new MessagesManager();
         }
         manager.mUid = uid;
+        mContext = context;
         return manager;
     }
 
@@ -69,16 +88,32 @@ public class MessagesManager {
         mMessageThreadListeners.remove(listener);
     }
 
-    public void refreshMessages(ThreadInfo threadInfo){
+    public void addMessagesListener(MessagesListener listener) {
+        mMessagesListeners.add(listener);
+    }
+
+    public void removeMessagesListener(MessagesListener listener) {
+        mMessagesListeners.remove(listener);
+    }
+
+    public void refreshMessages(ThreadInfo threadInfo, Context context){
+        mContext = context;
         new FetchMessagesTask("0", threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-    public void refreshThreads(){
+    public void refreshThreads(Context context){
+        mContext = context;
         new FetchThreadsTask("0").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-    public void getMoreMessages(String lastMessage, ThreadInfo threadInfo){
+    public void getMoreMessages(String lastMessage, ThreadInfo threadInfo, Context context){
+        mContext = context;
         new FetchMessagesTask(lastMessage, threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+    }
+
+    public void getMoreMessages(String lastMessage, User user, Context context){
+        mContext = context;
+        new FetchMessagesTask(lastMessage, user).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     public ArrayList<Message> getExistingMessages(){
@@ -94,8 +129,8 @@ public class MessagesManager {
         new FetchThreadsTask(lastThread).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-    public void sendMessage(Message message){
-        new SendMessageTask(message).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+    public void sendMessage(Message message, User user){
+        new SendMessageTask(message, user).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     public void deleteMessage(Message message, ThreadInfo threadInfo){
@@ -140,13 +175,73 @@ public class MessagesManager {
 //
 //    public void showAsTypingStopped(){}
 
+    public static void messageNotificationReceived(Bundle data, Context context) {
+        mContext = context;
+        Message msg = Message.instance(mUid);
+        msg.setMessageId(data.getString("id"));
+        msg.setDeletedStatus(0);
+        msg.setReadStatus(0);
+        msg.setMessage(data.getString("message"));
+        msg.setSeenStatus(0);
+        msg.setThreadId(data.getString("threadid"));
+        msg.setTime(data.getString("time"));
+        msg.setUser(User.createUser(mUid, mContext).fetchUser(data.getString("senderid"), mContext));
+
+        if (mMessageThreadListeners.size() < 1 && mMessagesListeners.size() <1) {
+            sendNotification(msg);
+        } else {
+            for (MessagesListener l : mMessagesListeners) {
+                if (l != null) {
+                    l.onMessageReceived(msg);
+                }
+            }
+            for (MessageThreadListener l : mMessageThreadListeners) {
+                if (l != null) {
+                    l.onMessageRecevied(msg);
+                }
+            }
+        }
+    }
+
+    /**
+     * Create and show a simple notification containing the received GCM message.
+     *
+     * @param message GCM message received.
+     */
+    private static void sendNotification(Message message) {
+        Intent intent = MessagesActivity.createIntent(mContext, message.getUser());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext)
+                .setSmallIcon(R.drawable.redfsmall)
+                .setContentTitle("New Message")
+                .setContentText(message.getMessage())
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
     private class FetchMessagesTask extends AsyncTask<Void, Void, ArrayList<Message>>{
         String lastMessage;
         ThreadInfo threadInfo;
+        User user;
 
         public FetchMessagesTask(String lastMessage, ThreadInfo threadInfo) {
             this.lastMessage = lastMessage;
             this.threadInfo = threadInfo;
+        }
+
+        public FetchMessagesTask(String lastMessage, User user) {
+            this.lastMessage = lastMessage;
+            this.user = user;
         }
 
         @Override
@@ -157,7 +252,11 @@ public class MessagesManager {
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", mUid);
             connectionManager.addParam("lastmessage", lastMessage);
-            connectionManager.addParam("threadid", threadInfo.ouid);
+            if (threadInfo != null) {
+                connectionManager.addParam("ouid", threadInfo.ouid);
+            } else {
+                connectionManager.addParam("ouid", user.getOuid());
+            }
             connectionManager.setUri("getmessages.php");
 
             try {
@@ -178,6 +277,7 @@ public class MessagesManager {
                     m.setMessage(child.getString("message"));
                     m.setMessageId(child.getString("id"));
                     m.setOuid(child.getString("ouid"));
+                    m.setSenderId(child.getString("senderid"));
                     if (child.getString("readstat").equals("read")) {
                         m.setReadStatus(1);
                     } else {
@@ -189,7 +289,7 @@ public class MessagesManager {
                         m.setSeenStatus(0);
                     }
                     m.setThreadId(child.getString("threadid"));
-                    m.setUser(User.createUser(mUid).fetchUser(child.getString("ouid")));
+                    m.setUser(User.createUser(mUid, mContext).fetchUser(m.getSenderId(), mContext));
                     mList.add(m);
                 }
             } catch(JSONException e) {
@@ -244,7 +344,7 @@ public class MessagesManager {
                             t.readStatus = 0;
                         }
                         t.threadId = child.getString("threadid");
-                        t.threadUser = User.createUser(mUid).fetchUser(child.getString("ouid"));
+                        t.threadUser = User.createUser(mUid, mContext).fetchUser(child.getString("ouid"), mContext);
                         t.time = child.getString("time");
                         tList.add(t);
                     }
@@ -259,19 +359,21 @@ public class MessagesManager {
         protected void onPostExecute(ArrayList<ThreadInfo> threadInfos) {
             super.onPostExecute(threadInfos);
 
-                for (MessageThreadListener l : mMessageThreadListeners) {
-                    if (l != null) {
-                        l.onRetrieveMoreThreads(threadInfos);
-                    }
+            for (MessageThreadListener l : mMessageThreadListeners) {
+                if (l != null) {
+                    l.onRetrieveMoreThreads(threadInfos);
                 }
+            }
         }
     }
 
     private class SendMessageTask extends AsyncTask<Void, Void, String>{
         Message message;
+        User user;
 
-        public SendMessageTask(Message message) {
+        public SendMessageTask(Message message, User user) {
             this.message = message;
+            this.user = user;
         }
 
         @Override
@@ -279,6 +381,7 @@ public class MessagesManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", mUid);
+            connectionManager.addParam("ouid", user.getOuid());
             connectionManager.addParam("message", message.getMessage());
             connectionManager.setUri("sendmessage.php");
             return connectionManager.sendHttpRequest();
@@ -290,18 +393,17 @@ public class MessagesManager {
             Message m = Message.instance(mUid);
             try {
                 JSONObject jsonObject = new JSONObject(result);
-                JSONArray jsonArray = jsonObject.getJSONArray("lastmessage");
-                    JSONObject child = jsonArray.getJSONObject(0);
+                JSONObject child = jsonObject.getJSONObject("lastmessage");
 
-                    m.setThreadId(child.getString("threadid"));
-                    m.setSeenStatus(0);
-                    m.setReadStatus(1);
-                    m.setOuid(child.getString("ouid"));
-                    m.setDeletedStatus(0);
-                    m.setMessage(child.getString("message"));
-                    m.setMessageId("id");
-                    m.setTime("Just now");
-                    m.setUser(User.createUser(mUid).fetchUser(m.getOuid()));
+                m.setThreadId(child.getString("threadid"));
+                m.setSeenStatus(0);
+                m.setReadStatus(1);
+                m.setOuid(child.getString("ouid"));
+                m.setDeletedStatus(0);
+                m.setMessage(child.getString("message"));
+                m.setMessageId("id");
+                m.setTime("Just now");
+                m.setUser(UserManager.getInstance(mUid, mContext).me());
 
             } catch (JSONException e) {
                 e.printStackTrace();

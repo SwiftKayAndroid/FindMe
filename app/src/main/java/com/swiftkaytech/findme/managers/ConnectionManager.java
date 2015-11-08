@@ -21,8 +21,6 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.swiftkaytech.findme.utils.ErrorDisplayer;
-
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -55,7 +53,6 @@ public class ConnectionManager {
     private Map<String,String> params;
     private String username;
     private String password;
-    private ErrorDisplayer errorDisplayer;
 
     public static final String GET = "GET";
     public static final String POST = "POST";

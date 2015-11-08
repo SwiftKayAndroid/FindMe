@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.ListView;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.adapters.NotificationsAdapter;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -141,7 +139,6 @@ public class NotificationsFrag extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            Log.w(VarHolder.TAG,result);
 
             try {
 

@@ -35,7 +35,6 @@ import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.activity.MessagesListActivity;
 import com.swiftkaytech.findme.adapters.NavDrawerListAdapter;
 import com.swiftkaytech.findme.utils.ImageLoader;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -353,19 +352,14 @@ public class NavigationDrawerFragment extends Fragment {
         tvname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VarHolder.ouid = uid;
-                Intent profile = new Intent("start.fragment.changeview");
-                profile.putExtra("value", VarHolder.PROFILE);
-                getActivity().sendBroadcast(profile);
+
             }
         });
         ivusersphoto.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                VarHolder.ouid = uid;
-                Intent profile = new Intent("com.swiftkaytech.findme.PROFILE");
-                startActivity(profile);
+
 
             }
         });
@@ -380,18 +374,14 @@ public class NavigationDrawerFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                Intent profile = new Intent("start.fragment.changeview");
-                profile.putExtra("value", VarHolder.NOTIFICATIONS);
-                getActivity().sendBroadcast(profile);
+
             }
         });
         headerfriends.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent profile = new Intent("start.fragment.changeview");
-                profile.putExtra("value", VarHolder.FRIENDS);
-                getActivity().sendBroadcast(profile);
+
             }
         });
         return header;
@@ -410,9 +400,6 @@ public class NavigationDrawerFragment extends Fragment {
         earnfree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent profile = new Intent("start.fragment.changeview");
-                profile.putExtra("value", VarHolder.EARNFREECREDITS);
-                getActivity().sendBroadcast(profile);
             }
         });
         return footer;

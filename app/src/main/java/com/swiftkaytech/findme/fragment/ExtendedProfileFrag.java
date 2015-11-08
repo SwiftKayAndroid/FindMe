@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.swiftkaytech.findme.R;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -24,7 +23,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,7 +54,6 @@ public class ExtendedProfileFrag extends Fragment {
         this.context = getActivity();
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         uid = getUID();
-        ouid = VarHolder.ouid;
         View layout = inflater.inflate(R.layout.extendedprofile, container, false);
 
         tvage = (TextView) layout.findViewById(R.id.tvextendedage);

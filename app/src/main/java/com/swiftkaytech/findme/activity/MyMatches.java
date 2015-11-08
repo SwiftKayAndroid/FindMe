@@ -5,10 +5,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -16,7 +14,6 @@ import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.adapters.MyMatchesAdapter;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -30,6 +27,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,7 +136,6 @@ public class MyMatches  extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            Log.w(VarHolder.TAG, "Getmatcheslist result: " + result);
 
             if(result.equals("error")){
                 Toast.makeText(context, "Could't connect to Find Me", Toast.LENGTH_LONG).show();

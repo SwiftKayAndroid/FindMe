@@ -10,6 +10,13 @@
     <string name="sloganstring">The safest way \n to meet new people!</string>
     <string name="ipaddress">http://www.swiftkay.com/findme/</string>
 
+        <string name="gcm_send_message">Token retrieved and sent to server! You can now use gcmsender to
+        send downstream messages to this app.</string>
+    <string name="registering_message">Generating InstanceID token...</string>
+    <string name="token_error_message">An error occurred while either fetching the InstanceID token,
+        sending the fetched token to the server or subscribing to the PubSub topic. Please try
+        running the sample again.</string>
+
     <array name="nav_drawer_icons">
         <item>@mipmap/ic_home_black_24dp</item>
         <item>@mipmap/ic_people_black_24dp</item>

@@ -76,6 +76,8 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_photo_camera_white_24dp"
         android:padding="20dp"
+        app:rippleColor="@color/holoblue"
+        android:clickable="true"
         app:fabSize="normal"
         app:backgroundTint="@color/base_green"
         android:layout_alignTop="@+id/fab"

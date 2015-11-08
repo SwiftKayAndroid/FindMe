@@ -17,7 +17,6 @@ import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.adapters.CardAdapter;
 import com.swiftkaytech.findme.flingswipe.SwipeFlingAdapterView;
 import com.swiftkaytech.findme.managers.ConnectionManager;
-import com.swiftkaytech.findme.utils.VarHolder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,8 +36,6 @@ public class Match extends AppCompatActivity {
        public String name;
         public String propicloc;
         public String aboutme;
-
-
     }
 
     List<Users> ulist;
@@ -88,13 +85,11 @@ public class Match extends AppCompatActivity {
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
                 Toast.makeText(Match.this, "Left!", Toast.LENGTH_SHORT).show();
-                Log.d(VarHolder.TAG,"Left swipe noted");
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
                 Toast.makeText(Match.this, "Right!", Toast.LENGTH_SHORT).show();
-                Log.d(VarHolder.TAG,"Right swipe noted");
             }
 
             @Override
