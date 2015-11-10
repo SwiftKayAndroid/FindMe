@@ -39,9 +39,8 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
     private static final String TAG = "MessagesActivity";
     private static final String ARG_USER = "ARG_USER";
 
-    private User user;
-
-    private MessagesFrag mMessagesFrag;
+    private User                user;
+    private MessagesFrag        mMessagesFrag;
 
     @Override
     protected int getLayoutResource() {
@@ -67,13 +66,13 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
         } else {
             user = (User) getIntent().getExtras().getSerializable(ARG_USER);
         }
-        if (mMessagesFrag == null) {
-            mMessagesFrag = MessagesFrag.instance(uid, user);
-        }
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.activityContainer, mMessagesFrag, MessagesFrag.TAG)
-                .addToBackStack(null)
-                .commit();
+       if (getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG)  == null) {
+           mMessagesFrag = MessagesFrag.instance(uid, user);
+           getSupportFragmentManager().beginTransaction()
+                   .replace(R.id.activityContainer, mMessagesFrag, MessagesFrag.TAG)
+                   .addToBackStack(null)
+                   .commit();
+       }
         setUpToolbar();
 
     }
@@ -151,6 +150,5 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
                 mMessagesFrag.notifyNewMessage(message);
             }
         });
-
     }
 }

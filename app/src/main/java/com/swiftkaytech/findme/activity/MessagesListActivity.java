@@ -27,6 +27,7 @@ import android.view.View;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.fragment.MessagesListFrag;
+import com.swiftkaytech.findme.managers.MessagesManager;
 
 public class MessagesListActivity extends BaseActivity {
     private static final String TAG = "MessagesListActivity";
@@ -50,13 +51,14 @@ public class MessagesListActivity extends BaseActivity {
 
     @Override
     protected void createActivity(Bundle inState) {
-        mMessagesListFrag = MessagesListFrag.getInstance(uid);
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-        ft.replace(R.id.activityContainer, mMessagesListFrag)
-                .addToBackStack(null)
-                .commit();
+        if (getSupportFragmentManager().findFragmentByTag(MessagesListFrag.TAG) == null) {
+            mMessagesListFrag = MessagesListFrag.getInstance(uid);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.activityContainer, mMessagesListFrag, MessagesListFrag.TAG)
+                    .addToBackStack(null)
+                    .commit();
+        }
         setUpToolbar();
     }
 
@@ -73,11 +75,12 @@ public class MessagesListActivity extends BaseActivity {
             }
         });
         mToolbar.inflateMenu(R.menu.messages_menu);
+        mToolbar.setTitle("Messages");
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.messagesThreadDeleteAllMessages) {
-
+                    MessagesManager.getInstance(uid, MessagesListActivity.this).deleteAllThreads(uid);
                 }
                 return true;
             }

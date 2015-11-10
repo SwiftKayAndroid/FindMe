@@ -39,6 +39,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener{
     private EditText etmessage;
     private ImageView ivsend;
     private RecyclerView mRecyclerView;
+    private View            mEmptyView;
 
 
     public static MessagesFrag instance(String uid, User user) {
@@ -81,6 +82,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener{
         etmessage = (EditText) layout.findViewById(R.id.etmessaget);
         ivsend = (ImageView) layout.findViewById(R.id.tvsendmessage);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.messagesInlineRecyclerView);
+        mEmptyView = layout.findViewById(R.id.messageInlineEmptyView);
 
         ivsend.setOnClickListener(this);
         return layout;
@@ -94,12 +96,19 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener{
         }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mMessageAdapter);
+
+        if (mMessagesList.size() < 1) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(ARG_USER, user);
         outState.putString(ARG_UID, uid);
+        outState.putSerializable(ARG_MESSAGES, mMessagesList);
         super.onSaveInstanceState(outState);
     }
 
@@ -113,10 +122,17 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener{
      * @param messages Arraylist of Messages
      */
     public void updateMessages(ArrayList<Message> messages) {
-        mMessagesList = messages;
         mMessageAdapter.addAllMessages(mMessagesList);
         int size = mRecyclerView.getLayoutManager().getItemCount() - 1;
-        mRecyclerView.smoothScrollToPosition(size);
+        if (size > 0) {
+            mRecyclerView.smoothScrollToPosition(size);
+        }
+
+        if (mMessagesList.size() < 1) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -127,6 +143,12 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener{
         mMessageAdapter.addMessage(message);
         int size = mRecyclerView.getLayoutManager().getItemCount() - 1;
         mRecyclerView.smoothScrollToPosition(size);
+
+        if (mMessagesList.size() < 1) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override

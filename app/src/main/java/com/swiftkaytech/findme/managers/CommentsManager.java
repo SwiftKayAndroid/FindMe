@@ -61,6 +61,34 @@ public class CommentsManager {
         return cList;
     }
 
+    public void postComment(String postid, String comment) {
+        new PostCommentTask(postid, mUid, comment).execute();
+    }
+
+    private class PostCommentTask extends AsyncTask<Void, Void, Void> {
+        String postid;
+        String uid;
+        String comment;
+
+        public PostCommentTask(String postid, String uid, String comment) {
+            this.postid = postid;
+            this.uid = uid;
+            this.comment = comment;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("postcomment.php");
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("comment", comment);
+            connectionManager.addParam("postid", postid);
+            connectionManager.sendHttpRequest();
+            return null;
+        }
+    }
+
     private class FetchCommentsTask extends AsyncTask<Void,Void,ArrayList<Comment>>{
         String postid;
 

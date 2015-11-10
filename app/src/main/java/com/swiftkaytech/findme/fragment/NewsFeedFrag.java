@@ -4,10 +4,10 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +23,12 @@ import java.util.ArrayList;
 /**
  * Created by kevin haines on 2/8/2015.
  */
-public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener{
+public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener,
+        PostManager.PostsListener, PostAdapter.PostAdapterListener{
 
     public static final String TAG = "NewsFeedFrag";
     public static final String ARG_POSTS_LIST = "ARG_POSTS_LIST";
+
     private String lp = "0";
     private ProgressBar         pb;
     private View                fab;
@@ -34,27 +36,22 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     private View                fabphoto;
     private RecyclerView        mRecyclerView;
     private SwipeRefreshLayout  swipeLayout;
-    private ArrayList<Post> mPostsList;
+    private boolean             loadingMore;
+    private ArrayList<Post>     mPostsList = new ArrayList<>();
 
     private PostAdapter mPostAdapter;
-    private static NewsFeedFrag newsFeedFrag = null;
-
-    public NewsFeedFrag(){
-
-    }
 
     public static NewsFeedFrag getInstance(String uid){
-        if (newsFeedFrag == null) {
-            newsFeedFrag = new NewsFeedFrag();
-            Bundle b = new Bundle();
-            b.putString(ARG_UID, uid);
-            newsFeedFrag.setArguments(b);
-        }
+        NewsFeedFrag newsFeedFrag = new NewsFeedFrag();
+        Bundle b = new Bundle();
+        b.putString(ARG_UID, uid);
+        newsFeedFrag.setArguments(b);
         return newsFeedFrag;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             uid = savedInstanceState.getString(ARG_UID);
@@ -63,13 +60,15 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            mPostsList = PostManager.getInstance(uid, getActivity()).getPosts(getActivity());
+            PostManager.getInstance(uid, getActivity()).fetchPosts(getActivity(), "0");
+            loadingMore = true;
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
         View layout = inflater.inflate(R.layout.newsfeedfrag, container, false);
 
         fab = layout.findViewById(R.id.fab);
@@ -94,40 +93,58 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.i(TAG, "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null) {
-            uid = savedInstanceState.getString(ARG_UID);
-            mPostsList = (ArrayList<Post>) savedInstanceState.getSerializable(ARG_POSTS_LIST);
-        } else {
-            if (getArguments() != null) {
-                uid = getArguments().getString(ARG_UID);
-            }
-            mPostsList = PostManager.getInstance(uid, getActivity()).getPosts(getActivity());
-        }
 
-        if (uid != null) {
-
+        if (mPostAdapter == null) {
             mPostAdapter = new PostAdapter(getActivity(), mPostsList);
-
-            pb.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mRecyclerView.setAdapter(mPostAdapter);
-            Snackbar.make(view, Integer.toString(mPostsList.size()), Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            mPostAdapter.setPostAdapterListener(this);
         }
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        pb.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int totalItemCount = mRecyclerView.getLayoutManager().getItemCount();
+                int lastVisibleItem = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                Log.i(TAG, "total: " + totalItemCount + " last: " + lastVisibleItem);
+                if (!loadingMore && totalItemCount <= lastVisibleItem + 1) {
+                    loadingMore = true;
+                    loadMorePosts();
+                }
+            }
+        });
     }
 
     @Override
     public void onPause() {
+        Log.i(TAG, "onPause");
         super.onPause();
+        PostManager.getInstance(uid, getActivity()).removeListener(this);
+        if (mPostAdapter != null) {
+            mPostAdapter.setPostAdapterListener(null);
+        }
     }
 
     @Override
     public void onResume() {
-
+        Log.i(TAG, "onResume");
         super.onResume();
-
+        PostManager.getInstance(uid, getActivity()).addPostListener(this);
+        if (mPostAdapter != null) {
+            mPostAdapter.setPostAdapterListener(this);
+        }
         if (fab.getRotation() > 0) {
             rotate(fab);
         }
@@ -144,13 +161,15 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
+        Log.i(TAG, "onRefresh");
         swipeLayout.setRefreshing(true);
-        PostManager.getInstance(uid, getActivity()).clearPosts();
-        mPostsList.clear();
-        mPostsList = PostManager.getInstance(uid, getActivity()).getPosts(getActivity());
-        mPostAdapter.clearAdapter();
-        mPostAdapter.addPosts(mPostsList);
-        swipeLayout.setRefreshing(false);
+        PostManager.getInstance(uid, getActivity()).refreshPosts(getActivity());
+    }
+
+    private void loadMorePosts() {
+        Log.i(TAG, "loading more posts");
+        String lastpost = mPostAdapter.getPosts().get(mPostAdapter.getPosts().size() - 1).getPostId();
+        PostManager.getInstance(uid, getActivity()).fetchPosts(getActivity(), lastpost);
     }
 
     private void rotate(View v) {
@@ -184,8 +203,36 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         set.play(outAnimFabStatus)
                 .with(outAnimFabPhoto)
                 .with(ObjectAnimator.ofFloat(fab, View.ROTATION, startRotation, endRotation));
-        set.setDuration(500);
+        set.setDuration(300);
         set.start();
+    }
+
+    @Override
+    public void onPostsRetrieved(ArrayList<Post> posts) {
+        Log.i(TAG, "onPostsRetrieved size: " + posts.size() + " original size: " + mPostsList.size());
+
+        if (swipeLayout.isRefreshing()) {
+            mPostAdapter.clearAdapter();
+            mPostAdapter.addPosts(posts);
+            swipeLayout.setRefreshing(false);
+        } else {
+            if (mPostAdapter == null) {
+                mPostAdapter = new PostAdapter(getActivity(), mPostsList);
+                mRecyclerView.setAdapter(mPostAdapter);
+                mPostAdapter.setPostAdapterListener(this);
+            } else {
+                mPostAdapter.addPosts(posts);
+                loadingMore = false;
+            }
+        }
+    }
+
+    @Override
+    public void onCommentsClicked(Post post) {
+        if (getActivity().getSupportFragmentManager().findFragmentByTag(CommentsDialog.TAG) == null) {
+            CommentsDialog dialog = CommentsDialog.newInstance(post.getPostId(), uid);
+            dialog.show(getActivity().getSupportFragmentManager(), CommentsDialog.TAG);
+        }
     }
 
     @Override

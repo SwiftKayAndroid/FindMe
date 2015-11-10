@@ -34,6 +34,7 @@ public class LoginPage extends Activity implements AuthenticateUser.Authenticati
             break;
             case AuthenticateUser.RESULT_SUCCESSFUL: {
                 startActivity(MainLineUp.createIntent(this));
+                finish();
             }
             break;
             case AuthenticateUser.RESULT_FAILED: {

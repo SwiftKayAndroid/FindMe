@@ -81,7 +81,11 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         }
 
         registerGCMReceiver();
-        if (checkPlayServices()) {
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        boolean sentToken = sharedPreferences
+                .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+        if (checkPlayServices() && !sentToken) {
             // Start IntentService to register this application with GCM.
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
@@ -109,9 +113,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
                         PreferenceManager.getDefaultSharedPreferences(context);
                 boolean sentToken = sharedPreferences
                         .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-                if (sentToken) {
-                    Toast.makeText(MainLineUp.this, getString(R.string.gcm_send_message),Toast.LENGTH_SHORT).show();
-                } else {
+                if (!sentToken) {
                     Toast.makeText(MainLineUp.this, getString(R.string.token_error_message), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -173,11 +175,17 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     }
 
     private void displayView(int position) {
-        Fragment fragment = null;
 
         switch (position) {
             case NEWSFEED:
-                    fragment = NewsFeedFrag.getInstance(uid);
+                if (getSupportFragmentManager().findFragmentByTag(NewsFeedFrag.TAG) == null) {
+                    NewsFeedFrag newsFeedFrag = NewsFeedFrag.getInstance(uid);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame_container, newsFeedFrag, NewsFeedFrag.TAG)
+                            .addToBackStack(null)
+                            .commit();
+                }
+
                 break;
             case FINDPEOPLE:
                 startActivity(FindPeopleActivity.createIntent(MainLineUp.this));
@@ -185,20 +193,6 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
 
             default:
                 break;
-        }
-
-        if (fragment != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(Integer.toString(position))
-                    .replace(R.id.frame_container, fragment, NewsFeedFrag.TAG)
-                    .commit();
-
-            mNavigationDrawerFragment.getListView().setItemChecked(position, true);
-            mNavigationDrawerFragment.getListView().setSelection(position);
-            mNavigationDrawerFragment.getDrawerLayout().closeDrawer(mNavigationDrawerFragment.getListView());
-        } else {
-            // error in creating fragment
-            Log.e("kevin", "Error in creating fragment or fragment restored from backstack");
         }
     }
 }

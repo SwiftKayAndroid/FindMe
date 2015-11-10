@@ -66,7 +66,7 @@
         app:backgroundTint="@color/base_green"
         android:layout_alignParentEnd="true"
         android:layout_above="@+id/fab"
-        app:fabSize="normal"
+        app:fabSize="mini"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="35dp" />
 
@@ -78,7 +78,7 @@
         android:padding="20dp"
         app:rippleColor="@color/holoblue"
         android:clickable="true"
-        app:fabSize="normal"
+        app:fabSize="mini"
         app:backgroundTint="@color/base_green"
         android:layout_alignTop="@+id/fab"
         android:layout_toLeftOf="@+id/fab"

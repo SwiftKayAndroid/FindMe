@@ -32,7 +32,8 @@
         android:layout_toRightOf="@+id/jkjkj"
         android:text="Kevin Haines"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#000000" />
+        android:textColor="#000000"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvcomment"

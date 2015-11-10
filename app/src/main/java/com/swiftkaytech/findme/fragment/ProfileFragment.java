@@ -17,18 +17,24 @@
 
 package com.swiftkaytech.findme.fragment;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +44,13 @@ import com.swiftkaytech.findme.adapters.PostAdapter;
 import com.swiftkaytech.findme.data.Post;
 import com.swiftkaytech.findme.data.User;
 import com.swiftkaytech.findme.managers.PostManager;
+import com.swiftkaytech.findme.utils.AndroidUtils;
 
 import java.util.ArrayList;
 
 public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,
-View.OnClickListener{
-    private static final String TAG = "ProfileFragment";
+View.OnClickListener, PostManager.PostsListener, AppBarLayout.OnOffsetChangedListener{
+    public static final String TAG = "ProfileFragment";
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_POSTS = "ARG_POSTS";
 
@@ -51,6 +58,8 @@ View.OnClickListener{
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView    mTvAgeLocation;
+    private AppBarLayout mAppBarLayout;
+    private ImageView           mProfilePicture;
     private TextView    mTvOrientation;
 
     private FloatingActionButton mFabBase;
@@ -59,7 +68,7 @@ View.OnClickListener{
     private FloatingActionButton mFabUpper;
 
     private PostAdapter mPostAdapter;
-    private ArrayList<Post> mPostList;
+    private ArrayList<Post> mPostList = new ArrayList<>();
 
     public static ProfileFragment newInstance(User user, String uid) {
         ProfileFragment frag = new ProfileFragment();
@@ -83,7 +92,7 @@ View.OnClickListener{
                 user = (User) getArguments().getSerializable(ARG_USER);
                 uid = getArguments().getString(ARG_UID);
             }
-            mPostList = PostManager.getInstance(uid, getActivity()).fetchUserPosts(getActivity(), user, "0", false);
+            PostManager.getInstance(uid, getActivity()).fetchUserPosts(getActivity(), user, "0");
         }
     }
 
@@ -111,6 +120,8 @@ View.OnClickListener{
         mFabLeft.setOnClickListener(this);
         mFabCenter.setOnClickListener(this);
         mFabUpper.setOnClickListener(this);
+        mAppBarLayout = (AppBarLayout) layout.findViewById(R.id.appbar);
+        mProfilePicture = (ImageView) layout.findViewById(R.id.profileProfilePicture);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -150,11 +161,23 @@ View.OnClickListener{
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        PostManager.getInstance(uid, getActivity()).removeListener(this);
+        mAppBarLayout.removeOnOffsetChangedListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        PostManager.getInstance(uid, getActivity()).addPostListener(this);
+        mAppBarLayout.addOnOffsetChangedListener(this);
+    }
+
+    @Override
     public void onRefresh() {
         mSwipeRefreshLayout.setRefreshing(true);
-        mPostList = PostManager.getInstance(uid, getActivity()).fetchUserPosts(getActivity(), user, "0", false);
-        mPostAdapter.notifyDataSetChanged();
-        mSwipeRefreshLayout.setRefreshing(false);
+        PostManager.getInstance(uid, getActivity()).fetchUserPosts(getActivity(), user, "0");
     }
 
     /**
@@ -164,6 +187,25 @@ View.OnClickListener{
         mFabLeft.setImageResource(R.drawable.ic_action_edit_dark);
         setVisibility();
 
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        Log.i(TAG, "offset: " + verticalOffset);
+        mSwipeRefreshLayout.setEnabled(verticalOffset == 0);
+        int height = (int) AndroidUtils.convertDpToPixel(150, getActivity());
+        int currentHeight;
+        if (verticalOffset > -height) {
+            ViewGroup.LayoutParams params = mProfilePicture.getLayoutParams();
+            params.height = height + verticalOffset - 1;
+            params.width = height + verticalOffset - 1;
+            mProfilePicture.setLayoutParams(params);
+        } else {
+            ViewGroup.LayoutParams params = mProfilePicture.getLayoutParams();
+            params.height = 0;
+            params.width = 0;
+            mProfilePicture.setLayoutParams(params);
+        }
     }
 
     /**
@@ -223,6 +265,26 @@ View.OnClickListener{
 
     }
 
+    private void rotate(View v) {
+        AnimatorSet set = new AnimatorSet();
+        float startRotation = v.getRotation();
+        float endRotation = 0;
+        if (startRotation == 0) {
+            endRotation = 45;
+        }
+        set.play(ObjectAnimator.ofFloat(v, View.ROTATION, startRotation, endRotation));
+        set.setDuration(200);
+        set.start();
+    }
+
+    @Override
+    public void onPostsRetrieved(ArrayList<Post> posts) {
+        mPostList = posts;
+        mPostAdapter.clearAdapter();
+        mPostAdapter.addPosts(posts);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
     @Override
     public void onClick(View v) {
         boolean isSameProfile = false;
@@ -230,6 +292,7 @@ View.OnClickListener{
             isSameProfile = true;
         }
         if (v.getId() == R.id.profileFabBase) {
+            rotate(v);
             if (isSameProfile) {
                 expandOwnProfileFabs();
             } else {

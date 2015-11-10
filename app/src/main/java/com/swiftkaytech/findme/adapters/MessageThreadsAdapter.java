@@ -1,6 +1,8 @@
 package com.swiftkaytech.findme.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.ProfileActivity;
 import com.swiftkaytech.findme.data.Message;
 import com.swiftkaytech.findme.data.ThreadInfo;
 import com.swiftkaytech.findme.utils.ImageLoader;
@@ -24,15 +27,16 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
 
     public interface ThreadSelectedListener{
         void onThreadSelected(ThreadInfo threadInfo);
+        void onThreadLongClicked(ThreadInfo threadInfo);
     }
-    private static final String TAG = "MessageThreadsAdapter";
+    private static final String     TAG = "MessageThreadsAdapter";
 
-    private ThreadSelectedListener mListener;
+    private ThreadSelectedListener  mListener;
 
-    private Context mContext;
-    List<ThreadInfo> mThreadList;
-    ImageLoader imageLoader;
-    String mUid;
+    private Context                 mContext;
+    List<ThreadInfo>                mThreadList;
+    ImageLoader                     imageLoader;
+    String                          mUid;
 
     public MessageThreadsAdapter(Context context, List<ThreadInfo> mlist, String uid){
         this.mContext = context;
@@ -69,11 +73,22 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
             if(thread.seenStatus == ThreadInfo.SEEN){
                 holder.checkmark.setVisibility(View.VISIBLE);
             }
+            if (thread.readStatus == ThreadInfo.READ) {
+                holder.tvname.setTypeface(null, Typeface.NORMAL);
+                holder.tvmessage.setTypeface(null, Typeface.NORMAL);
+                holder.tvtime.setTypeface(null, Typeface.NORMAL);
+                holder.itemView.setBackgroundColor(Color.parseColor("#e4e4e4"));
+            } else {
+                holder.tvmessage.setTypeface(null, Typeface.BOLD);
+                holder.tvname.setTypeface(null, Typeface.BOLD);
+                holder.tvtime.setTypeface(null, Typeface.BOLD);
+                holder.itemView.setBackgroundColor(Color.WHITE);
+            }
 
             holder.ivpropic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //todo: start profile activity
+                    mContext.startActivity(ProfileActivity.createIntent(mContext, mThreadList.get(position).threadUser));
                 }
             });
 
@@ -84,6 +99,15 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
                         Log.i(TAG, "message clicked");
                         mListener.onThreadSelected(mThreadList.get(position));
                     }
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mListener != null) {
+                        mListener.onThreadLongClicked(mThreadList.get(position));
+                    }
+                    return true;
                 }
             });
         }
@@ -101,6 +125,11 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
             mThreadList.clear();
             notifyDataSetChanged();
         }
+    }
+
+    public void clearMessages() {
+        mThreadList.clear();
+        notifyDataSetChanged();
     }
 
     public void addThreads(ArrayList<ThreadInfo> threadInfos) {

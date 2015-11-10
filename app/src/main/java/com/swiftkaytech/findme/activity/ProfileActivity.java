@@ -59,10 +59,13 @@ public class ProfileActivity extends BaseActivity {
         } else {
             mUser = (User) getIntent().getExtras().getSerializable(ARG_USER);
         }
-        ProfileFragment profileFragment = ProfileFragment.newInstance(mUser, uid);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.activityContainer, profileFragment);
-        ft.commit();
+        ProfileFragment profileFragment = (ProfileFragment) getSupportFragmentManager().findFragmentByTag(ProfileFragment.TAG);
+        if (profileFragment == null) {
+            profileFragment = ProfileFragment.newInstance(mUser, uid);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.activityContainer, profileFragment, ProfileFragment.TAG);
+            ft.commit();
+        }
     }
 
     @Override

@@ -35,10 +35,6 @@ import java.util.ArrayList;
  * Created by Kevin Haines on 10/21/15.
  */
 public class Post implements Serializable{
-    /**
-     * this class will be used to store data about an individual post. will include all methods
-     * involved in handling posts such as checkmark_liked post, comment, report, unlike, getting information, disliking etc
-     */
 
     public static final String TAG = "FindMe-Post";
     private String mPostId;
@@ -62,6 +58,11 @@ public class Post implements Serializable{
         return post;
     }
 
+    /**
+     * This method is called to fetch a single post from the server
+     * @param postid The unique id of the post
+     * @return Post the post to be returned
+     */
     public Post fetchPost(String postid){
         mPostId = postid;
         try {
@@ -76,6 +77,9 @@ public class Post implements Serializable{
         return this;
     }
 
+    /**
+     * This class is used to fetch a single post
+     */
     private static class FetchPostTask extends AsyncTask<Void,Void,Post> implements  Serializable{
         String postid;
         Post post;
@@ -293,5 +297,4 @@ public class Post implements Serializable{
     public boolean getLiked(){
         return mLiked;
     }
-
 }

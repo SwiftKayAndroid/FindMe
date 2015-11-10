@@ -81,30 +81,21 @@ public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
         holder.tvCommentTime.setText(mCommentList.get(position).getTime());
         holder.tvComment.setText(mCommentList.get(position).getComment());
         holder.tvCommentName.setText(mCommentList.get(position).getUser().getName());
-        ImageLoader imageLoader = new ImageLoader(mContext);
-        imageLoader.DisplayImage(mCommentList.get(position).getUser().getPropicloc(),holder.ivCommentProfilePicture,false);
+
+        if (mCommentList != null) {
+            if (mCommentList.get(position).getUser().getPropicloc().equals("")) {
+                holder.ivCommentProfilePicture.setImageResource(R.drawable.ic_placeholder);
+            } else {
+                ImageLoader imageLoader = new ImageLoader(mContext);
+                imageLoader.DisplayImage(mCommentList.get(position).getUser().getPropicloc(), holder.ivCommentProfilePicture, false);
+            }
+        }
         return row;
     }
 
     public class ViewHolder{
         TextView tvCommentName, tvComment, tvCommentTime;
         ImageView ivCommentProfilePicture;
-    }
-
-    /**
-     * sets the post id for these comments
-     * @param postid  post id for these comments
-     */
-    public void setPostId(String postid) {
-        mPostid = postid;
-    }
-
-    /**
-     * gets the post id for these comments
-     * @return post id for these comments
-     */
-    public String getPostId(){
-        return mPostid;
     }
 
     @Override

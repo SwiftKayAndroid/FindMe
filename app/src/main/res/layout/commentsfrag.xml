@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rlnewsfeed"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="#ffffff"
@@ -11,72 +11,70 @@
         layout="@layout/base_toolbar"
         android:id="@+id/baseActivityToolbar" />
 
-    <TableLayout
-        android:id="@+id/tbcomment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:divider="#e0e0e0"
-        android:orientation="horizontal"
-        android:shrinkColumns="*"
-        android:stretchColumns="*" >
+    <ImageView
+        android:id="@+id/ivcommentpost"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_action_edit_dark" />
 
-        <TableRow
-            android:id="@+id/tableRow1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:divider="#e0e0e0"
-            android:orientation="horizontal"
-            android:weightSum="3" >
-
-            <EditText
-                android:id="@+id/etcommentonpost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Write a Comment"
-                android:inputType="textCapSentences"
-                android:lines="2" >
-
-                <requestFocus />
-            </EditText>
-
-            <ImageView
-                android:id="@+id/ivcommentpost"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_action_edit_dark" />
-        </TableRow>
-    </TableLayout>
-
-    <RelativeLayout
-        android:id="@+id/commentpopcenterrel"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container_comments"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/tbcomment"
-        android:layout_below="@+id/baseActivityToolbar">
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_container_comments"
+        android:layout_above="@+id/etcommentonpost"
+        android:layout_below="@+id/baseActivityToolbar"
+        android:background="@color/light_gray">
+        <ListView
+            android:id="@+id/lvcommentspop"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ListView
-                android:id="@+id/lvcommentspop"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:divider="@null"
-                android:dividerHeight="0dp" />
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:divider="@null"
+            android:dividerHeight="0dp" />
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-    </RelativeLayout>
+    <EditText
+        android:id="@+id/etcommentonpost"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="Write a Comment"
+        android:inputType="textCapSentences"
+        android:lines="2"
+        android:paddingRight="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#ffffff"
+        android:paddingLeft="15dp"
+        android:layout_toLeftOf="@+id/ivCommentSend"
+        android:layout_toStartOf="@+id/ivCommentSend">
+
+        <requestFocus />
+    </EditText>
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ivCommentSend"
+        android:layout_below="@+id/swipe_container_comments"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@mipmap/ic_send_white_24dp"
+        android:tint="@color/black"
+        android:padding="10dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/commentsEmptyView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/empty_view_icon"
+        android:visibility="gone" />
 
 </RelativeLayout>

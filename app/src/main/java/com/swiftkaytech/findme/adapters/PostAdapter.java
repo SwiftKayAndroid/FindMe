@@ -44,6 +44,9 @@ import com.swiftkaytech.findme.views.tagview.TagView;
 import java.util.ArrayList;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements View.OnClickListener{
+    public interface PostAdapterListener{
+        void onCommentsClicked(Post post);
+    }
 
     public static final String TAG = "PostAdapter";
     public static final int VIEW_TYPE_HEADER = 0;
@@ -53,10 +56,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private ArrayList<Post> mPostList;
 
     private boolean hasHeader = false;
+    private PostAdapterListener mListener;
 
     public PostAdapter(Context context, ArrayList<Post> plist) {
         mContext = context;
         mPostList = plist;
+    }
+
+    public void setPostAdapterListener(PostAdapterListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -141,9 +149,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.tvNumComments.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //todo: move this to an interface call
-                    CommentsDialog dialog = CommentsDialog.newInstance(mPostList.get(position).getPostId());
-                    dialog.show(((AppCompatActivity) mContext).getSupportFragmentManager(), CommentsDialog.TAG);
+                    if (mListener != null) {
+                        mListener.onCommentsClicked(mPostList.get(position));
+                    }
                 }
             });
 
@@ -275,6 +283,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void addPosts(ArrayList<Post> posts) {
         mPostList.addAll(posts);
         notifyDataSetChanged();
+    }
+
+    public ArrayList<Post> getPosts() {
+        return new ArrayList<>(mPostList);
     }
 
     @Override

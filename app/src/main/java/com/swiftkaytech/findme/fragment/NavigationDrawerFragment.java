@@ -352,21 +352,27 @@ public class NavigationDrawerFragment extends Fragment {
         tvname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (mDrawerLayout != null) {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
             }
         });
         ivusersphoto.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
-
+                if (mDrawerLayout != null) {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
             }
         });
         headermessage.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                if (mDrawerLayout != null) {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
                 startActivity(MessagesListActivity.createIntent(getActivity()));
             }
         });
@@ -374,14 +380,18 @@ public class NavigationDrawerFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-
+                if (mDrawerLayout != null) {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
             }
         });
         headerfriends.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
+                if (mDrawerLayout != null) {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
             }
         });
         return header;

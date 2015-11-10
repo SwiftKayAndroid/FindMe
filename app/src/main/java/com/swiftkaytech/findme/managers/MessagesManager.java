@@ -61,6 +61,7 @@ public class MessagesManager {
         void onMessageSentComplete(Message message);
         void onMessageUnsent(Message message);
         void onMessageRecevied(Message message);
+        void onThreadsPurged();
     }
 
     private static String mUid;
@@ -114,6 +115,10 @@ public class MessagesManager {
     public void getMoreMessages(String lastMessage, User user, Context context){
         mContext = context;
         new FetchMessagesTask(lastMessage, user).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+    }
+
+    public void deleteAllThreads(String uid) {
+        new DeleteAllThreadsTask(uid).execute();
     }
 
     public ArrayList<Message> getExistingMessages(){
@@ -509,6 +514,34 @@ public class MessagesManager {
 
             for (MessageThreadListener l : mMessageThreadListeners) {
                 l.onMessageUnsent(message);
+            }
+        }
+    }
+
+    private class DeleteAllThreadsTask extends AsyncTask<Void, Void, Void> {
+        String uid;
+
+        public DeleteAllThreadsTask(String uid) {
+            this.uid = uid;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.addParam("uid", uid);
+            connectionManager.setUri("deleteallthreads.php");
+            connectionManager.sendHttpRequest();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            for (MessageThreadListener l : mMessageThreadListeners) {
+                if (l != null) {
+                    l.onThreadsPurged();
+                }
             }
         }
     }

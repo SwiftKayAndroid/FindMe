@@ -100,7 +100,7 @@ public class UpdateStatus extends AppCompatActivity {
                 charleft = STARTCOUNT - textcount;
                 tvcounter.setText(Integer.toString(charleft));
                 if (charleft > 0) {
-                    tvcounter.setTextColor(Color.GREEN);
+                    tvcounter.setTextColor(Color.WHITE);
                 } else if (charleft == 0) {
                     tvcounter.setTextColor(Color.BLACK);
                 } else {

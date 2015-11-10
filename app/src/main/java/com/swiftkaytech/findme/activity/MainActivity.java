@@ -60,7 +60,6 @@ public class MainActivity extends Activity {
     }
 
     private void setGUI(){
-
         setContentView(R.layout.activity_main);
         btncreate = (Button) findViewById(R.id.btnstartpageregister);
         btnlogin = (Button) findViewById(R.id.btnstartpagelogin);

@@ -29,14 +29,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PostManager {
+
+    public interface PostsListener{
+        void onPostsRetrieved(ArrayList<Post> posts);
+    }
+
     public static final String TAG = "FindMe-PostManager";
 
     private String mUid;
-    private ArrayList<Post> mPosts;
+    private ArrayList<Post> mPosts = new ArrayList<>();
     private static PostManager manager = null;
     private static Context mContext;
+    private CopyOnWriteArrayList<PostsListener> mListeners = new CopyOnWriteArrayList<>();
 
     public static PostManager getInstance(String uid, Context context){
         if (manager == null) {
@@ -47,41 +54,40 @@ public class PostManager {
         return manager;
     }
 
-    public ArrayList<Post> fetchPosts(Context context){
-        try {
+    public void addPostListener(PostsListener listener) {
+        mListeners.add(listener);
+    }
+
+    public void removeListener(PostsListener listener) {
+        mListeners.remove(listener);
+    }
+
+    /**
+     * Gets an arraylist of posts from the server
+     * todo: will get posts from db first and sync with that
+     * @param context
+     * @return
+     */
+    public ArrayList<Post> fetchPosts(Context context, String lastpost){
             Log.d(TAG, "fetching posts");
-            mPosts = new FetchPostsTask(mUid).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            new FetchPostsTask(mUid, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
 //        for (Post post : mPosts) {
 //            //TagManager.getInstance(mUid).fetchTags(post.getPostId(), context, post);
 //        }
         return mPosts;
     }
 
-    public ArrayList<Post> fetchUserPosts(Context context, User user, String lastpost, boolean refreshing) {
-        try {
-            ArrayList<Post> plist = new FetchUserPosts(user, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
-
-            if (refreshing) {
-                user = User.createUser(mUid, context).fetchUser(user.getOuid(), context);
-                for (Post post : plist) {
-                    post.setUser(user);
-                }
-            }
-            return plist;
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-       return null;
+    public void fetchUserPosts(Context context, User user, String lastpost) {
+            new FetchUserPosts(user, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     private class FetchPostsTask extends AsyncTask<Void,Void,ArrayList<Post>> {
         String uid;
+        String lastpost;
 
-        public FetchPostsTask(String uid) {
+        public FetchPostsTask(String uid, String lastpost) {
             this.uid = uid;
+            this.lastpost = lastpost;
         }
 
         @Override
@@ -90,7 +96,7 @@ public class PostManager {
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.setUri("getposts.php");
             connectionManager.addParam("uid", uid);
-            connectionManager.addParam("lp","0");
+            connectionManager.addParam("lp", lastpost);
             ArrayList<Post> pList = new ArrayList<>();
 
             final String result = connectionManager.sendHttpRequest();
@@ -130,6 +136,17 @@ public class PostManager {
                 }
             }
             return pList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Post> posts) {
+            super.onPostExecute(posts);
+            mPosts = posts;
+            for (PostsListener l : mListeners) {
+                if (l != null) {
+                    l.onPostsRetrieved(posts);
+                }
+            }
         }
     }
 
@@ -179,6 +196,16 @@ public class PostManager {
             }
             return pList;
         }
+
+        @Override
+        protected void onPostExecute(ArrayList<Post> posts) {
+            super.onPostExecute(posts);
+            for (PostsListener l : mListeners) {
+                if (l != null) {
+                    l.onPostsRetrieved(posts);
+                }
+            }
+        }
     }
 
 
@@ -187,21 +214,16 @@ public class PostManager {
             if (mPosts.size() > 0) {
                 return mPosts;
             } else {
-                return fetchPosts(context);
+                return fetchPosts(context, "0");
             }
         } else {
-            return fetchPosts(context);
+            return fetchPosts(context, "0");
         }
     }
 
     public ArrayList<Post> refreshPosts(Context context) {
         mPosts.clear();
-        return fetchPosts(context);
-    }
-
-    public void clearPosts(){
-        mPosts.clear();
-        mPosts = null;
+        return fetchPosts(context, "0");
     }
 
     public void likePost(String postid) {

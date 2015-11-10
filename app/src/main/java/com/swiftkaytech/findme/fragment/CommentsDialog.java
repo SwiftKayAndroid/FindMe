@@ -24,8 +24,11 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.swiftkaytech.findme.R;
@@ -39,16 +42,21 @@ public class CommentsDialog extends AppCompatDialogFragment {
     public static final String TAG = "CommentsDialog";
     private static final String ARG_POSTID = "ARG_POSTID";
     private static final String ARG_COMMENTS = "ARG_COMMENTS";
+    private static final String ARG_UID = "ARG_UID";
 
     private static String mUid;
     private String mPostid;
     private ArrayList<Comment> mComments;
+    private ImageView ivPostComment;
+    private ImageView emptyView;
+    private EditText etComment;
 
 
-    public static CommentsDialog newInstance(String postid) {
+    public static CommentsDialog newInstance(String postid, String uid) {
         CommentsDialog frag = new CommentsDialog();
         Bundle b = new Bundle();
         b.putString(ARG_POSTID, postid);
+        b.putString(ARG_UID, uid);
         frag.setArguments(b);
         return frag;
     }
@@ -60,16 +68,24 @@ public class CommentsDialog extends AppCompatDialogFragment {
         if (savedInstanceState != null) {
             mPostid = savedInstanceState.getString(ARG_POSTID);
             mComments = (ArrayList) savedInstanceState.getSerializable(ARG_COMMENTS);
+            mUid = savedInstanceState.getString(ARG_UID);
         } else {
             if (getArguments() != null) {
                 mPostid = getArguments().getString(ARG_POSTID);
+                mUid = getArguments().getString(ARG_UID);
             }
             if (mPostid != null && !(mPostid.isEmpty())) {
                 mComments = CommentsManager.getInstance(mUid, getActivity()).fetchComments(mPostid);
             }
         }
+    }
 
-
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(ARG_UID, mUid);
+        outState.putString(ARG_POSTID, mPostid);
+        outState.putSerializable(ARG_COMMENTS, mComments);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -90,17 +106,29 @@ public class CommentsDialog extends AppCompatDialogFragment {
 
         ListView lv = (ListView) layout.findViewById(R.id.lvcommentspop);
         lv.setAdapter(new CommentAdapter(getActivity(), mComments, mPostid));
+        emptyView = (ImageView) layout.findViewById(R.id.commentsEmptyView);
+        if (mComments.size() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+        }
+        etComment = (EditText) layout.findViewById(R.id.etcommentonpost);
+        ivPostComment = (ImageView) layout.findViewById(R.id.ivCommentSend);
+        ivPostComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String comment = etComment.getText().toString();
+                if (!comment.equals("")) {
+                    CommentsManager.getInstance(mUid, getActivity()).postComment(mPostid, comment);
+                }
+            }
+        });
 
         dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         dialog.setContentView(layout);
 
-//        Display display = getActivity().getWindowManager().getDefaultDisplay();
-//        Point size = new Point();
-//        display.getSize(size);
-//        int width = ((int) (size.x / 1.1));
-//        int height = ((int) (size.y / 1.1));
-//        dialog.getWindow().setLayout(width, height);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         return dialog;
     }
 }
