@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.swiftkaytech.findme.NavDrawerItem;
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.FriendsActivity;
 import com.swiftkaytech.findme.activity.MessagesListActivity;
 import com.swiftkaytech.findme.activity.ProfileActivity;
 import com.swiftkaytech.findme.adapters.NavDrawerListAdapter;
@@ -316,7 +317,7 @@ public class NavigationDrawerFragment extends Fragment {
                 .inflate(R.layout.drawerheader, null, false);
         ImageView headermessage = (ImageView) header.findViewById(R.id.ivdrawerheadermessages);
 //        ImageView headernotes = (ImageView) header.findViewById(R.id.ivdrawerheadernotes);
-//        ImageView headerfriends = (ImageView) header.findViewById(R.id.ivdrawerheadfriends);
+        ImageView headerfriends = (ImageView) header.findViewById(R.id.ivdrawerheadfriends);
 //        ImageView headermatch = (ImageView) header.findViewById(R.id.ivdrawerheadermatch);
         tvname = (TextView) header.findViewById(R.id.tvmatchmymatches);
         ImageView ivusersphoto = (ImageView) header.findViewById(R.id.ivdrawerusersphoto);
@@ -372,15 +373,16 @@ public class NavigationDrawerFragment extends Fragment {
 //                }
 //            }
 //        });
-//        headerfriends.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                if (mDrawerLayout != null) {
-//                    mDrawerLayout.closeDrawer(mFragmentContainerView);
-//                }
-//            }
-//        });
+        headerfriends.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (mDrawerLayout != null) {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
+                startActivity(FriendsActivity.createIntent(getActivity(), uid));
+            }
+        });
         return header;
 
 

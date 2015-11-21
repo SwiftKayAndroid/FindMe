@@ -19,16 +19,6 @@ import com.swiftkaytech.findme.data.User;
 import com.swiftkaytech.findme.fragment.FriendRequestsFrag;
 import com.swiftkaytech.findme.utils.ImageLoader;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +49,21 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
 
     @Override
     public void onBindViewHolder(FriendRequestViewHolder holder, int position) {
-
+        if (users.get(position).getPropicloc().equals("")) {
+            holder.iv.setImageResource(R.drawable.ic_placeholder);
+        } else {
+            imageLoader.DisplayImage(users.get(position).getPropicloc(), holder.iv, false);
+        }
+        holder.tvName.setText(users.get(position).getFirstname() + " " + users.get(position).getLastname());
     }
 
     @Override
     public int getItemCount() {
         return users.size();
+    }
+
+    public void addUsers(ArrayList<User> users) {
+        this.users.addAll(users);
     }
 
 

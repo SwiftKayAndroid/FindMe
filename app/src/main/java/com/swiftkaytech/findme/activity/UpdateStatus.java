@@ -19,16 +19,6 @@ import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +47,6 @@ public class UpdateStatus extends AppCompatActivity {
             if (etstatus.toString().equals("")) {
                 //todo: add error message
             } else {
-                new PostStatus().execute(etstatus.getText().toString());
             }
         } else if (item.getItemId() == android.R.id.home) {
             finish();
@@ -119,76 +108,5 @@ public class UpdateStatus extends AppCompatActivity {
         String KEY = "uid";
         return prefs.getString(KEY, null);
     }//----------------------------------------------------------------------------------------------<</getUID>>
-
-    private class PostStatus extends AsyncTask<String, String, String> {
-        String webResponse;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // Showing progress dialog
-            pDialog = new ProgressDialog(UpdateStatus.this);
-            pDialog.setMessage("Please wait...");
-            pDialog.setCancelable(false);
-            pDialog.show();
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String status = params[0];
-
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(getString(R.string.ipaddress) + "updatestatus.php");
-
-            try {
-                // Add your data
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("status", status));
-                nameValuePairs.add(new BasicNameValuePair("uid", uid));
-
-
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                // Execute HTTP Post Request
-
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                webResponse = httpclient.execute(httppost, responseHandler);
-
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-                webResponse = "error";
-                Log.e("kevin", "error connection refused");
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                webResponse = "error";
-
-            }
-
-
-            return webResponse;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (pDialog.isShowing()) {
-                pDialog.dismiss();
-            }
-            if(s.equals("accepted")){
-                Toast.makeText(UpdateStatus.this,"Status uploaded successfully!", Toast.LENGTH_LONG).show();
-                finish();
-            }else{
-                Toast.makeText(UpdateStatus.this,"There was an error updating your status.", Toast.LENGTH_LONG).show();
-                finish();
-            }
-
-            //dismiss activity
-        }
-    }
 }
 

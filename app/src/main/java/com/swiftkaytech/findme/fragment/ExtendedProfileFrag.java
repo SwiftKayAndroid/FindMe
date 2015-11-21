@@ -14,15 +14,6 @@ import android.widget.TextView;
 
 import com.swiftkaytech.findme.R;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,7 +86,6 @@ public class ExtendedProfileFrag extends Fragment {
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        new GetExtendedInfo().execute();
 
 
 
@@ -115,91 +105,4 @@ tvtitle.setOnClickListener(new View.OnClickListener() {
 
     }
 
-    private class GetExtendedInfo extends AsyncTask<String, String, String> {
-
-        String webResponse;
-
-        @Override
-        protected String doInBackground(String... params) {
-            // Create a new HttpClient and Post Header
-
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(getString(R.string.ipaddress) + "getextendedinfo.php");
-
-            //This is the data to send
-
-
-            try {
-                // Add your data
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("ouid", ouid));
-                nameValuePairs.add(new BasicNameValuePair("uid", uid));
-
-
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                // Execute HTTP Post Request
-
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                webResponse = httpclient.execute(httppost, responseHandler);
-
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-                webResponse = "error";
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                webResponse = "error";
-            }
-
-
-            return webResponse;
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            Log.e("kevin", "extended profile result: " + result);
-
-            try {
-
-                JSONObject obj = new JSONObject(result);
-               // JSONArray jarray = obj.getJSONArray("post");
-                JSONObject child = obj.getJSONObject("post");
-                tvage.setText(/*TimeManager.getAge(*/child.getString("dob"));
-                tvzodiac.setText(child.getString("zodiac"));
-                tvcity.setText(child.getString("city"));
-                tvgender.setText(child.getString("gender"));
-                tvrelationshipstatus.setText(child.getString("relationshipstatus"));
-                tvlookingfor.setText(child.getString("lookingfor"));
-                tvinterestedin.setText(child.getString("interestedin"));
-                tvidealfristdate.setText(child.getString("idealfirstdate"));
-                tvhaskids.setText(child.getString("haskids"));
-                tvwantskids.setText(child.getString("wantskids"));
-                tvprofession.setText(child.getString("profession"));
-                tvschool.setText(child.getString("school"));
-                tvhascar.setText(child.getString("hascar"));
-                tvhasownplace.setText(child.getString("hasownplace"));
-                tvcigs.setText(child.getString("cigs"));
-                tvweed.setText(child.getString("weed"));
-                tvdrinks.setText(child.getString("drinks"));
-                tvheight.setText(child.getString("height"));
-                tvbodytype.setText(child.getString("bodytype"));
-                tvperfectmatch.setText(child.getString("perfectmatch"));
-
-
-
-            }catch(JSONException e){
-                e.printStackTrace();
-            }
-
-
-
-        }
-
-    }
 }
