@@ -1,16 +1,20 @@
 package com.swiftkaytech.findme.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.data.Message;
+import com.swiftkaytech.findme.managers.MessagesManager;
 import com.swiftkaytech.findme.utils.ImageLoader;
 
 import java.util.ArrayList;
@@ -20,6 +24,10 @@ import java.util.List;
  * Created by Kevin Haines on 3/29/2015.
  */
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageViewHolder> {
+
+    public interface MessagesAdapterListener{
+        void onMessageLongClick(View itemView, Message message);
+    }
     public static final String TAG = "MessagesAdapter";
     private static final int VIEW_TYPE_USER_MESSAGE = 0;
     private static final int VIEW_TYPE_OTHER_MESSAGE = 1;
@@ -28,12 +36,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     ArrayList<Message> mMessageList;
     String uid;
     ImageLoader imageLoader;
+    private MessagesAdapterListener mListener;
 
     public MessagesAdapter(Context context, ArrayList<Message> mlist, String uid){
         this.mContext = context;
         this.mMessageList = mlist;
         this.uid = uid;
         imageLoader = new ImageLoader(context);
+    }
+
+    public void setMessagesAdapterListener (MessagesAdapterListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -49,7 +62,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     }
 
     @Override
-    public void onBindViewHolder(MessagesAdapter.MessageViewHolder holder, int position) {
+    public void onBindViewHolder(final MessagesAdapter.MessageViewHolder holder, final int position) {
 
         holder.tvMessage.setText(mMessageList.get(position).getMessage());
         holder.tvTime.setText(mMessageList.get(position).getTime());
@@ -59,6 +72,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             imageLoader.DisplayImage(mMessageList.get(position).getUser().getPropicloc(), holder.profilePicture, false);
         }
 
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                if (mListener != null) {
+                    mListener.onMessageLongClick(holder.tvMessage, mMessageList.get(position));
+                }
+                return true;
+            }
+
+        });
     }
 
     @Override
@@ -105,6 +129,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     public void addMessage(Message message) {
         mMessageList.add(message);
         notifyDataSetChanged();
+    }
+
+    public void removeMessage(Message message) {
+        if (mMessageList.contains(message)) {
+            mMessageList.remove(message);
+            notifyDataSetChanged();
+        }
+    }
+
+    public ArrayList<Message> getMessages() {
+        return new ArrayList<>(mMessageList);
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {

@@ -1,89 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="#ffffff">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/beach_couple">
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stay Logged In"
-        android:id="@+id/cbloginstayloggedin"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginBottom="40dp" />
-
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
+        android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/btnloginlogin"
-        android:layout_above="@+id/cbloginstayloggedin"
-        android:layout_alignLeft="@+id/cbloginstayloggedin"
-        android:layout_alignStart="@+id/cbloginstayloggedin"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="40dp"
-        android:background="@drawable/blackbuttonbackground"
-        android:textColor="#ffffff" />
+        android:layout_alignParentBottom="true">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/etloginpassword"
-        android:layout_above="@+id/btnloginlogin"
-        android:layout_alignLeft="@+id/btnloginlogin"
-        android:layout_alignStart="@+id/btnloginlogin"
-        android:layout_alignRight="@+id/btnloginlogin"
-        android:layout_alignEnd="@+id/btnloginlogin"
-        android:background="@drawable/bluebuttonbackground"
-        android:layout_marginBottom="10dp"
-        android:hint="Password"
-        android:paddingLeft="5dp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:ems="10"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/etloginemail"
+            android:background="@drawable/green_outline_flat_button"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:hint="Email"
+            android:paddingLeft="5dp"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/light_gray" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:id="@+id/etloginemail"
-        android:layout_above="@+id/etloginpassword"
-        android:layout_alignLeft="@+id/etloginpassword"
-        android:layout_alignStart="@+id/etloginpassword"
-        android:background="@drawable/bluebuttonbackground"
-        android:layout_alignRight="@+id/etloginpassword"
-        android:layout_alignEnd="@+id/etloginpassword"
-        android:layout_marginBottom="10dp"
-        android:hint="Email"
-        android:paddingLeft="5dp"
-        android:inputType="text" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:inputType="textPassword"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:ems="10"
+            android:id="@+id/etloginpassword"
+            android:background="@drawable/green_outline_flat_button"
+            android:layout_marginBottom="10dp"
+            android:hint="Password"
+            android:paddingLeft="5dp"
+            android:textColorHint="@color/light_gray" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/redf"
-        android:layout_marginTop="25dp"
-        android:layout_above="@+id/etloginemail"
-        android:layout_marginBottom="25dp"
-        android:layout_alignRight="@+id/etloginemail"
-        android:layout_alignEnd="@+id/etloginemail"
-        android:layout_alignLeft="@+id/etloginemail"
-        android:layout_alignStart="@+id/etloginemail"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Login"
+            android:id="@+id/btnloginlogin"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/green_solid"
+            android:textColor="#ffffff" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Forgot Password?"
-        android:id="@+id/tvloginforgotpassword"
-        android:layout_alignBottom="@+id/cbloginstayloggedin"
-        android:layout_alignRight="@+id/btnloginlogin"
-        android:layout_alignEnd="@+id/btnloginlogin"
-        android:layout_alignTop="@+id/cbloginstayloggedin"
-        android:gravity="center" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Stay Logged In"
+                android:id="@+id/cbloginstayloggedin"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/primary_dark"
+                android:checked="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Forgot Password?"
+                android:id="@+id/tvloginforgotpassword"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:layout_marginRight="16dp"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center"
+                android:textColor="@color/primary_dark" />
+
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

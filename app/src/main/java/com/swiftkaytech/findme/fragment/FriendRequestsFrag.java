@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.adapters.FriendRequestsAdapter;
+import com.swiftkaytech.findme.data.User;
+import com.swiftkaytech.findme.managers.UserManager;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -37,175 +39,77 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by khaines178 on 9/9/15.
+ * Created by Kevin Haines on 9/9/15.
  */
-public class FriendRequestsFrag extends Fragment {
+public class FriendRequestsFrag extends BaseFragment implements UserManager.UserManagerListener {
+    public static final String TAG = "FriendRequestsFrag";
 
-    public class FriendRequests{
-        public String name;
-        public String uid;
-        public String propicloc;
-        public String location;
-        public String dob;
-    }
+    private ArrayList<User> users = new ArrayList<>();
 
-    public static List<FriendRequests> flist;
-
-    Context context;
-    SharedPreferences prefs;
-    String uid;
-    ListView lv;
-
-    BaseAdapter adapter;
-
-    boolean isActive;
-    boolean refreshing = false;
-
-
-    public FriendRequestsFrag() {
+    public static FriendRequestsFrag newInstance(String uid) {
+        FriendRequestsFrag frag = new FriendRequestsFrag();
+        Bundle b = new Bundle();
+        b.putString(ARG_UID, uid);
+        frag.setArguments(b);
+        return frag;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.context = getActivity();
-        flist = new ArrayList<FriendRequests>();
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        uid = getUID();
-
+        if (savedInstanceState != null) {
+            uid = savedInstanceState.getString(ARG_UID);
+        } else {
+            if (getArguments() != null) {
+                uid = getArguments().getString(ARG_UID);
+            }
+        }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(!isActive){
-
-            new GetFriendrequests().execute();
-        }else{
-
-            BaseAdapter a = (BaseAdapter) lv.getAdapter();
-
-            if(a == null) {
-                adapter = new FriendRequestsAdapter(context, flist, lv, uid);
-                lv.setAdapter(adapter);
-            }else {
-                a.notifyDataSetChanged();
-                Log.e("kevin", "datasetchanged on friendslist");
-            }
-
-
-        }
-        TextView tv = new TextView(context);
-        tv.setText("You have no new friend requests");
-        lv.setEmptyView(tv);
- isActive = true;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
         View layout = inflater.inflate(R.layout.friendrequestsfrag,container,false);
-        lv = (ListView) layout.findViewById(R.id.lvfriendrequests);
-
-
-
 
         return layout;
     }
 
-    private String getUID() {//---------------------------------------------------------------------<<getUID>>
-        String KEY = "uid";
-        return prefs.getString(KEY,null);
-    }//----------------------------------------------------------------------------------------------<</getUID>>
+    @Override
+    public void onResume() {
+        super.onResume();
+        UserManager.getInstance(uid, getActivity()).addListener(this);
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        UserManager.getInstance(uid, getActivity()).removeListener(this);
+    }
 
-    private class GetFriendrequests extends AsyncTask<String, String, String> {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(ARG_UID, uid);
+        super.onSaveInstanceState(outState);
+    }
 
-        String webResponse;
+    @Override
+    public void onFriendRequestsRetrieved(ArrayList<User> users) {
 
-        @Override
-        protected String doInBackground(String... params) {
-            // Create a new HttpClient and Post Header
+    }
 
+    @Override
+    public void onFriendsRetrieved(ArrayList<User> users) {
 
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(getString(R.string.ipaddress) + "getfriendrequests.php");
+    }
 
+    @Override
+    public void onMatchesRetrieved(ArrayList<User> users) {
 
-            try {
-                // Add your data
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-
-                nameValuePairs.add(new BasicNameValuePair("uid", uid));
-
-
-
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                // Execute HTTP Post Request
-
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                webResponse = httpclient.execute(httppost, responseHandler);
-
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-                webResponse = "error";
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                webResponse = "error";
-            }
-
-
-            return webResponse;
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-
-            if (result.equals("error")) {
-                Toast.makeText(context, "Could't connect to Find Me", Toast.LENGTH_LONG).show();
-            } else {
-                try {
-
-                    JSONObject obj = new JSONObject(result);
-                    JSONArray jarray = obj.getJSONArray("ppl");
-
-                    Log.e("kevin", result);
-                    if(refreshing)
-                        flist.clear();
-
-                    for(int i = 0;i<jarray.length();i++) {
-                        JSONObject childJSONObject = jarray.getJSONObject(i);
-                        flist.add(new FriendRequests());
-                        flist.get(flist.size()-1).uid = childJSONObject.getString("uid");
-                        flist.get(flist.size()-1).propicloc = childJSONObject.getString("propicloc");
-                        flist.get(flist.size()-1).location = childJSONObject.getString("location");
-                        flist.get(flist.size()-1).dob = childJSONObject.getString("dob");
-                        flist.get(flist.size()-1).name = childJSONObject.getString("name");
-
-
-                    }
-
-                    //choose your favorite adapter
-                    BaseAdapter a = (BaseAdapter) lv.getAdapter();
-                    if(a == null) {
-                        adapter = new FriendRequestsAdapter(context, flist, lv, uid);
-                        lv.setAdapter(adapter);
-                    }else {
-                        a.notifyDataSetChanged();
-                        Log.e("kevin", "datasetchanged on friendrequests");
-                    }
-                }catch(JSONException e){
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }

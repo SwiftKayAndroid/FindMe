@@ -1,5 +1,6 @@
 package com.swiftkaytech.findme.fragment;
 
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,115 +44,40 @@ import java.util.List;
 /**
  * Created by Kevin Haines on 3/2/2015.
  */
-public class FriendsFrag extends AppCompatActivity {
-
-    SharedPreferences prefs;
-    Context context;
-    String uid;
-
-
-    MyAdapter mAdapter;
-    ViewPager mPager;
-
-    LayoutInflater inflater;
-
-    public FriendsFrag(){}
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int itemId = item.getItemId();
-        switch (itemId) {
-            case android.R.id.home:
-                finish();
-
-                // Toast.makeText(this, "home pressed", Toast.LENGTH_LONG).show();
-                break;
-
-        }
-
-        return true;
+public class FriendsFrag extends BaseFragment {
+    public static final String TAG = "FriendsFrag";
+    /**
+     *todo: use advanced recyclerview for handling deletion of friends and such
+     *
+     */
+    public static FriendsFrag newInstance(String uid) {
+        FriendsFrag frag = new FriendsFrag();
+        Bundle b = new Bundle();
+        b.putString(ARG_UID, uid);
+        frag.setArguments(b);
+        return frag;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.friendsfrag);
-        this.context = this;
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        uid = getUID();
-        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
-        mAdapter = new MyAdapter(getSupportFragmentManager());
-
-        mPager = (ViewPager)findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);
-        mPager.setCurrentItem(0);
-
-
-
-        final TabHolder holder = (TabHolder) findViewById(R.id.tabholder);
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        float logicalDensity = metrics.density;
-        holder.initialize(logicalDensity);
-
-        View mTabone = inflater.inflate(R.layout.mytab,null,false);
-        TextView tvtabone = (TextView) mTabone.findViewById(R.id.tvtabtext);
-        mTabone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(holder.currentSelected!=0){
-                    holder.setSelected(0);
-                    mPager.setCurrentItem(0,true);
-                }
-            }
-        });
-        tvtabone.setText("Friend Requests");
-        holder.addTab(mTabone);
-
-        View mTabtwo = inflater.inflate(R.layout.mytab,null,false);
-        TextView tvtabtwo = (TextView) mTabtwo.findViewById(R.id.tvtabtext);
-        mTabtwo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.currentSelected != 1) {
-                    holder.setSelected(1);
-                    mPager.setCurrentItem(1,true);
-                }
-            }
-        });
-        tvtabtwo.setText("Friends");
-        holder.addTab(mTabtwo);
-        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                holder.setSelected(position);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-
 
     }
 
-    private String getUID() {//---------------------------------------------------------------------<<getUID>>
-        String KEY = "uid";
-        return prefs.getString(KEY,null);
-    }//----------------------------------------------------------------------------------------------<</getUID>>
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
 
-
-
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(ARG_UID, uid);
+        super.onSaveInstanceState(outState);
+    }
 }

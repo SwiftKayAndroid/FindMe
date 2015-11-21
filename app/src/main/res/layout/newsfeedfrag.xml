@@ -80,8 +80,8 @@
         android:clickable="true"
         app:fabSize="mini"
         app:backgroundTint="@color/base_green"
-        android:layout_alignTop="@+id/fab"
         android:layout_toLeftOf="@+id/fab"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:layout_alignBottom="@+id/fab" />
 
 </RelativeLayout>

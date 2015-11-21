@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.managers.AccountManager;
 import com.swiftkaytech.findme.managers.ConnectionManager;
 import com.swiftkaytech.findme.tasks.AuthenticateUser;
 
@@ -42,22 +44,17 @@ public class LoginPage extends Activity implements AuthenticateUser.Authenticati
             }
             break;
             case AuthenticateUser.RESULT_REGISTRATION_NOT_COMPLETE: {
-                //todo: show alert dialog with option to resend email
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Registration incomplete");
+                builder.setTitle("Registration Incomplete");
                 builder.setMessage("You haven't confirmed your email yet!");
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
+                builder.setPositiveButton("Ok", null);
                 builder.setNegativeButton("Resend Email", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //todo: implement resending email
+                        AccountManager.getInstance(LoginPage.this).resendRegistrationEmail(etemail.getText().toString());
                     }
                 });
+                builder.show();
             }
             break;
             default: {
@@ -149,12 +146,11 @@ public class LoginPage extends Activity implements AuthenticateUser.Authenticati
 
             @Override
             public void onClick(View v) {
-                String s = etemail.getText().toString();
-                if(s.equals("")){
+                String email = etemail.getText().toString();
+                if(email.equals("")){
                     Toast.makeText(LoginPage.this, "Please fill in the email field first", Toast.LENGTH_LONG).show();
                 }else{
-                    Recover r = new Recover();
-                    r.execute(s);
+                    AccountManager.getInstance(LoginPage.this).recoverPassword(email);
                 }
             }
         });

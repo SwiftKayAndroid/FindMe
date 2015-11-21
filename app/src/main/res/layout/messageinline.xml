@@ -22,14 +22,14 @@
         android:layout_above="@+id/etmessaget"
         android:padding="10dp"
         app:stackFromEnd="true"
-        android:background="@null"
+        android:background="@color/light_gray"
         android:divider="@null">
 
     </android.support.v7.widget.RecyclerView>
 
     <EditText
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:id="@+id/etmessaget"
         android:layout_alignParentBottom="true"
         android:inputType="textMultiLine|textCapSentences"
@@ -37,7 +37,8 @@
         android:layout_toLeftOf="@+id/tvsendmessage"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:hint="Type a message...." />
+        android:hint="Type a message...."
+        android:background="@color/white" />
 
     <ImageView
         android:layout_width="50dp"
@@ -45,8 +46,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Photo"
         android:id="@+id/tvsendmessage"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:textColor="#ffffff"
@@ -54,5 +53,6 @@
         android:tint="@color/black"
         android:layout_below="@+id/messagesInlineRecyclerView"
         android:src="@mipmap/ic_message_black_24dp"
-        android:layout_marginRight="5dp" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

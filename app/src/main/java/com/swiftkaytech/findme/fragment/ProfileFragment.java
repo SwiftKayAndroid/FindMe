@@ -45,6 +45,7 @@ import com.swiftkaytech.findme.data.Post;
 import com.swiftkaytech.findme.data.User;
 import com.swiftkaytech.findme.managers.PostManager;
 import com.swiftkaytech.findme.utils.AndroidUtils;
+import com.swiftkaytech.findme.utils.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -141,13 +142,19 @@ View.OnClickListener, PostManager.PostsListener, AppBarLayout.OnOffsetChangedLis
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTvAgeLocation.setText(user.getAge() + "/" + user.getGender().toString() + "/" + user.getLocation().getCity());
+        if (user.getPropicloc().equals("")) {
+            mProfilePicture.setImageResource(R.drawable.ic_placeholder);
+        } else {
+            ImageLoader imageLoader = new ImageLoader(getActivity());
+            imageLoader.DisplayImage(user.getPropicloc(), mProfilePicture, true);
+        }
         if (mPostAdapter != null) {
             log("adapter is not null");
             mRecyclerView.setAdapter(mPostAdapter);
         } else {
             log("adapter is null");
             log("size " + Integer.toString(mPostList.size()));
-            mPostAdapter = new PostAdapter(getActivity(), mPostList);
+            mPostAdapter = new PostAdapter(getActivity(), mPostList, user);
             mRecyclerView.setAdapter(mPostAdapter);
         }
     }

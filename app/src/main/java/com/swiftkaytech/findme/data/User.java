@@ -119,6 +119,19 @@ public class User implements Serializable{
         return user;
     }
 
+    public User createUserFromJson(JSONObject object) throws JSONException {
+        mOuid = object.getString("uid");
+        mPropicloc = object.getString("propicloc");
+        mFirstname = object.getString("firstname");
+        mLastname = object.getString("lastname");
+        mLocation = setLocationFromArray(object.getJSONObject("location"));
+        mGender = setGenderFromString(object.getString("gender"));
+        mInterestIn = setInterestedInFromString(object.getString("looking_for_gender"));
+        mAge = Integer.parseInt(object.getString("dob"));
+        mOrientation = setOrientationFromString(object.getString("orientation"));
+        return this;
+    }
+
     public User fetchUser(String ouid, Context context){
         Log.i(TAG,"fetchUser");
         mOuid = ouid;

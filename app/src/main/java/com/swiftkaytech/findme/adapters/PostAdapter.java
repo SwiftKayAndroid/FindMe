@@ -34,6 +34,7 @@ import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.activity.ProfileActivity;
 import com.swiftkaytech.findme.data.Comment;
 import com.swiftkaytech.findme.data.Post;
+import com.swiftkaytech.findme.data.User;
 import com.swiftkaytech.findme.fragment.CommentsDialog;
 import com.swiftkaytech.findme.managers.PostManager;
 import com.swiftkaytech.findme.utils.ImageLoader;
@@ -57,10 +58,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private boolean hasHeader = false;
     private PostAdapterListener mListener;
+    private User user;
 
-    public PostAdapter(Context context, ArrayList<Post> plist) {
+    public PostAdapter(Context context, ArrayList<Post> plist, User user) {
         mContext = context;
         mPostList = plist;
+        this.user = user;
     }
 
     public void setPostAdapterListener(PostAdapterListener listener) {
@@ -136,7 +139,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.ivProfilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mContext.startActivity(ProfileActivity.createIntent(mContext, mPostList.get(position).getUser()));
+                    if (!mPostList.get(position).getUser().getOuid().equals(user.getOuid())) {
+                        mContext.startActivity(ProfileActivity.createIntent(mContext, mPostList.get(position).getUser()));
+                    }
                 }
             });
             holder.ivPostLike.setTag(position);

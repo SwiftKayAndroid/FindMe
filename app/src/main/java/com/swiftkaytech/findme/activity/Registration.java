@@ -36,7 +36,6 @@ import java.util.List;
  */
 public class Registration extends Activity {
 
-
     EditText etemail, etpass, etpassconfirm, etzip;
     Button btnreg;
     ProgressDialog pDialog;
@@ -155,7 +154,6 @@ public class Registration extends Activity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            // Dismiss the progress dialog
             if (pDialog.isShowing())
                 pDialog.dismiss();
             Log.e("kevin", result);

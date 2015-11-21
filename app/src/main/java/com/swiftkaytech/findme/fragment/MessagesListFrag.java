@@ -57,10 +57,6 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            if (uid == null || uid.isEmpty()) {
-                err("uid is null or empty on view created");
-            }
-            MessagesManager.getInstance(uid, getActivity()).refreshThreads(getActivity());
         }
     }
 
@@ -84,12 +80,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
             mMessagesAdapter.setThreadSelectedListener(this);
             mRecyclerView.setAdapter(mMessagesAdapter);
         }
-
-        if (mThreadList.size() < 1) {
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
-        }
+        mRefreshLayout.setOnRefreshListener(this);
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -123,15 +114,19 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
 
     @Override
     public void onResume() {
+        Log.i(TAG, "onResume");
         super.onResume();
         MessagesManager.getInstance(uid, getActivity()).addThreadsListener(this);
         if (mMessagesAdapter != null) {
             mMessagesAdapter.setThreadSelectedListener(this);
         }
+        mRefreshing = true;
+        MessagesManager.getInstance(uid, getActivity()).refreshThreads(getActivity());
     }
 
     @Override
     public void onPause() {
+        Log.i(TAG, "onPause");
         super.onPause();
         MessagesManager.getInstance(uid, getActivity()).removeThreadsListener(this);
         if (mMessagesAdapter != null) {
@@ -152,11 +147,11 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
         if (mRefreshing) {
             mMessagesAdapter.removeAllThreads();
             mMessagesAdapter.addThreads(threadInfos);
+            mRefreshLayout.setRefreshing(false);
+            mRefreshing = false;
         } else {
             mMessagesAdapter.addThreads(threadInfos);
         }
-        mRefreshLayout.setRefreshing(false);
-        mRefreshing = false;
 
         if (mThreadList.size() < 1) {
             mEmptyView.setVisibility(View.VISIBLE);
@@ -196,7 +191,14 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     }
 
     @Override
-    public void onMessageRecevied(Message message) {
-        mMessagesAdapter.addMessage(message);
+    public void onMessageRecevied(final Message message) {
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMessagesAdapter.addMessage(message);
+            }
+        });
+
     }
 }

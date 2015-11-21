@@ -1,17 +1,24 @@
 package com.swiftkaytech.findme.fragment;
 
 import android.content.Context;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.adapters.MessagesAdapter;
@@ -26,20 +33,20 @@ import java.util.ArrayList;
 /**
  * Created by Kevin Haines on 3/11/2015.
  */
-public class MessagesFrag extends BaseFragment implements View.OnClickListener{
-    public static final String TAG = "MessagesFrag";
+public class MessagesFrag extends BaseFragment implements View.OnClickListener, MessagesAdapter.MessagesAdapterListener{
+    public static final String  TAG = "MessagesFrag";
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_MESSAGES = "ARG_MESSAGES";
 
-    private ArrayList<Message> mMessagesList = new ArrayList<>();
-    private User user;
-    private ThreadInfo mThreadInfo;
-    private MessagesAdapter mMessageAdapter;
+    private ArrayList<Message>  mMessagesList = new ArrayList<>();
+    private User                user;
+    private ThreadInfo          mThreadInfo;
+    private MessagesAdapter     mMessageAdapter;
 
-    private EditText etmessage;
-    private ImageView ivsend;
-    private RecyclerView mRecyclerView;
-    private View            mEmptyView;
+    private EditText            etmessage;
+    private ImageView           ivsend;
+    private RecyclerView        mRecyclerView;
+    private View                mEmptyView;
 
 
     public static MessagesFrag instance(String uid, User user) {
@@ -113,8 +120,19 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener{
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onResume() {
+        super.onResume();
+        if (mMessageAdapter != null) {
+            mMessageAdapter.setMessagesAdapterListener(this);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mMessageAdapter != null) {
+            mMessageAdapter.setMessagesAdapterListener(null);
+        }
     }
 
     /**
@@ -122,13 +140,14 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener{
      * @param messages Arraylist of Messages
      */
     public void updateMessages(ArrayList<Message> messages) {
-        mMessageAdapter.addAllMessages(mMessagesList);
+        mMessageAdapter.addAllMessages(messages);
+        mMessageAdapter.setMessagesAdapterListener(this);
         int size = mRecyclerView.getLayoutManager().getItemCount() - 1;
         if (size > 0) {
             mRecyclerView.smoothScrollToPosition(size);
         }
 
-        if (mMessagesList.size() < 1) {
+        if (messages.size() < 1) {
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
             mEmptyView.setVisibility(View.GONE);
@@ -140,9 +159,27 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener{
      * @param message message that was sent
      */
     public void notifyNewMessage(Message message) {
-        mMessageAdapter.addMessage(message);
-        int size = mRecyclerView.getLayoutManager().getItemCount() - 1;
-        mRecyclerView.smoothScrollToPosition(size);
+        Log.i(TAG, "new message");
+        Log.e(TAG, "message user id: " + message.getUser().getOuid());
+        if (message.getUser().getOuid().equals(user.getOuid()) || message.getUser().getOuid().equals(uid)) {
+            if (mMessageAdapter != null) {
+                Log.i(TAG, "Message Adapter isn't null");
+                mMessageAdapter.addMessage(message);
+                if (!message.getUser().getOuid().equals(uid)) {
+                    try {
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Ringtone r = RingtoneManager.getRingtone(getActivity(), notification);
+                        r.play();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                int size = mRecyclerView.getLayoutManager().getItemCount() - 1;
+                mRecyclerView.smoothScrollToPosition(size);
+            }
+        } else {
+            MessagesManager.sendNotification(message);
+        }
 
         if (mMessagesList.size() < 1) {
             mEmptyView.setVisibility(View.VISIBLE);
@@ -151,14 +188,48 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener{
         }
     }
 
+    public void notifyMessageDeleted(Message message) {
+        mMessageAdapter.removeMessage(message);
+    }
+
+    public String getThreadId() {
+        if (mMessageAdapter != null && mMessageAdapter.getMessages().size() > 0) {
+            return mMessageAdapter.getMessages().get(0).getThreadId();
+        }
+        return "";
+    }
+
+    @Override
+    public void onMessageLongClick(View itemView, final Message message) {
+        PopupMenu popup = new PopupMenu(getActivity(), itemView);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater().inflate(R.menu.message_pop_up_menu, popup.getMenu());
+        if (!message.getUser().getOuid().equals(uid)) {
+            popup.getMenu().findItem(R.id.messagesPopUpMenuUnsend).setVisible(false);
+        }
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.messagePopUpMenuDelete) {
+                    MessagesManager.getInstance(uid, getActivity()).deleteMessage(message);
+                } else if (item.getItemId() == R.id.messagesPopUpMenuUnsend) {
+                    MessagesManager.getInstance(uid, getActivity()).unSendMessage(message);
+                }
+                return true;
+            }
+        });
+        popup.show();//showing popup menu
+    }
+
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.tvsendmessage) {
+        if (v.getId() == R.id.tvsendmessage && !(etmessage.getText().toString().equals(""))) {
             Message message = Message.instance(uid);
             message.setDeletedStatus(0);
             message.setMessage(etmessage.getText().toString());
             message.setOuid(uid);
-            message.setReadStatus(0);
+            message.setReadStatus(1);
             message.setSeenStatus(0);
             message.setUser(UserManager.getInstance(uid, getActivity()).me());
             message.setTime("Just Now");

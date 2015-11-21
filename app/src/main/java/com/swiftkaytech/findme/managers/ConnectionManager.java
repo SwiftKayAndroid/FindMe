@@ -24,11 +24,15 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyStore;
@@ -383,6 +387,94 @@ public class ConnectionManager {
 
         Log.e("httprequest", error);
 
+    }
+
+    public void uploadFile(URL connectURL, String pathToFile, String uid, String text){
+        String iFileName = pathToFile.replaceAll("[^a-zA-Z0-9]", "");
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        String Tag="fSnd";
+
+        try {
+            FileInputStream fileInputStream = new FileInputStream(pathToFile);
+            Log.e(Tag,"Starting Http File Sending to URL");
+
+            HttpURLConnection conn = (HttpURLConnection) connectURL.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+
+            conn.setRequestProperty("Connection", "Keep-Alive");
+
+            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"uid\""+ lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(uid);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"description\""+ lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(text);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\"" + iFileName + "\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+
+            Log.e(Tag,"Headers are written");
+
+            // create a buffer of maximum size
+            int bytesAvailable = fileInputStream.available();
+
+            int maxBufferSize = 1024;
+            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            byte[ ] buffer = new byte[bufferSize];
+
+            // read file and write it into form...
+            int bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+            while (bytesRead > 0)
+            {
+                dos.write(buffer, 0, bufferSize);
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable,maxBufferSize);
+                bytesRead = fileInputStream.read(buffer, 0,bufferSize);
+            }
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+            // close streams
+            fileInputStream.close();
+
+            dos.flush();
+
+            Log.e(Tag,"File Sent, Response: " + String.valueOf(conn.getResponseCode()));
+
+            StringBuilder sb = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String line;
+            while((line = reader.readLine()) != null){
+                sb.append(line);
+
+            }
+            Log.e(Tag, sb.toString());
+            dos.close();
+        }
+        catch (MalformedURLException ex) {
+            Log.e(Tag, "URL error: " + ex.getMessage(), ex);
+        }
+
+        catch (IOException ioe) {
+            Log.e(Tag, "IO error: " + ioe.getMessage(), ioe);
+        }
     }
 
     private void log(String msg){

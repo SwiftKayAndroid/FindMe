@@ -144,6 +144,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     public void initializeDrawer(){
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment.setUid(uid);
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,

@@ -17,8 +17,10 @@
 
 package com.swiftkaytech.findme.activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import android.view.View;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.data.Message;
+import com.swiftkaytech.findme.data.ThreadInfo;
 import com.swiftkaytech.findme.data.User;
 import com.swiftkaytech.findme.fragment.MessagesFrag;
 import com.swiftkaytech.findme.managers.MessagesManager;
@@ -94,7 +97,19 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.messagesThreadDeleteAllMessages) {
-
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MessagesActivity.this);
+                    builder.setTitle("Delete All Messages");
+                    builder.setMessage("Are you sure you want to delete all messages");
+                    builder.setNegativeButton("Cancel", null);
+                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ThreadInfo t = ThreadInfo.instance(uid);
+                            t.threadId = mMessagesFrag.getThreadId();
+                            MessagesManager.getInstance(uid, MessagesActivity.this).deleteThread(t);
+                        }
+                    });
+                    builder.show();
                 }
                 return true;
             }
@@ -123,23 +138,35 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
     @Override
     public void onRetrieveMoreMessages(ArrayList<Message> moreMessages) {
         if (moreMessages != null) {
-            mMessagesFrag.updateMessages(moreMessages);
+            mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
+            if (mMessagesFrag != null) {
+                mMessagesFrag.updateMessages(moreMessages);
+            }
         }
     }
 
     @Override
     public void onMessageDeleted(Message message) {
-
+        mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
+        if (mMessagesFrag != null) {
+            mMessagesFrag.notifyMessageDeleted(message);
+        }
     }
 
     @Override
     public void onMessageSentComplete(Message message) {
-        mMessagesFrag.notifyNewMessage(message);
+        mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
+        if (mMessagesFrag != null) {
+            mMessagesFrag.notifyNewMessage(message);
+        }
     }
 
     @Override
     public void onMessageUnsent(Message message) {
-
+        mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
+        if (mMessagesFrag != null) {
+            mMessagesFrag.notifyMessageDeleted(message);
+        }
     }
 
     @Override
@@ -147,7 +174,10 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mMessagesFrag.notifyNewMessage(message);
+                mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
+                if (mMessagesFrag != null) {
+                    mMessagesFrag.notifyNewMessage(message);
+                }
             }
         });
     }

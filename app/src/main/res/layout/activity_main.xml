@@ -1,25 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="#ffffff">
+    android:orientation="vertical"
+    android:background="@drawable/beach_couple">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/imageView"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:src="@drawable/redf"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="30dp" />
-
-        <RelativeLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
@@ -29,8 +14,8 @@
                 android:layout_height="wrap_content"
                 android:text="Login"
                 android:id="@+id/btnstartpagelogin"
-                android:background="@drawable/bluebuttonbackground"
-                android:textColor="#ffffff"
+                android:background="@drawable/green_outline_flat_button"
+                android:textColor="@color/primary_dark"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="50dp"
@@ -49,7 +34,7 @@
                 android:layout_alignEnd="@+id/btnstartpagelogin"
                 android:layout_marginBottom="15dp"
                 android:textColor="#ffffff"
-                android:background="@drawable/blackbuttonbackground" />
+                android:background="@drawable/green_solid" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -59,7 +44,8 @@
                 android:id="@+id/textView"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="2dp" />
+                android:layout_marginBottom="2dp"
+                android:textColor="@color/primary_dark" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -71,7 +57,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="15dp"
                 android:textStyle="italic"
-                android:gravity="center" />
+                android:gravity="center"
+                android:textColor="@color/primary_dark" />
         </RelativeLayout>
-    </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

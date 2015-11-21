@@ -1,25 +1,13 @@
 package com.swiftkaytech.findme.activity;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.content.Intent;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.tasks.AuthenticateUser;
@@ -35,7 +23,7 @@ public class MainActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean saved = prefs.getBoolean("loginsaved",false);
+        boolean saved = prefs.getBoolean("loginsaved", false);
 
         if (saved) {
             String credemail = prefs.getString("email", null);
@@ -43,20 +31,19 @@ public class MainActivity extends Activity {
 
             if (credemail == null || credpassword == null) {
                 SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
                 SharedPreferences.Editor editor = mPreferences.edit();
                 editor.putBoolean("loginsaved", false);
                 editor.apply();
-                setGUI();
-            }
 
-            AuthenticateUser au = AuthenticateUser.getInstance(this);
-            au.authenticate(prefs.getString("email", null), prefs.getString("password", null));
-            startActivity(MainLineUp.createIntent(this));
+                setGUI();
+            } else {
+                AuthenticateUser au = AuthenticateUser.getInstance(this);
+                au.authenticate(prefs.getString("email", null), prefs.getString("password", null));
+                startActivity(MainLineUp.createIntent(this));
+            }
         } else {
             setGUI();
         }
-
     }
 
     private void setGUI(){

@@ -103,7 +103,7 @@ public class BasicInfo extends Activity{
 
     //update the text view containing the date
     private void updateLabel() {
-        String myFormat = "MM/dd/yyyy"; //In which you need put here
+        String myFormat = "yyyy-MM-dd";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         tvdate.setText(sdf.format(myCalendar.getTime()));

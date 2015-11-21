@@ -69,8 +69,8 @@ public class PostManager {
      * @return
      */
     public ArrayList<Post> fetchPosts(Context context, String lastpost){
-            Log.d(TAG, "fetching posts");
-            new FetchPostsTask(mUid, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        Log.d(TAG, "fetching posts");
+        new FetchPostsTask(mUid, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
 //        for (Post post : mPosts) {
 //            //TagManager.getInstance(mUid).fetchTags(post.getPostId(), context, post);
 //        }
@@ -78,7 +78,7 @@ public class PostManager {
     }
 
     public void fetchUserPosts(Context context, User user, String lastpost) {
-            new FetchUserPosts(user, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        new FetchUserPosts(user, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     private class FetchPostsTask extends AsyncTask<Void,Void,ArrayList<Post>> {

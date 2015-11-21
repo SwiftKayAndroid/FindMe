@@ -17,7 +17,9 @@
 
 package com.swiftkaytech.findme.data;
 
-public class ThreadInfo {
+import java.io.Serializable;
+
+public class ThreadInfo implements Serializable{
 
     public static final String  TAG     = "ThreadInfo";
     public static final int     READ    = 1;

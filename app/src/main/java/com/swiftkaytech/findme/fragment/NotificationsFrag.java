@@ -34,147 +34,38 @@ import java.util.List;
 /**
  * Created by khaines178 on 8/24/15.
  */
-public class NotificationsFrag extends Fragment {
+public class NotificationsFrag extends BaseFragment {
+    public static final String TAG = "NotificationsFrag";
 
-    public class Notification{
-        public String note;
-        public String noteid;
-        public String picloc;
-        public String type;
-        public String time;
+    public static NotificationsFrag newInstance(String uid) {
+        NotificationsFrag frag = new NotificationsFrag();
+        Bundle b = new Bundle();
+        b.putString(ARG_UID, uid);
+        frag.setArguments(b);
+        return  frag;
     }
 
-    List<Notification> nlist;
-
-    //objects
-    SharedPreferences prefs;
-    Context context;
-    NotificationsAdapter adapter;
-
-
-    //gui elements
-    ListView lv;
-
-
-    //primitive
-
-    //Strings
-    String uid;
-    String lp = "0";
-
-    public NotificationsFrag(){}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View layout = inflater.inflate(R.layout.notificationfrag, container,false);
-        context = getActivity();
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        uid = getUID();
-
-        setGUI(layout);
-
-        nlist = new ArrayList<Notification>();
 
         return layout;
     }
 
-    private void setGUI(View layout){
-        lv = (ListView) layout.findViewById(R.id.lvnotifications);
-
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
-    private String getUID() {//---------------------------------------------------------------------<<getUID>>
-        String KEY = "uid";
-        return prefs.getString(KEY,null);
-    }//----------------------------------------------------------------------------------------------<</getUID>>
-
-
-
-    private class GetNotifications extends AsyncTask<String,String,String>{
-
-        String webResponse;
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(getString(R.string.ipaddress) + "getfriendrequests.php");
-
-
-            try {
-                // Add your data
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-
-                nameValuePairs.add(new BasicNameValuePair("uid", uid));
-                nameValuePairs.add(new BasicNameValuePair("lp", lp));
-
-
-
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                // Execute HTTP Post Request
-
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                webResponse = httpclient.execute(httppost, responseHandler);
-
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-                webResponse = "error";
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                webResponse = "error";
-            }
-
-
-            return webResponse;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-
-            try {
-
-                JSONObject obj = new JSONObject(result);
-                JSONArray jarray = obj.getJSONArray("notes");
-
-
-                for (int i = 0; i < jarray.length(); i++) {
-                    JSONObject childJSONObject = jarray.getJSONObject(i);
-                    nlist.add(new Notification());
-                    nlist.get(nlist.size() - 1).note = childJSONObject.getString("note");
-                    nlist.get(nlist.size() - 1).picloc = childJSONObject.getString("propicloc");
-                    nlist.get(nlist.size() - 1).time = childJSONObject.getString("time");
-                    nlist.get(nlist.size() - 1).noteid = childJSONObject.getString("noteid");
-                    nlist.get(nlist.size() - 1).type = childJSONObject.getString("type");
-
-
-                }
-
-                adapter = new NotificationsAdapter(context,nlist);
-                lv.setAdapter(adapter);
-
-
-            }catch(JSONException e){
-                e.printStackTrace();
-            }
-
-
-
-
-
-
-        }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(ARG_UID, uid);
+        super.onSaveInstanceState(outState);
     }
-
-
-
-
 }

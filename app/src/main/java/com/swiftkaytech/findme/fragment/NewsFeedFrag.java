@@ -16,7 +16,9 @@ import android.widget.ProgressBar;
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.adapters.PostAdapter;
 import com.swiftkaytech.findme.data.Post;
+import com.swiftkaytech.findme.data.User;
 import com.swiftkaytech.findme.managers.PostManager;
+import com.swiftkaytech.findme.managers.UserManager;
 
 import java.util.ArrayList;
 
@@ -97,7 +99,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         super.onViewCreated(view, savedInstanceState);
 
         if (mPostAdapter == null) {
-            mPostAdapter = new PostAdapter(getActivity(), mPostsList);
+            mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid, getActivity()).me());
             mRecyclerView.setAdapter(mPostAdapter);
             mPostAdapter.setPostAdapterListener(this);
         }
@@ -217,7 +219,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             swipeLayout.setRefreshing(false);
         } else {
             if (mPostAdapter == null) {
-                mPostAdapter = new PostAdapter(getActivity(), mPostsList);
+                mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid, getActivity()).me());
                 mRecyclerView.setAdapter(mPostAdapter);
                 mPostAdapter.setPostAdapterListener(this);
             } else {

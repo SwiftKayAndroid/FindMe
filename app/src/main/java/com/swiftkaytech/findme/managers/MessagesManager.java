@@ -36,6 +36,7 @@ import com.swiftkaytech.findme.activity.MessagesActivity;
 import com.swiftkaytech.findme.data.Message;
 import com.swiftkaytech.findme.data.ThreadInfo;
 import com.swiftkaytech.findme.data.User;
+import com.swiftkaytech.findme.fragment.MessagesFrag;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -138,8 +139,8 @@ public class MessagesManager {
         new SendMessageTask(message, user).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-    public void deleteMessage(Message message, ThreadInfo threadInfo){
-        new DeleteMessageTask(message, threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+    public void deleteMessage(Message message){
+        new DeleteMessageTask(message).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     public void deleteThread(ThreadInfo threadInfo){
@@ -191,6 +192,7 @@ public class MessagesManager {
         msg.setThreadId(data.getString("threadid"));
         msg.setTime(data.getString("time"));
         msg.setUser(User.createUser(mUid, mContext).fetchUser(data.getString("senderid"), mContext));
+        Log.w(TAG, "notify new message: {" + msg.toString());
 
         if (mMessageThreadListeners.size() < 1 && mMessagesListeners.size() <1) {
             sendNotification(msg);
@@ -213,7 +215,7 @@ public class MessagesManager {
      *
      * @param message GCM message received.
      */
-    private static void sendNotification(Message message) {
+    public static void sendNotification(Message message) {
         Intent intent = MessagesActivity.createIntent(mContext, message.getUser());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent,
@@ -293,6 +295,7 @@ public class MessagesManager {
                     } else {
                         m.setSeenStatus(0);
                     }
+                    m.setTag(child.getString("tag"));
                     m.setThreadId(child.getString("threadid"));
                     m.setUser(User.createUser(mUid, mContext).fetchUser(m.getSenderId(), mContext));
                     mList.add(m);
@@ -426,11 +429,10 @@ public class MessagesManager {
 
     private class DeleteMessageTask extends AsyncTask<Void, Void, Void>{
         Message message;
-        ThreadInfo threadInfo;
 
-        public DeleteMessageTask(Message message, ThreadInfo threadInfo) {
+
+        public DeleteMessageTask(Message message) {
             this.message = message;
-            this.threadInfo = threadInfo;
         }
 
         @Override
@@ -449,11 +451,9 @@ public class MessagesManager {
             super.onPostExecute(aVoid);
 
             for (MessagesListener l : mMessagesListeners) {
-                l.onMessageDeleted(message);
-            }
-
-            for (MessageThreadListener l : mMessageThreadListeners) {
-                l.onThreadDeleted(threadInfo);
+                if (l != null) {
+                    l.onMessageDeleted(message);
+                }
             }
         }
     }
@@ -498,7 +498,7 @@ public class MessagesManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", mUid);
-            connectionManager.addParam("messageid", message.getMessageId());
+            connectionManager.addParam("tag", message.getTag());
             connectionManager.setUri("unsendmessage.php");
             connectionManager.sendHttpRequest();
             return null;

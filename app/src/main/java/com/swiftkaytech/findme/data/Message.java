@@ -129,4 +129,12 @@ public class Message implements Serializable{
     public void setDeletedStatus(int mDeletedStatus) {
         this.mDeletedStatus = mDeletedStatus;
     }
+
+    public void setTag(String tag) {
+        mTag = tag;
+    }
+
+    public String getTag() {
+        return mTag;
+    }
 }

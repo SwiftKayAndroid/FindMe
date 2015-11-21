@@ -121,7 +121,7 @@ public class AuthenticateUser {
                     SharedPreferences.Editor editor = mPreferences.edit();
                     editor.putString("uid", obj.getJSONObject("info").getString("uid"));
                     editor.apply();
-                    editor.putString("email", obj.getJSONObject("info").getString("email"));
+                    editor.putString("email", email);
                     editor.apply();
                     editor.putString("password", password);
                     editor.apply();

@@ -33,7 +33,9 @@ import android.widget.Toast;
 import com.swiftkaytech.findme.NavDrawerItem;
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.activity.MessagesListActivity;
+import com.swiftkaytech.findme.activity.ProfileActivity;
 import com.swiftkaytech.findme.adapters.NavDrawerListAdapter;
+import com.swiftkaytech.findme.managers.UserManager;
 import com.swiftkaytech.findme.utils.ImageLoader;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ import java.util.List;
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
 public class NavigationDrawerFragment extends Fragment {
+    private static final String ARG_UID = "ARG_UID";
 
     public interface NavigationDrawerCallbacks {
         /**
@@ -58,7 +61,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     ImageLoader imageloader;
     SharedPreferences prefs;
-    String uid;//users id
+    String uid;
 
     /**
      * Remember the position of the selected item.
@@ -105,6 +108,7 @@ public class NavigationDrawerFragment extends Fragment {
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
+            uid = savedInstanceState.getString(ARG_UID);
         }
 
         // Select either the default item (0) or the last selected item.
@@ -143,13 +147,14 @@ public class NavigationDrawerFragment extends Fragment {
         // Home
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
         // Find People
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        // Photos
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        // My Matches,
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
-        // games
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), false, "Coming Soon"));
+        //todo: will add in as needed
+//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+//        // Photos
+//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+//        // My Matches,
+//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+//        // profile views
+//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), false, "Coming Soon"));
         // settings
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
 
@@ -262,13 +267,6 @@ public class NavigationDrawerFragment extends Fragment {
         }
     }
 
-    public ListView getListView(){
-        return mDrawerListView;
-    }
-    public DrawerLayout getDrawerLayout() {
-        return mDrawerLayout;
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -277,6 +275,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        outState.putString(ARG_UID, uid);
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
@@ -284,18 +283,12 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Forward the new configuration the drawer toggle component.
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // If the drawer is open, show the global app actions in the action bar. See also
-        // showGlobalContextActionBar, which controls the top-left area of the action bar.
-        if (mDrawerLayout != null && isDrawerOpen()) {
-            inflater.inflate(R.menu.global, menu);
-            showGlobalContextActionBar();
-        }
+        inflater.inflate(R.menu.global, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -313,26 +306,18 @@ public class NavigationDrawerFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Per the navigation drawer design guidelines, updates the action bar to show the global app
-     * 'context', rather than just what's in the current screen.
-     */
-    private void showGlobalContextActionBar() {
-//todo: change to a different menu when open
+    public void setUid(String uid) {
+        this.uid = uid;
     }
-
-    /**
-     * Callbacks interface that all activities using this fragment must implement.
-     */
 
     private View setHeader(){
         //------------------------------DRAWER HEADER------------------------------->>>
         View header =  ((LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.drawerheader, null, false);
         ImageView headermessage = (ImageView) header.findViewById(R.id.ivdrawerheadermessages);
-        ImageView headernotes = (ImageView) header.findViewById(R.id.ivdrawerheadernotes);
-        ImageView headerfriends = (ImageView) header.findViewById(R.id.ivdrawerheadfriends);
-        ImageView headermatch = (ImageView) header.findViewById(R.id.ivdrawerheadermatch);
+//        ImageView headernotes = (ImageView) header.findViewById(R.id.ivdrawerheadernotes);
+//        ImageView headerfriends = (ImageView) header.findViewById(R.id.ivdrawerheadfriends);
+//        ImageView headermatch = (ImageView) header.findViewById(R.id.ivdrawerheadermatch);
         tvname = (TextView) header.findViewById(R.id.tvmatchmymatches);
         ImageView ivusersphoto = (ImageView) header.findViewById(R.id.ivdrawerusersphoto);
         RelativeLayout headerlay = (RelativeLayout) header.findViewById(R.id.rldrawerheader);
@@ -342,19 +327,20 @@ public class NavigationDrawerFragment extends Fragment {
         imageloader.DisplayImage(prefs.getString("propicloc", ""), ivusersphoto, false);
 
 
-        headermatch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent match = new Intent("com.swiftkaytech.findme.MATCH");
-                startActivity(match);
-            }
-        });
+//        headermatch.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent match = new Intent("com.swiftkaytech.findme.MATCH");
+//                startActivity(match);
+//            }
+//        });
         tvname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mDrawerLayout != null) {
                     mDrawerLayout.closeDrawer(mFragmentContainerView);
                 }
+                getActivity().startActivity(ProfileActivity.createIntent(getActivity(), UserManager.getInstance(uid, getActivity()).me()));
             }
         });
         ivusersphoto.setOnClickListener(new View.OnClickListener() {
@@ -364,6 +350,7 @@ public class NavigationDrawerFragment extends Fragment {
                 if (mDrawerLayout != null) {
                     mDrawerLayout.closeDrawer(mFragmentContainerView);
                 }
+                getActivity().startActivity(ProfileActivity.createIntent(getActivity(), UserManager.getInstance(uid, getActivity()).me()));
             }
         });
         headermessage.setOnClickListener(new View.OnClickListener() {
@@ -376,42 +363,32 @@ public class NavigationDrawerFragment extends Fragment {
                 startActivity(MessagesListActivity.createIntent(getActivity()));
             }
         });
-        headernotes.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (mDrawerLayout != null) {
-                    mDrawerLayout.closeDrawer(mFragmentContainerView);
-                }
-            }
-        });
-        headerfriends.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (mDrawerLayout != null) {
-                    mDrawerLayout.closeDrawer(mFragmentContainerView);
-                }
-            }
-        });
+//        headernotes.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                if (mDrawerLayout != null) {
+//                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+//                }
+//            }
+//        });
+//        headerfriends.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                if (mDrawerLayout != null) {
+//                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+//                }
+//            }
+//        });
         return header;
 
 
     }
 
     public View addFooterView(){
-        //-----------------DRAWER FOOTER----------------------------->>>>>
         View footer =  ((LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.drawerfooter, null, false);
-        Button earnfree = (Button) footer.findViewById(R.id.btndrawerfreecredits);
-        RelativeLayout footerlay = (RelativeLayout) footer.findViewById(R.id.rldrawerfooter);
-        Button credits = (Button) footer.findViewById(R.id.btndrawercredits);
-
-        earnfree.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
         return footer;
     }
 }
