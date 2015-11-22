@@ -18,7 +18,8 @@ import java.util.ArrayList;
 /**
  * Created by Kevin Haines on 9/9/15.
  */
-public class FriendRequestsFrag extends BaseFragment implements UserManager.UserManagerListener {
+public class FriendRequestsFrag extends BaseFragment implements UserManager.UserManagerListener,
+        FriendRequestsAdapter.FriendRequestsAdapterListener{
     public static final String TAG = "FriendRequestsFrag";
     private  static  final String ARG_USERS = "ARG_USERS";
 
@@ -26,6 +27,7 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
 
     private RecyclerView mRecyclerView;
     private FriendRequestsAdapter mAdapter;
+    private View                mEmptyView;
 
     public static FriendRequestsFrag newInstance(String uid) {
         FriendRequestsFrag frag = new FriendRequestsFrag();
@@ -50,8 +52,9 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View layout = inflater.inflate(R.layout.friendrequestsfrag,container,false);
+        View layout = inflater.inflate(R.layout.friendrequestsfrag, container, false);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewFriendRequests);
+        mEmptyView = layout.findViewById(R.id.friendsEmptyView);
 
         return layout;
     }
@@ -69,6 +72,11 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
         if (mAdapter == null) {
             mAdapter = new FriendRequestsAdapter(getActivity(), users, uid);
         }
+        if (mAdapter.getItemCount() < 1) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
 
@@ -78,12 +86,18 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
     public void onResume() {
         super.onResume();
         UserManager.getInstance(uid, getActivity()).addListener(this);
+        if (mAdapter != null) {
+            mAdapter.setFriendRequestsAdapterListener(this);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         UserManager.getInstance(uid, getActivity()).removeListener(this);
+        if (mAdapter != null) {
+            mAdapter.setFriendRequestsAdapterListener(null);
+        }
     }
 
     @Override
@@ -93,8 +107,23 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
     }
 
     @Override
+    public void onFriendRequestAccepted(User user) {
+        UserManager.getInstance(uid, getActivity()).sendFriendRequest(uid, user);
+    }
+
+    @Override
+    public void onFriendRequestDenied(User user) {
+        UserManager.getInstance(uid, getActivity()).denyFriendRequest(uid, user);
+    }
+
+    @Override
     public void onFriendRequestsRetrieved(ArrayList<User> users) {
         mAdapter.addUsers(users);
+        if (mAdapter.getItemCount() < 1) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -5,6 +5,10 @@ import android.os.AsyncTask;
 
 import com.swiftkaytech.findme.data.User;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -122,7 +126,7 @@ public class UserManager {
         new DenyFriendRequestTask(uid, otherUser).execute();
     }
 
-    private class GetFriendsRequestsTask extends AsyncTask<Void, Void, Void> {
+    private class GetFriendsRequestsTask extends AsyncTask<Void, Void, ArrayList<User>> {
         String uid;
 
         public GetFriendsRequestsTask(String uid) {
@@ -130,13 +134,40 @@ public class UserManager {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected ArrayList<User> doInBackground(Void... params) {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", uid);
             connectionManager.setUri("getfriendrequests.php");
             String result = connectionManager.sendHttpRequest();
-            return null;
+            ArrayList<User> users = new ArrayList<>();
+
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("ppl");
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject child = jsonArray.getJSONObject(i);
+                        User u = User.createUser(mUid, mContext).createUserFromJson(child.getJSONObject("user"));
+                        users.add(u);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return users;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<User> users) {
+            super.onPostExecute(users);
+
+            for (UserManagerListener l : mListeners) {
+                if (l != null) {
+                    l.onFriendRequestsRetrieved(users);
+                }
+            }
         }
     }
 
@@ -161,7 +192,7 @@ public class UserManager {
         }
     }
 
-    private class GetFriendsTask extends AsyncTask<Void, Void, Void> {
+    private class GetFriendsTask extends AsyncTask<Void, Void, ArrayList<User>> {
         String uid;
 
         public GetFriendsTask(String uid) {
@@ -169,13 +200,39 @@ public class UserManager {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected ArrayList<User> doInBackground(Void... params) {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", uid);
-            connectionManager.setUri("getfriends.php");
+            connectionManager.setUri("getfriendslist.php");
             String result = connectionManager.sendHttpRequest();
-            return null;
+            ArrayList<User> users = new ArrayList<>();
+
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("ppl");
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject child = jsonArray.getJSONObject(i);
+                        User u = User.createUser(mUid, mContext).createUserFromJson(child.getJSONObject("user"));
+                        users.add(u);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return users;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<User> users) {
+            super.onPostExecute(users);
+            for (UserManagerListener l : mListeners) {
+                if (l != null) {
+                    l.onFriendsRetrieved(users);
+                }
+            }
         }
     }
 

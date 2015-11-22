@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.activity.ProfileActivity;
 import com.swiftkaytech.findme.data.User;
+import com.swiftkaytech.findme.managers.UserManager;
 import com.swiftkaytech.findme.utils.ImageLoader;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
 
     @Override
     public FriendRequestViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friendslistitem, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friendrequest_list_item, parent, false);
         return new FriendRequestViewHolder(view);
     }
 
@@ -71,6 +72,14 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
 
     public void addUsers(ArrayList<User> users) {
         this.users.addAll(users);
+        notifyDataSetChanged();
+    }
+
+    public void removeUser(User user) {
+        if (users.contains(user)) {
+            users.remove(user);
+            notifyDataSetChanged();
+        }
     }
 
 
@@ -78,8 +87,8 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
         ImageView iv;
         TextView tvName;
         TextView tvDesc;
-        TextView tvAccept;
-        TextView tvDeny;
+        ImageView ivAccept;
+        ImageView ivDeny;
 
         public FriendRequestViewHolder(View itemView) {
             super(itemView);
@@ -87,20 +96,25 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
             iv = (ImageView) itemView.findViewById(R.id.ivfriendslist);
             tvName = (TextView) itemView.findViewById(R.id.tvfriendslistitemname);
             tvDesc = (TextView) itemView.findViewById(R.id.tvfriendslistitemdesc);
-            tvAccept = (TextView) itemView.findViewById(R.id.tvacceptfriendrequest);
-            tvDeny = (TextView) itemView.findViewById(R.id.tvdenyfriendrequest);
+            ivAccept = (ImageView) itemView.findViewById(R.id.ivAddFriendFriendRequests);
+            ivDeny = (ImageView) itemView.findViewById(R.id.ivDenyFriendRequest);
 
             iv.setOnClickListener(this);
-            tvAccept.setOnClickListener(this);
-            tvDeny.setOnClickListener(this);
+            ivAccept.setOnClickListener(this);
+            ivDeny.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.ivfriendslist) {
                 mContext.startActivity(ProfileActivity.createIntent(mContext, users.get(getLayoutPosition())));
+            } else if (v.getId() == R.id.ivAddFriendFriendRequests) {
+                UserManager.getInstance(uid, mContext).sendFriendRequest(uid, users.get(getLayoutPosition()));
+                removeUser(users.get(getLayoutPosition()));
+            } else if (v.getId() == R.id.ivDenyFriendRequest) {
+                UserManager.getInstance(uid, mContext).denyFriendRequest(uid, users.get(getLayoutPosition()));
+                removeUser(users.get(getLayoutPosition()));
             }
-
         }
     }
 }

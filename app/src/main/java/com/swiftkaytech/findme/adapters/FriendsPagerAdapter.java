@@ -60,4 +60,12 @@ public class FriendsPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return MAX_PAGES;
     }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        if (position == 0) {
+            return "Requests";
+        }
+        return "Friends";
+    }
 }

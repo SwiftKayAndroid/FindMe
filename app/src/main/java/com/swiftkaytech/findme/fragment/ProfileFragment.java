@@ -44,6 +44,7 @@ import com.swiftkaytech.findme.adapters.PostAdapter;
 import com.swiftkaytech.findme.data.Post;
 import com.swiftkaytech.findme.data.User;
 import com.swiftkaytech.findme.managers.PostManager;
+import com.swiftkaytech.findme.managers.UserManager;
 import com.swiftkaytech.findme.utils.AndroidUtils;
 import com.swiftkaytech.findme.utils.ImageLoader;
 
@@ -55,13 +56,13 @@ View.OnClickListener, PostManager.PostsListener, AppBarLayout.OnOffsetChangedLis
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_POSTS = "ARG_POSTS";
 
-    private static User user;
-    private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private TextView    mTvAgeLocation;
-    private AppBarLayout mAppBarLayout;
+    private static User         user;
+    private RecyclerView        mRecyclerView;
+    private SwipeRefreshLayout  mSwipeRefreshLayout;
+    private TextView            mTvAgeLocation;
+    private AppBarLayout        mAppBarLayout;
     private ImageView           mProfilePicture;
-    private TextView    mTvOrientation;
+    private TextView            mTvOrientation;
 
     private FloatingActionButton mFabBase;
     private FloatingActionButton mFabLeft;
@@ -201,7 +202,6 @@ View.OnClickListener, PostManager.PostsListener, AppBarLayout.OnOffsetChangedLis
         Log.i(TAG, "offset: " + verticalOffset);
         mSwipeRefreshLayout.setEnabled(verticalOffset == 0);
         int height = (int) AndroidUtils.convertDpToPixel(150, getActivity());
-        int currentHeight;
         if (verticalOffset > -height) {
             ViewGroup.LayoutParams params = mProfilePicture.getLayoutParams();
             params.height = height + verticalOffset - 1;
@@ -221,8 +221,10 @@ View.OnClickListener, PostManager.PostsListener, AppBarLayout.OnOffsetChangedLis
     private void expandOtherProfileFabs() {
         mFabLeft.setImageResource(R.mipmap.ic_message_black_24dp);
         mFabLeft.setColorFilter(Color.WHITE);
-        mFabCenter.setImageResource(R.mipmap.ic_person_add_white_24dp);
-        mFabCenter.setVisibility(View.VISIBLE);
+        if (!user.isFriend()) {
+            mFabCenter.setImageResource(R.mipmap.ic_person_add_white_24dp);
+            mFabCenter.setVisibility(View.VISIBLE);
+        }
         setVisibility();
     }
 
@@ -245,17 +247,10 @@ View.OnClickListener, PostManager.PostsListener, AppBarLayout.OnOffsetChangedLis
     }
 
     /**
-     * Starts User to add friend
-     */
-    private void addFriend() {
-
-    }
-
-    /**
      * Starts User to match user
      */
     private void matchUser() {
-
+        UserManager.getInstance(uid, getActivity()).sendMatchRequest(uid, user);
     }
 
     /**
@@ -314,6 +309,9 @@ View.OnClickListener, PostManager.PostsListener, AppBarLayout.OnOffsetChangedLis
         } else if (v.getId() == R.id.profileFabCenter) {
             if (isSameProfile) {
 
+            } else {
+                UserManager.getInstance(uid, getActivity()).sendFriendRequest(uid, user);
+                Toast.makeText(getActivity(), "Friend Request sent", Toast.LENGTH_SHORT).show();
             }
         } else if (v.getId() == R.id.profileFabUpper) {
             if (isSameProfile) {

@@ -158,11 +158,8 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            getMenuInflater().inflate(R.menu.navigation_menu, menu);
-            return true;
-        }
-        return false;
+        getMenuInflater().inflate(R.menu.navigation_menu, menu);
+        return true;
     }
 
     @Override

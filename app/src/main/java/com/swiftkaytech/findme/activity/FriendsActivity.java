@@ -20,8 +20,12 @@ package com.swiftkaytech.findme.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.fragment.FriendsFrag;
+import com.swiftkaytech.findme.fragment.FriendsFragment;
 
 public class FriendsActivity extends BaseActivity{
     private static final String TAG = "FriendsActivity";
@@ -47,6 +51,25 @@ public class FriendsActivity extends BaseActivity{
     protected void createActivity(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             uid = savedInstanceState.getString(ARG_UID);
+        }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
+        toolbar.setTitle("Friends");
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        FriendsFragment friendsFragment = (FriendsFragment) getSupportFragmentManager().findFragmentByTag(FriendsFragment.TAG);
+        if (friendsFragment == null) {
+            friendsFragment = FriendsFragment.newInstance(uid);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.activityContainer, friendsFragment, FriendsFragment.TAG)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 

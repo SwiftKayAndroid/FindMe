@@ -94,6 +94,7 @@ public class UpdateStatus extends BaseActivity {
                 //todo: add error message
             } else {
                 AccountManager.getInstance(UpdateStatus.this).updateStatus(etstatus.getText().toString(), uid);
+                finish();
             }
         } else if (item.getItemId() == android.R.id.home) {
             finish();

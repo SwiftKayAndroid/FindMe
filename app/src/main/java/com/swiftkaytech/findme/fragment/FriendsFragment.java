@@ -19,17 +19,24 @@ package com.swiftkaytech.findme.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.ViewPhotos;
 import com.swiftkaytech.findme.adapters.FriendsPagerAdapter;
 
 public class FriendsFragment extends BaseFragment{
-    private static final String TAG = "FriendsFragment";
+    public static final String TAG = "FriendsFragment";
 
     private FragmentPagerAdapter friendsPagerAdapter;
+
+    private ViewPager mViewPager;
 
     public static FriendsFragment newInstance(String uid) {
         FriendsFragment frag = new FriendsFragment();
@@ -50,15 +57,20 @@ public class FriendsFragment extends BaseFragment{
                 uid = getArguments().getString(ARG_UID);
             }
         }
-        if (friendsPagerAdapter == null) {
-            friendsPagerAdapter = new FriendsPagerAdapter(getActivity().getSupportFragmentManager(), uid);
-        }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View layout = inflater.inflate(R.layout.friendsfrag, container, false);
+        TabLayout tabLayout = (TabLayout) layout.findViewById(R.id.tabs);
+        mViewPager = (ViewPager) layout.findViewById(R.id.viewPagerFriendsFragment);
+        if (friendsPagerAdapter == null) {
+            friendsPagerAdapter = new FriendsPagerAdapter(getActivity().getSupportFragmentManager(), uid);
+        }
+        mViewPager.setAdapter(friendsPagerAdapter);
+        tabLayout.setupWithViewPager(mViewPager);
+        return layout;
     }
 
     @Override

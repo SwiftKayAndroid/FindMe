@@ -59,10 +59,18 @@
             android:label="@string/app_name">
         </activity>
 
-        <activity
+       <activity
             android:name=".activity.ProfileActivity"
             android:label="@string/app_name" >
         </activity>
+
+        <activity
+            android:name=".activity.FriendsActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+
+
         <activity
             android:name=".activity.BasicInfo"
             android:label="@string/app_name" >
