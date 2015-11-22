@@ -31,9 +31,8 @@ public class FriendsActivity extends BaseActivity{
     private static final String TAG = "FriendsActivity";
     private static final String ARG_UID = "ARG_UID";
 
-    public static Intent createIntent(Context context, String uid) {
+    public static Intent createIntent(Context context) {
         Intent i = new Intent(context, FriendsActivity.class);
-        i.putExtra(ARG_UID, uid);
         return i;
     }
 

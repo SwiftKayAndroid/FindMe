@@ -17,16 +17,75 @@
 
 package com.swiftkaytech.findme.managers;
 
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+
+import com.swiftkaytech.findme.R;
+import com.swiftkaytech.findme.activity.FriendsActivity;
+import com.swiftkaytech.findme.data.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class NotificationManager {
     private static final String TAG = "NotificationManager";
 
     private static String mUid;
+    private static NotificationManager manager = null;
+    private static Context mContext;
 
-    //instance grabber
+    public static NotificationManager getInstance(Context context) {
+        if (manager == null) {
+            manager = new NotificationManager();
+        }
+        manager.mContext = context;
+        return manager;
+    }
 
-    //creation method
+    public void notifyNewPushNotification(Bundle data) {
+        if (data != null) {
+            String type = data.getString("type");
 
-    //savedinstancestate
+            if (type != null && type.equals("friend_request")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(data.getString("user"));
+                    User user = User.createUser("", mContext).createUserFromJson(jsonObject);
+                    sendNotificationForFriendRequest(user);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
+    /**
+     * Create and show a simple notification containing the received GCM message.
+     *
+     * @param user User
+     */
+    public void sendNotificationForFriendRequest(User user) {
+        Intent intent = FriendsActivity.createIntent(mContext);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
 
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext)
+                .setSmallIcon(R.drawable.redfsmall)
+                .setContentTitle("Friend Request")
+                .setContentText("From: " + user.getFirstname() + " " + user.getLastname())
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+
+        android.app.NotificationManager notificationManager =
+                (android.app.NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
 }

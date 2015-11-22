@@ -25,7 +25,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     Context mContext;
     ImageLoader imageLoader;
     String uid;
-    ArrayList<User> users;
+    ArrayList<User> users = new ArrayList<>();
 
     public FriendsAdapter(Context context, ArrayList<User> users, String uid) {
         this.mContext = context;

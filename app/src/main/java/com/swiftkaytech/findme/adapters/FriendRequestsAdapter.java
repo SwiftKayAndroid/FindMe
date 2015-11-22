@@ -29,7 +29,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
     private ImageLoader imageLoader;
     private String uid;
     private Context mContext;
-    private ArrayList<User> users;
+    private ArrayList<User> users = new ArrayList<>();
 
     private FriendRequestsAdapterListener mListener;
 

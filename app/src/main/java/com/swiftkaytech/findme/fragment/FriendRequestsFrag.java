@@ -72,14 +72,15 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
         if (mAdapter == null) {
             mAdapter = new FriendRequestsAdapter(getActivity(), users, uid);
         }
+
         if (mAdapter.getItemCount() < 1) {
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
             mEmptyView.setVisibility(View.GONE);
         }
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
-
     }
 
     @Override
@@ -103,6 +104,7 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(ARG_UID, uid);
+        outState.putSerializable(ARG_USERS, users);
         super.onSaveInstanceState(outState);
     }
 

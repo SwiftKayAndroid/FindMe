@@ -157,7 +157,7 @@ public class NavigationDrawerFragment extends Fragment {
 //        // profile views
 //        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), false, "Coming Soon"));
         // settings
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
+//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
 
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -374,12 +374,10 @@ public class NavigationDrawerFragment extends Fragment {
                 if (mDrawerLayout != null) {
                     mDrawerLayout.closeDrawer(mFragmentContainerView);
                 }
-                startActivity(FriendsActivity.createIntent(getActivity(), uid));
+                startActivity(FriendsActivity.createIntent(getActivity()));
             }
         });
         return header;
-
-
     }
 
     public View addFooterView(){

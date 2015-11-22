@@ -98,6 +98,7 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
         } else {
             mEmptyView.setVisibility(View.GONE);
         }
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -105,6 +106,7 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(ARG_UID, uid);
+        outState.putSerializable(ARG_FRIENDS, users);
         super.onSaveInstanceState(outState);
     }
 

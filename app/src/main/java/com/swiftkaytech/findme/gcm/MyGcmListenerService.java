@@ -17,7 +17,6 @@
 
 package com.swiftkaytech.findme.gcm;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +30,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.swiftkaytech.findme.R;
 import com.swiftkaytech.findme.activity.MainLineUp;
 import com.swiftkaytech.findme.managers.MessagesManager;
+import com.swiftkaytech.findme.managers.NotificationManager;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -46,10 +46,12 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         String type = data.getString("type");
+        Log.w(TAG, "incoming push notification");
         if (type != null) {
             if (type.equals("message")) {
                 MessagesManager.messageNotificationReceived(data, getApplicationContext());
             } else if (type.equals("friend_request")) {
+                NotificationManager.getInstance(getApplication()).notifyNewPushNotification(data);
 
             } else if (type.equals("comment")) {
 
