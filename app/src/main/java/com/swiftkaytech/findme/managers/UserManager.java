@@ -105,6 +105,15 @@ public class UserManager {
     }
 
     /**
+     * Sends request to server to unfriend the specified user
+     * @param uid String current User's id
+     * @param otherUser User to unfriend
+     */
+    public void unfriend(String uid, User otherUser) {
+        new UnfriendTask(uid, otherUser).execute();
+    }
+
+    /**
      * Sends a request to the server to deny the friend request
      * @param uid String current User's id
      * @param otherUser User whose friend request is getting denied
@@ -245,6 +254,27 @@ public class UserManager {
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", uid);
             connectionManager.setUri("denyfriendrequest.php");
+            connectionManager.addParam("ouid", user.getOuid());
+            String result = connectionManager.sendHttpRequest();
+            return null;
+        }
+    }
+
+    private class UnfriendTask extends AsyncTask<Void, Void, Void> {
+        String uid;
+        User user;
+
+        public UnfriendTask(String uid, User user) {
+            this.uid = uid;
+            this.user = user;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.addParam("uid", uid);
+            connectionManager.setUri("unfriend.php");
             connectionManager.addParam("ouid", user.getOuid());
             String result = connectionManager.sendHttpRequest();
             return null;

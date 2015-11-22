@@ -3,11 +3,8 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="#ffffff">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewFriendRequests"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/lvfriendrequests"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_height="match_parent" />
 </RelativeLayout>

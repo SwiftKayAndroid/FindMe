@@ -106,6 +106,10 @@ public class AccountManager {
         new UploadImageTask(path, uid, text).execute();
     }
 
+    public void updateStatus (String status, String uid) {
+        new UpdateStatusTask(status, uid).execute();
+    }
+
     private class UploadImageTask extends AsyncTask<Void, Void, Void> {
         String pathToPicture;
         String uid;
@@ -126,6 +130,27 @@ public class AccountManager {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
+            return null;
+        }
+    }
+
+    private class UpdateStatusTask extends AsyncTask<Void, Void, Void> {
+        String status;
+        String uid;
+
+        public UpdateStatusTask(String status, String uid) {
+            this.status = status;
+            this.uid = uid;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("updatestatus.php");
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("status", status);
+            String result = connectionManager.sendHttpRequest();
             return null;
         }
     }
