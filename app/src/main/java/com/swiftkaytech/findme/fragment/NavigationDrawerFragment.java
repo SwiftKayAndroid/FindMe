@@ -294,7 +294,11 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.menusettingsicon) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+            NewsFeedSettings settings = NewsFeedSettings.newInstance(uid);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, settings, NewsFeedSettings.TAG)
+                    .addToBackStack(null)
+                    .commit();
             return true;
         }
 

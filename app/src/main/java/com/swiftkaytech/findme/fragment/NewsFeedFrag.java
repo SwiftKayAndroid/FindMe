@@ -170,8 +170,10 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
 
     private void loadMorePosts() {
         Log.i(TAG, "loading more posts");
-        String lastpost = mPostAdapter.getPosts().get(mPostAdapter.getPosts().size() - 1).getPostId();
-        PostManager.getInstance(uid, getActivity()).fetchPosts(getActivity(), lastpost);
+        if (mPostAdapter.getPosts().size() > 25) {
+            String lastpost = mPostAdapter.getPosts().get(mPostAdapter.getPosts().size() - 1).getPostId();
+            PostManager.getInstance(uid, getActivity()).fetchPosts(getActivity(), lastpost);
+        }
     }
 
     private void rotate(View v) {

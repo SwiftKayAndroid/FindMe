@@ -28,6 +28,7 @@ import com.swiftkaytech.findme.fragment.FindPeopleFrag;
 import com.swiftkaytech.findme.fragment.MessagesListFrag;
 import com.swiftkaytech.findme.fragment.NavigationDrawerFragment;
 import com.swiftkaytech.findme.fragment.NewsFeedFrag;
+import com.swiftkaytech.findme.fragment.NewsFeedSettings;
 import com.swiftkaytech.findme.fragment.NotificationsFrag;
 import com.swiftkaytech.findme.fragment.ViewPhotosFrag;
 import com.swiftkaytech.findme.gcm.QuickstartPreferences;
@@ -167,6 +168,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+
             return true;
         }
         return super.onOptionsItemSelected(item);

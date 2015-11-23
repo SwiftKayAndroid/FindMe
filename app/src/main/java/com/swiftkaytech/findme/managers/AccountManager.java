@@ -18,8 +18,12 @@
 package com.swiftkaytech.findme.managers;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import com.swiftkaytech.findme.data.NewsfeedPrefData;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -47,6 +51,23 @@ public class AccountManager {
     public void recoverPassword(String email) {
         new RecoverPassword(email).execute();
         Toast.makeText(mContext, "Your password has been sent to your email", Toast.LENGTH_LONG).show();
+    }
+
+    public void updateNewsfeedSettings(String status, String uid, String distance,
+                                       String gender, String straight, String gay, String bi) {
+        new UpdateNewsfeedSettingsTask(uid, distance, gender, straight, gay, bi, status).execute();
+    }
+
+    public NewsfeedPrefData getNewsfeedPreferences() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        NewsfeedPrefData prefData = new NewsfeedPrefData();
+        prefData.status = prefs.getString("relationship_status_pref", "both");
+        prefData.straight = prefs.getString("orientation_pref_straight", "yes");
+        prefData.gay = prefs.getString("orientation_pref_gay", "yes");
+        prefData.bi = prefs.getString("orientation_pref_bi", "yes");
+        prefData.gender = prefs.getString("gender_pref", "both");
+        prefData.distance = prefs.getString("distance_pref", "100");
+        return prefData;
     }
 
     private class ResendEmailTask extends AsyncTask<Void, Void, Void> {
@@ -154,4 +175,62 @@ public class AccountManager {
             return null;
         }
     }
+
+    private class UpdateNewsfeedSettingsTask extends AsyncTask<Void, Void, Void> {
+        String uid;
+        String distance;
+        String gender;
+        String straight;
+        String gay;
+        String bi;
+        String status;
+
+        public UpdateNewsfeedSettingsTask(String uid, String distance, String gender, String straight, String gay, String bi, String status) {
+            this.uid = uid;
+            this.distance = distance;
+            this.gender = gender;
+            this.straight = straight;
+            this.gay = gay;
+            this.bi = bi;
+            this.status = status;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("updatenewsfeedsettings.php");
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("status", status);
+            connectionManager.addParam("gender", gender);
+            connectionManager.addParam("straight", straight);
+            connectionManager.addParam("gay", gay);
+            connectionManager.addParam("bi", bi);
+            connectionManager.addParam("distance", distance);
+            connectionManager.sendHttpRequest();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences.Editor editor = prefs.edit();
+
+            editor.putString("relationship_status_pref", status);
+            editor.apply();
+            editor.putString("gender_pref", gender);
+            editor.apply();
+            editor.putString("orientation_pref_straight", straight);
+            editor.apply();
+            editor.putString("orientation_pref_gay", gay);
+            editor.apply();
+            editor.putString("orientation_pref_bi", bi);
+            editor.apply();
+            editor.putString("distance_pref", distance);
+            editor.apply();
+        }
+    }
+
+
 }
