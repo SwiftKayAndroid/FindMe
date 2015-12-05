@@ -23,7 +23,7 @@
         <item>@mipmap/ic_collections_black_24dp</item>
         <item>@mipmap/ic_heart_black_24dp</item>
         <item>@mipmap/ic_remove_red_eye_black_24dp</item>
-        <item>@mipmap/ic_settings_black_24dp</item>
+        <item>@mipmap/ic_settings_white_24dp</item>
     </array>
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
@@ -87,6 +87,9 @@
 
     <!-- DO NOT TRANSLATE -->
     <string name="day_of_week_label_typeface">sans-serif</string>
+
+    <string name="words_or_phrases">Add words or phrases that you don\'t want to see below and you can filter posts, messages, comments and
+    more that contain these words or phrases</string>
 
 
 </resources>

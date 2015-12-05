@@ -6,7 +6,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/updateStatusToolbar"
         android:background="@color/base_green"
-        android:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+        android:navigationIcon="@mipmap/ic_arrow_back_white_24dp"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:titleTextColor="@color/white"

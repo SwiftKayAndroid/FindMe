@@ -12,7 +12,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <com.swiftkaytech.findme.views.CircleImageView
+    <com.swiftkaydevelopment.findme.views.CircleImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/ivpicturemessageuser"

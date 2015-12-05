@@ -6,11 +6,11 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.swiftkaytech.findme"
+        applicationId "com.swiftkaydevelopment.findme"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 4
-        versionName "1.1.2"
+        versionCode 1
+        versionName "1.0"
         multiDexEnabled true
     }
 
@@ -37,4 +37,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23+'
     compile "com.google.android.gms:play-services:8.1.0"
     compile 'com.google.android.gms:play-services-gcm:8.1.0'
+    compile 'org.apmem.tools:layouts:1.10@aar'
 }

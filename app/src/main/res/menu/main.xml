@@ -5,7 +5,7 @@
     >
 
 
-    <item android:id="@+id/menusettingsicon" android:title="Settings" android:icon="@drawable/ic_settings_white_24dp" app:showAsAction="withText|ifRoom" />
+    <item android:id="@+id/menusettingsicon" android:title="Settings" android:icon="@mipmap/ic_settings_white_24dp" app:showAsAction="always" />
 
 
 </menu>

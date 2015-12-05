@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.swiftkaytech.findme.views.tagview.TagView
+<com.swiftkaydevelopment.findme.views.tagview.TagView
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 android:id="@+id/postTagView"
@@ -12,4 +12,4 @@ app:textPaddingLeft="10dp"
 app:textPaddingRight="10dp"
 app:textPaddingTop="3dp">
 
-</com.swiftkaytech.findme.views.tagview.TagView>
+</com.swiftkaydevelopment.findme.views.tagview.TagView>

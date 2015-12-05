@@ -26,7 +26,7 @@
         android:layout_alignRight="@+id/messageItemProfilePicture"
         android:layout_alignEnd="@+id/messageItemProfilePicture" />
 
-    <com.swiftkaytech.findme.views.CircleImageView
+    <com.swiftkaydevelopment.findme.views.CircleImageView
         android:id="@+id/messageItemProfilePicture"
         android:layout_width="50dp"
         android:layout_height="50dp"
