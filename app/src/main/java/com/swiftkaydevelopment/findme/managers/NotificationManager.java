@@ -22,22 +22,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.service.notification.NotificationListenerService;
 import android.support.v4.app.NotificationCompat;
 
-import com.swiftkaydevelopment.findme.activity.FriendsActivity;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.activity.FriendsActivity;
+import com.swiftkaydevelopment.findme.data.Notification;
 import com.swiftkaydevelopment.findme.data.User;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class NotificationManager {
+
+    public interface NotificationsListener {
+        void onNotificationsFetched(ArrayList<Notification> notifications);
+    }
     private static final String TAG = "NotificationManager";
 
     private static String mUid;
     private static NotificationManager manager = null;
     private static Context mContext;
+
+    private CopyOnWriteArrayList<NotificationsListener> mListeners = new CopyOnWriteArrayList<>();
 
     public static NotificationManager getInstance(Context context) {
         if (manager == null) {
@@ -87,5 +100,56 @@ public class NotificationManager {
                 (android.app.NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+    public void getNotifications(String uid, String lastpost) {
+        new GetNotificationTask(uid, lastpost).execute();
+    }
+
+    private class GetNotificationTask extends AsyncTask<Void, Void, ArrayList<Notification>> {
+        String uid;
+        String lastpost;
+
+        public GetNotificationTask(String uid, String lastpost) {
+            this.uid = uid;
+            this.lastpost = lastpost;
+        }
+
+        @Override
+        protected ArrayList<Notification> doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("getnotifications.php");
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("lastpost", lastpost);
+            String result = connectionManager.sendHttpRequest();
+            ArrayList<Notification> notifications = new ArrayList<>();
+
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("notifications");
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        Notification n = Notification.instance().createNotificationFromJson(jsonArray.getJSONObject(i));
+                        notifications.add(n);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return notifications;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Notification> notifications) {
+            super.onPostExecute(notifications);
+
+            for (NotificationsListener l : mListeners) {
+                if (l != null) {
+                    l.onNotificationsFetched(notifications);
+                }
+            }
+        }
     }
 }

@@ -350,7 +350,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:progress="100"
-                    android:max="500"
+                    android:max="800"
                     android:secondaryProgress="20"
                     android:indeterminate="false" />
 

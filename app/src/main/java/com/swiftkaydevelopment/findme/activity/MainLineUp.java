@@ -60,13 +60,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
 
         initializeDrawer();
 
-        int displayvalue = getIntent().getIntExtra("displayvalue", 0);
-        if (displayvalue != 0) {
-            displayView(displayvalue);
-        }
-        else{
-            displayView(NEWSFEED);
-        }
+        displayView(NEWSFEED);
 
         registerGCMReceiver();
         SharedPreferences sharedPreferences =

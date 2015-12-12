@@ -65,7 +65,7 @@ public class AccountManager {
         prefData.gay = prefs.getString("orientation_pref_gay", "yes");
         prefData.bi = prefs.getString("orientation_pref_bi", "yes");
         prefData.gender = prefs.getString("gender_pref", "both");
-        prefData.distance = prefs.getString("distance_pref", "1000");
+        prefData.distance = prefs.getString("distance_pref", "800");
         return prefData;
     }
 

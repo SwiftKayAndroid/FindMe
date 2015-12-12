@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/words_or_phrases"
+        android:layout_margin="16dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="200dp"
+        android:id="@+id/etFilterInputBannedWord"
+        android:layout_margin="16dp" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Posts"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="5dp"
+        android:checked="false"
+        android:id="@+id/cbFilterInputPosts" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Messages"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="5dp"
+        android:checked="false"
+        android:id="@+id/cbFilterInputMessages" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comments"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="16dp"
+        android:checked="false"
+        android:id="@+id/cbFilterInputComments" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Blocked Word/Phrases"
+        android:layout_margin="10dp" />
+
+</LinearLayout>

@@ -60,7 +60,7 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
     public void onBindViewHolder(MessageThreadsViewHolder holder, final int position) {
 
         final ThreadInfo thread = mThreadList.get(position);
-        if(thread != null){
+        if(thread != null && thread.threadUser != null && thread.threadUser.getOuid() != null){
             if(!thread.threadUser.getPropicloc().equals("")){
                 imageLoader.DisplayImage(thread.threadUser.getPropicloc(), holder.ivpropic, false);
             }
