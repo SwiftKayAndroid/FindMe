@@ -57,6 +57,14 @@ public class AccountManager {
         new UpdateNewsfeedSettingsTask(uid, distance, gender, straight, gay, bi, status).execute();
     }
 
+    public void deletePicture(String uid, String url) {
+        new DeletePictureTask(uid, url).execute();
+
+    }
+    public void changeProfilePicture(String uid, String url) {
+        new ChangeProfilePictureTask(uid, url).execute();
+    }
+
     public NewsfeedPrefData getNewsfeedPreferences() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         NewsfeedPrefData prefData = new NewsfeedPrefData();
@@ -67,6 +75,48 @@ public class AccountManager {
         prefData.gender = prefs.getString("gender_pref", "both");
         prefData.distance = prefs.getString("distance_pref", "800");
         return prefData;
+    }
+
+    private class DeletePictureTask extends AsyncTask<Void, Void, Void> {
+        String uid;
+        String url;
+
+        public DeletePictureTask(String uid, String url) {
+            this.uid = uid;
+            this.url = url;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("url", url);
+            connectionManager.setUri("deletepicture.php");
+            connectionManager.sendHttpRequest();
+            return null;
+        }
+    }
+
+    private class ChangeProfilePictureTask extends AsyncTask<Void, Void, Void> {
+        String uid;
+        String url;
+
+        public ChangeProfilePictureTask(String uid, String url) {
+            this.uid = uid;
+            this.url = url;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("url", url);
+            connectionManager.setUri("changeprofilepicture.php");
+            connectionManager.sendHttpRequest();
+            return null;
+        }
     }
 
     private class ResendEmailTask extends AsyncTask<Void, Void, Void> {
@@ -230,6 +280,4 @@ public class AccountManager {
             editor.apply();
         }
     }
-
-
 }

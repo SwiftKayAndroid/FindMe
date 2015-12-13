@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.swiftkaydevelopment.findme.NavDrawerItem;
 import com.swiftkaydevelopment.findme.activity.FriendsActivity;
+import com.swiftkaydevelopment.findme.activity.NotificationActivity;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
@@ -80,7 +81,6 @@ public class NavigationDrawerFragment extends Fragment {
     private ListView mDrawerListView;
     private View mFragmentContainerView;
 
-    private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
@@ -98,13 +98,9 @@ public class NavigationDrawerFragment extends Fragment {
         mUserLearnedDrawer = prefs.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
             uid = savedInstanceState.getString(ARG_UID);
         }
-
-        // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -158,7 +154,6 @@ public class NavigationDrawerFragment extends Fragment {
 
         mDrawerListView.setAdapter(new NavDrawerListAdapter(getActivity(),
                 navDrawerItems));
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
 
@@ -236,7 +231,6 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     private void selectItem(int position) {
-        mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);
         }
@@ -268,7 +262,6 @@ public class NavigationDrawerFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(ARG_UID, uid);
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
     @Override
@@ -304,7 +297,7 @@ public class NavigationDrawerFragment extends Fragment {
         View header =  ((LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.drawerheader, null, false);
         ImageView headermessage = (ImageView) header.findViewById(R.id.ivdrawerheadermessages);
-//        ImageView headernotes = (ImageView) header.findViewById(R.id.ivdrawerheadernotes);
+        ImageView headernotes = (ImageView) header.findViewById(R.id.ivdrawerheadernotes);
         ImageView headerfriends = (ImageView) header.findViewById(R.id.ivdrawerheadfriends);
 //        ImageView headermatch = (ImageView) header.findViewById(R.id.ivdrawerheadermatch);
         tvname = (TextView) header.findViewById(R.id.tvmatchmymatches);
@@ -323,6 +316,7 @@ public class NavigationDrawerFragment extends Fragment {
 //                startActivity(match);
 //            }
 //        });
+
         tvname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -332,6 +326,7 @@ public class NavigationDrawerFragment extends Fragment {
                 getActivity().startActivity(ProfileActivity.createIntent(getActivity(), UserManager.getInstance(uid, getActivity()).me()));
             }
         });
+
         ivusersphoto.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -342,6 +337,7 @@ public class NavigationDrawerFragment extends Fragment {
                 getActivity().startActivity(ProfileActivity.createIntent(getActivity(), UserManager.getInstance(uid, getActivity()).me()));
             }
         });
+
         headermessage.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -352,15 +348,18 @@ public class NavigationDrawerFragment extends Fragment {
                 startActivity(MessagesListActivity.createIntent(getActivity()));
             }
         });
-//        headernotes.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                if (mDrawerLayout != null) {
-//                    mDrawerLayout.closeDrawer(mFragmentContainerView);
-//                }
-//            }
-//        });
+
+        headernotes.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (mDrawerLayout != null) {
+                    mDrawerLayout.closeDrawer(mFragmentContainerView);
+                }
+                startActivity(NotificationActivity.createIntent(getActivity()));
+            }
+        });
+
         headerfriends.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -371,6 +370,7 @@ public class NavigationDrawerFragment extends Fragment {
                 startActivity(FriendsActivity.createIntent(getActivity()));
             }
         });
+
         return header;
     }
 

@@ -1,23 +1,31 @@
 package com.swiftkaydevelopment.findme.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.adapters.NotificationsAdapter;
 import com.swiftkaydevelopment.findme.data.Notification;
+import com.swiftkaydevelopment.findme.data.Post;
+import com.swiftkaydevelopment.findme.managers.NotificationManager;
 
 import java.util.ArrayList;
 
 /**
- * Created by khaines178 on 8/24/15.
+ * Created by Kevin Haines on 8/24/15.
  */
-public class NotificationsFrag extends BaseFragment {
+public class NotificationsFrag extends BaseFragment implements NotificationManager.NotificationsListener,
+        NotificationsAdapter.NotifactionsAdapterListener{
     public static final String TAG = "NotificationsFrag";
     private static final String ARG_NOTES = "ARG_NOTES";
 
-    private ArrayList<Notification> mNotifications;
+    private ArrayList<Notification> mNotifications = new ArrayList<>();
+    private NotificationsAdapter mAdapter;
+    private RecyclerView mRecyclerView;
 
     public static NotificationsFrag newInstance(String uid) {
         NotificationsFrag frag = new NotificationsFrag();
@@ -37,6 +45,7 @@ public class NotificationsFrag extends BaseFragment {
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
+            NotificationManager.getInstance(getActivity()).getNotifications(uid, "0");
         }
     }
 
@@ -44,6 +53,7 @@ public class NotificationsFrag extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View layout = inflater.inflate(R.layout.notificationfrag, container,false);
+        mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewNotifications);
 
         return layout;
     }
@@ -56,6 +66,13 @@ public class NotificationsFrag extends BaseFragment {
             uid = savedInstanceState.getString(ARG_UID);
             mNotifications = (ArrayList) savedInstanceState.getSerializable(ARG_NOTES);
         }
+
+        if (mAdapter == null) {
+            mAdapter = new NotificationsAdapter(getActivity(), mNotifications);
+        }
+
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
@@ -63,5 +80,36 @@ public class NotificationsFrag extends BaseFragment {
         outState.putString(ARG_UID, uid);
         outState.putSerializable(ARG_NOTES, mNotifications);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        NotificationManager.getInstance(getActivity()).addListener(this);
+        mAdapter.setListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mAdapter.setListener(null);
+        NotificationManager.getInstance(getActivity()).removeListener(this);
+    }
+
+    @Override
+    public void onNotificationsFetched(ArrayList<Notification> notifications) {
+        mAdapter.addNotifications(notifications);
+    }
+
+    @Override
+    public void onNotificationClicked(Notification note) {
+        if (note.type.equals(Notification.TYPE_LIKE) || note.type.equals(Notification.TYPE_COMMENT)) {
+            Post post = Post.createPost(uid, getActivity()).fetchPost(note.data);
+            SinglePostFragment singlePostFragment = SinglePostFragment.newInstance(uid, post);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, singlePostFragment, SinglePostFragment.TAG)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }

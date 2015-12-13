@@ -106,6 +106,7 @@ public class Post implements Serializable{
                 post.setNumLikes(Integer.parseInt(jsonObject.getString("numlikes")));
                 post.setTime(jsonObject.getString("time"));
                 post.setLiked(jsonObject.getBoolean("liked"));
+                post.setPostImage(jsonObject.getString("postpicloc"));
 
             } catch(JSONException e) {
                 e.printStackTrace();

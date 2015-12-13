@@ -25,6 +25,8 @@ public class Notification implements Serializable {
     public User user;
     public int resId;
     public Intent intent;
+    public String title;
+    public String data;
 
     public static Notification instance() {
         return new Notification();
@@ -39,9 +41,11 @@ public class Notification implements Serializable {
     public Notification createNotificationFromJson(JSONObject object) {
         try {
             type = object.getString("type");
-            description = object.getString("description");
+            description = object.getString("message");
+            title = object.getString("title");
+            data = object.getString("data");
             //todo: we will have to create an individual post thing for this
-            user = User.createUser(null, null).createUserFromJson(object.getJSONObject("data"));
+            //user = User.createUser(null, null).createUserFromJson(object.getJSONObject("data"));
 
             return this;
         } catch (JSONException e) {

@@ -19,9 +19,15 @@ import java.util.List;
  * Created by Kevin Haines on 8/25/15.
  */
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.NotificationViewHolder> {
+
+    public interface NotifactionsAdapterListener {
+        void onNotificationClicked(Notification note);
+    }
     Context mContext;
     List<Notification> nlist;
     ImageLoader imageLoader;
+
+    private NotifactionsAdapterListener mListener;
 
     public NotificationsAdapter(Context context, ArrayList<Notification> nlist){
 
@@ -29,6 +35,10 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         this.nlist = nlist;
         imageLoader = new ImageLoader(context);
 
+    }
+
+    public void setListener(NotifactionsAdapterListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -39,12 +49,31 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
+        final Notification note = nlist.get(position);
+        holder.iv.setImageResource(note.resId);
+        holder.title.setText(note.title);
+        holder.desc.setText(note.description);
+        holder.itemView.setTag(note);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onNotificationClicked((Notification) v.getTag());
+                }
+            }
+        });
 
     }
 
     @Override
     public int getItemCount() {
         return nlist.size();
+    }
+
+    public void addNotifications(ArrayList<Notification> notes) {
+        nlist.addAll(notes);
+        notifyDataSetChanged();
     }
 
     protected class NotificationViewHolder extends RecyclerView.ViewHolder{

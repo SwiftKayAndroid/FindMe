@@ -166,7 +166,6 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
                             .addToBackStack(null)
                             .commit();
                 }
-
                 break;
             case FINDPEOPLE:
                 startActivity(FindPeopleActivity.createIntent(MainLineUp.this));

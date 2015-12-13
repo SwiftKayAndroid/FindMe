@@ -20,30 +20,37 @@ package com.swiftkaydevelopment.findme.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 
 public class FullImageFragment extends BaseFragment{
     public static final String TAG = "FullImageFragment";
 
-    private static final String ARG_USER = "ARG_USER";
     private static final String ARG_PIC = "ARG_PIC";
+    private static final String ARG_ISUSER = "ARG_ISUSER";
 
-    private User user;
     private String picloc;
     private ImageView ivPicture;
     private ImageLoader imageLoader;
+    private Toolbar mToolbar;
+    private boolean isUser;
 
-    public static FullImageFragment newInstance(String uid, User user) {
+    public static FullImageFragment newInstance(String uid, String picloc, boolean isUser) {
         FullImageFragment frag = new FullImageFragment();
         Bundle b = new Bundle();
-        b.putSerializable(ARG_USER, user);
+        b.putSerializable(ARG_PIC, picloc);
         b.putString(ARG_UID, uid);
+        b.putBoolean(ARG_ISUSER, isUser);
         frag.setArguments(b);
         return frag;
     }
@@ -54,11 +61,12 @@ public class FullImageFragment extends BaseFragment{
         if (savedInstanceState != null) {
             uid = savedInstanceState.getString(ARG_UID);
             picloc = savedInstanceState.getString(ARG_PIC);
-            user = (User) savedInstanceState.getSerializable(ARG_USER);
+            isUser = savedInstanceState.getBoolean(ARG_ISUSER);
         } else {
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
-                user = (User) getArguments().getSerializable(ARG_USER);
+                picloc = getArguments().getString(ARG_PIC);
+                isUser = getArguments().getBoolean(ARG_ISUSER);
             }
         }
     }
@@ -66,7 +74,9 @@ public class FullImageFragment extends BaseFragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = null;
+        View layout = inflater.inflate(R.layout.viewfullimagepop, container, false);
+        ivPicture = (ImageView) layout.findViewById(R.id.ivviewfullimageimage);
+        mToolbar = (Toolbar) layout.findViewById(R.id.fullImageToolbar);
         return layout;
     }
 
@@ -74,6 +84,24 @@ public class FullImageFragment extends BaseFragment{
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         imageLoader.DisplayImage(picloc, ivPicture, true);
+        if (isUser) {
+            mToolbar.setVisibility(View.VISIBLE);
+            mToolbar.inflateMenu(R.menu.fullimage_menu);
+            mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (item.getItemId() == R.id.fullImageMenuDelete) {
+                        AccountManager.getInstance(getActivity()).deletePicture(uid, picloc);
+                    } else if (item.getItemId() == R.id.fullImageMenuMakeProfilePicture) {
+                        Log.e(TAG, "clicked");
+                        AccountManager.getInstance(getActivity()).changeProfilePicture(uid, picloc);
+                    }
+                    return true;
+                }
+            });
+        } else {
+            mToolbar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -84,9 +112,9 @@ public class FullImageFragment extends BaseFragment{
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(ARG_USER, user);
         outState.putString(ARG_UID, uid);
         outState.putString(ARG_PIC, picloc);
+        outState.putBoolean(ARG_ISUSER, isUser);
         super.onSaveInstanceState(outState);
     }
 }

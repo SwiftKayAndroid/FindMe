@@ -43,15 +43,15 @@
             android:src="@mipmap/ic_message_black_24dp"
             android:padding="7dp" />
 
-        <!--<ImageView-->
-            <!--android:id="@+id/ivdrawerheadernotes"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_weight="1"-->
-            <!--android:src="@mipmap/ic_notifications_black_24dp"-->
-            <!--android:padding="7dp"-->
-            <!--android:tint="@color/black" />-->
+        <ImageView
+            android:id="@+id/ivdrawerheadernotes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_notifications_black_24dp"
+            android:padding="7dp"
+            android:tint="@color/black" />
 
         <ImageView
             android:id="@+id/ivdrawerheadfriends"

@@ -42,13 +42,8 @@ public class MyGcmListenerService extends GcmListenerService {
         if (type != null) {
             if (type.equals("message")) {
                 MessagesManager.messageNotificationReceived(data, getApplicationContext());
-            } else if (type.equals("friend_request")) {
+            } else {
                 NotificationManager.getInstance(getApplication()).notifyNewPushNotification(data);
-
-            } else if (type.equals("comment")) {
-
-            } else if (type.equals("status_like")) {
-
             }
         }
     }

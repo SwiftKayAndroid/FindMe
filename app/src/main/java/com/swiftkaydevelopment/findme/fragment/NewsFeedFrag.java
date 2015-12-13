@@ -239,6 +239,15 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
+    public void onImageClicked(Post post) {
+        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, post.getPostImage(), (post.getPostingUsersId().equals(uid)));
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
     public void onClick(View v) {
         if (v.getId() == R.id.fabcamera) {
             Intent i = new Intent("com.swiftkaytech.findme.UPLOADSERVICE");

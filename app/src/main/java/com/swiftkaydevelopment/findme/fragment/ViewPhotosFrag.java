@@ -119,13 +119,15 @@ public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListene
         ImageView iv = (ImageView) ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.sgvitem, null);
         imageLoader.DisplayImage(url, iv, true);
+        iv.setTag(url);
+        iv.setOnClickListener(this);
         mFlowLayout.addView(iv);
     }
 
     @Override
     public void onClick(View v) {
         String url = (String) v.getTag();
-        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, user);
+        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, url, user.getOuid().equals(uid));
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
                 .addToBackStack(null)

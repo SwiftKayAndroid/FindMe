@@ -43,6 +43,7 @@ import java.util.ArrayList;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements View.OnClickListener{
     public interface PostAdapterListener{
         void onCommentsClicked(Post post);
+        void onImageClicked(Post post);
     }
 
     public static final String TAG = "PostAdapter";
@@ -159,6 +160,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 holder.ivPostImage.setVisibility(View.VISIBLE);
                 holder.ivPostImage.setImageResource(R.drawable.ic_placeholder);
                 imageLoader.DisplayImage(mPostList.get(position).getPostImage(), holder.ivPostImage, true);
+                holder.ivPostImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mListener != null) {
+                            mListener.onImageClicked(mPostList.get(position));
+                        }
+                    }
+                });
             } else {
                 holder.ivPostImage.setVisibility(View.GONE);
             }
