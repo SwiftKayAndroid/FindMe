@@ -68,6 +68,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             imageLoader.DisplayImage(mMessageList.get(position).getUser().getPropicloc(), holder.profilePicture, false);
         }
 
+        if (getItemViewType(position) == VIEW_TYPE_USER_MESSAGE) {
+            if (mMessageList.get(position).getSeenStatus() == 1) {
+                holder.tvSeen.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvSeen.setVisibility(View.GONE);
+            }
+        }
+
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -140,17 +148,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
 
-    ImageView profilePicture;
-    TextView tvTime;
-    TextView tvMessage;
+        ImageView profilePicture;
+        TextView tvTime;
+        TextView tvMessage;
+        TextView tvSeen;
 
-    public MessageViewHolder(View itemView) {
-        super(itemView);
+        public MessageViewHolder(View itemView) {
+            super(itemView);
 
-        profilePicture = (ImageView) itemView.findViewById(R.id.messageItemProfilePicture);
-        tvTime = (TextView) itemView.findViewById(R.id.messageItemTime);
-        tvMessage = (TextView) itemView.findViewById(R.id.messageItemMessageText);
-        itemView.setTag(this);
+            profilePicture = (ImageView) itemView.findViewById(R.id.messageItemProfilePicture);
+            tvTime = (TextView) itemView.findViewById(R.id.messageItemTime);
+            tvMessage = (TextView) itemView.findViewById(R.id.messageItemMessageText);
+            tvSeen = (TextView) itemView.findViewById(R.id.messageItemUserSeenStatus);
+            itemView.setTag(this);
+        }
     }
-}
 }

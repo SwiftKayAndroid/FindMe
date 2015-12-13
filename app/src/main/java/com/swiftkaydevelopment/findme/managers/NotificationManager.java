@@ -120,6 +120,8 @@ public class NotificationManager {
                         e.printStackTrace();
                     }
 
+                } else if (type.equals("seen")) {
+
                 }
             }
         }

@@ -168,6 +168,10 @@ public class MessagesManager {
         new MarkThreadAsDeletedTask(threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
+    public void markThreadAsSeen(String uid, String threadid) {
+        new MarkThreadAsSeenTask(uid, threadid).execute();
+    }
+
     //todo: issue #67
 //    public void requestModerationBeforeReading(ThreadInfo threadInfo){
 //    }
@@ -638,6 +642,27 @@ public class MessagesManager {
             connectionManager.addParam("uid", mUid);
             connectionManager.addParam("threadid", threadInfo.threadId);
             connectionManager.setUri("markthreadasdeleted.php");
+            connectionManager.sendHttpRequest();
+            return null;
+        }
+    }
+
+    private class MarkThreadAsSeenTask extends AsyncTask<Void, Void, Void> {
+        String uid;
+        String threadid;
+
+        public MarkThreadAsSeenTask(String uid, String threadid) {
+            this.uid = uid;
+            this.threadid = threadid;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("threadid", threadid);
+            connectionManager.setUri("seenmessage.php");
             connectionManager.sendHttpRequest();
             return null;
         }

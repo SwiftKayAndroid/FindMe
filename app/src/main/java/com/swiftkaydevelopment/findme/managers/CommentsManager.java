@@ -79,7 +79,7 @@ public class CommentsManager {
         protected Void doInBackground(Void... params) {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
-            connectionManager.setUri("testfeaturetwo.php");
+            connectionManager.setUri("postcomment.php");
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("comment", comment);
             connectionManager.addParam("postid", postid);

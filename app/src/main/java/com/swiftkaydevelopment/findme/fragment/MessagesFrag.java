@@ -165,6 +165,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
                 Log.i(TAG, "Message Adapter isn't null");
                 mMessageAdapter.addMessage(message);
                 if (!message.getUser().getOuid().equals(uid)) {
+                    MessagesManager.getInstance(uid, getActivity()).markThreadAsSeen(uid, message.getThreadId());
                     try {
                         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                         Ringtone r = RingtoneManager.getRingtone(getActivity(), notification);

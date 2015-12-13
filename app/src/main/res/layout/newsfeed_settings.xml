@@ -342,7 +342,8 @@
                     android:id="@+id/newsfeedSettingsDistanceWriter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="1000 Miles"/>
+                    tools:text="1000 Miles"
+                    android:layout_marginLeft="16dp" />
 
                 <SeekBar
                     android:id="@+id/seekNewsfeedSettingsDistance"

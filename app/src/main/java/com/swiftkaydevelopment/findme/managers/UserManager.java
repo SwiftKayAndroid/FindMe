@@ -57,6 +57,10 @@ public class UserManager {
         return me;
     }
 
+    public void invalidateMe() {
+        me = null;
+    }
+
     /**
      * Retrieves a list of Friend Requests
      * @param uid current users id

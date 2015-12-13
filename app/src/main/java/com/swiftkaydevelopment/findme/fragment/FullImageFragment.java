@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.AccountManager;
+import com.swiftkaydevelopment.findme.managers.PersistenceManager;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 
 public class FullImageFragment extends BaseFragment{
@@ -95,6 +96,7 @@ public class FullImageFragment extends BaseFragment{
                     } else if (item.getItemId() == R.id.fullImageMenuMakeProfilePicture) {
                         Log.e(TAG, "clicked");
                         AccountManager.getInstance(getActivity()).changeProfilePicture(uid, picloc);
+                        PersistenceManager.getInstance(getActivity()).updatePropicloc(picloc);
                     }
                     return true;
                 }

@@ -47,10 +47,10 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="left"
                 android:layout_weight="1"
-                android:padding="15dp"
                 android:layout_marginLeft="16dp"
                 android:textStyle="bold"
-                android:text="Age:"/>
+                android:text="Age:"
+                android:layout_marginTop="15dp" />
 
             <TextView
                 android:id="@+id/profileHeaderAge"
@@ -60,8 +60,8 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="right"
                 android:layout_marginRight="16dp"
-                android:padding="15dp"
-                tools:text="Age"/>
+                tools:text="Age"
+                android:layout_marginTop="15dp" />
 
         </LinearLayout>
             <LinearLayout
@@ -75,10 +75,10 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="left"
                     android:layout_weight="1"
-                    android:padding="15dp"
                     android:layout_marginLeft="16dp"
                     android:textStyle="bold"
-                    android:text="Gender:"/>
+                    android:text="Gender:"
+                    android:layout_marginTop="15dp" />
 
                 <TextView
                     android:id="@+id/profileHeaderGender"
@@ -88,8 +88,8 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="right"
                     android:layout_marginRight="16dp"
-                    android:padding="15dp"
-                    tools:text="Gender"/>
+                    tools:text="Gender"
+                    android:layout_marginTop="15dp" />
 
             </LinearLayout>
             <LinearLayout
@@ -103,10 +103,10 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="left"
                     android:layout_weight="1"
-                    android:padding="15dp"
                     android:layout_marginLeft="16dp"
                     android:textStyle="bold"
-                    android:text="Location:"/>
+                    android:text="Location:"
+                    android:layout_marginTop="15dp" />
 
                 <TextView
                     android:id="@+id/profileHeaderLocation"
@@ -116,8 +116,8 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="right"
                     android:layout_marginRight="16dp"
-                    android:padding="15dp"
-                    tools:text="Location"/>
+                    tools:text="Location"
+                    android:layout_marginTop="15dp" />
 
             </LinearLayout>
             <LinearLayout
@@ -131,10 +131,10 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="left"
                     android:layout_weight="1"
-                    android:padding="15dp"
                     android:layout_marginLeft="16dp"
                     android:textStyle="bold"
-                    android:text="Orientation:"/>
+                    android:text="Orientation:"
+                    android:layout_marginTop="15dp" />
 
                 <TextView
                     android:id="@+id/profileHeaderOrientation"
@@ -144,8 +144,8 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="right"
                     android:layout_marginRight="16dp"
-                    android:padding="15dp"
-                    tools:text="Orientation"/>
+                    tools:text="Orientation"
+                    android:layout_marginTop="15dp" />
 
             </LinearLayout>
 
