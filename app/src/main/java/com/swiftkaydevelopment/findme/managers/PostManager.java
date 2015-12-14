@@ -128,6 +128,7 @@ public class PostManager {
                         u.setOrientation(User.setOrientationFromString(user.getString("orientation")));
                         u.setPropicloc(user.getString("propicloc"));
                         u.setAboutMe(user.getString("aboutme"));
+                        u.setAge(Integer.parseInt(user.getString("age")));
                         post.setUser(u);
                         u.setLocation(User.setLocationFromArray(user.getJSONObject("location")));
 

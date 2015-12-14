@@ -135,9 +135,9 @@ public class User implements Serializable{
         mLocation = setLocationFromArray(object.getJSONObject("location"));
         mGender = setGenderFromString(object.getString("gender"));
         mInterestIn = setInterestedInFromString(object.getString("looking_for_gender"));
-        mAge = Integer.parseInt(object.getString("dob"));
         mOrientation = setOrientationFromString(object.getString("orientation"));
         mAboutMe = object.getString("aboutme");
+        mAge = Integer.parseInt(object.getString("age"));
         return this;
     }
 
