@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@drawable/header_background">
 
-    <com.swiftkaydevelopment.findme.views.CircleImageView
+    <ImageView
         android:id="@+id/ivdrawerusersphoto"
         android:layout_width="75dp"
         android:layout_height="75dp"

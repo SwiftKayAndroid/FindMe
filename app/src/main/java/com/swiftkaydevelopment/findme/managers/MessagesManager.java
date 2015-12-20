@@ -297,7 +297,7 @@ public class MessagesManager {
                     }
                     m.setTag(child.getString("tag"));
                     m.setThreadId(child.getString("threadid"));
-                    m.setUser(User.createUser(mUid, mContext).fetchUser(m.getSenderId(), mContext));
+                    m.setUser(User.createUser(mUid, mContext).createUserFromJson(child.getJSONObject("user")));
                     mList.add(m);
                 }
             } catch(JSONException e) {
@@ -352,7 +352,7 @@ public class MessagesManager {
                             t.readStatus = 0;
                         }
                         t.threadId = child.getString("threadid");
-                        t.threadUser = User.createUser(mUid, mContext).fetchUser(child.getString("ouid"), mContext);
+                        t.threadUser = User.createUser(mUid, mContext).createUserFromJson(child.getJSONObject("user"));
                         t.time = child.getString("time");
                         tList.add(t);
                     }

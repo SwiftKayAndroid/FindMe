@@ -3,6 +3,7 @@ package com.swiftkaydevelopment.findme.services;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,6 +45,11 @@ public class UploadService extends AppCompatActivity {
     boolean camera = false;
 
     String pathToPicture;
+
+    public static Intent createIntent(Context context) {
+        Intent i = new Intent(context, UploadService.class);
+        return i;
+    }
 
     //booleans
     boolean imagechanged = false;

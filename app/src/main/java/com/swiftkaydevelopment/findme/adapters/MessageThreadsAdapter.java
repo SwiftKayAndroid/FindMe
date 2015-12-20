@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
+import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,11 +64,15 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
         final ThreadInfo thread = mThreadList.get(position);
         if(thread != null && thread.threadUser != null && thread.threadUser.getOuid() != null){
             if(!thread.threadUser.getPropicloc().equals("")){
-                imageLoader.DisplayImage(thread.threadUser.getPropicloc(), holder.ivpropic, false);
+                Picasso.with(mContext)
+                        .load(thread.threadUser.getPropicloc())
+                        .transform(new CircleTransform())
+                        .into(holder.ivpropic);
             }
-            holder.tvname.setText(thread.threadUser.getName());
+            holder.tvname.setText(thread.threadUser.getFirstname() + " " + thread.threadUser.getLastname());
             holder.tvmessage.setText(thread.lastMessage);
             holder.tvtime.setText(thread.time);
+
             if(thread.readStatus == ThreadInfo.READ){
 
             }

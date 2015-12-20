@@ -8,9 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
+import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +26,12 @@ public class FindPeopleAdapter extends BaseAdapter {
     List<User> users;
     String uid;
     private static LayoutInflater inflater = null;
-    ImageLoader imageLoader;
 
     public FindPeopleAdapter(Context context, List<User> users, String uid){
         this.context = context;
         this.users = users;
         this.uid = uid;
 
-        imageLoader = new ImageLoader(context);
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -70,8 +70,12 @@ public class FindPeopleAdapter extends BaseAdapter {
         if (users.get(position).getPropicloc().equals("")) {
             holder.propic.setImageResource(R.drawable.ic_placeholder);
         } else {
-            imageLoader.DisplayImage(users.get(position).getPropicloc(), holder.propic, false);
+            Picasso.with(parent.getContext())
+                    .load(users.get(position).getPropicloc())
+                    .transform(new CircleTransform())
+                    .into(holder.propic);
         }
+
         row.setTag(holder);
 
         return row;

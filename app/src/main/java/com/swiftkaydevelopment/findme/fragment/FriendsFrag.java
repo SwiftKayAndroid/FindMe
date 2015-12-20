@@ -125,4 +125,9 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
     public void onPeopleFound(ArrayList<User> users) {
 
     }
+
+    @Override
+    public void onProfileViewsFetched(ArrayList<User> users) {
+
+    }
 }

@@ -56,6 +56,14 @@
                     android:padding="15dp"
                     android:text="General"/>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:padding="7dp"
+                    android:layout_marginLeft="16dp"
+                    android:text="Select which Gender and Relationship Statu you want to see"/>
+
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
@@ -238,6 +246,14 @@
                     android:layout_gravity="start"
                     android:padding="15dp"
                     android:text="Orientation"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:padding="7dp"
+                    android:layout_marginLeft="16dp"
+                    android:text="Select which orientations you want to see"/>
 
                 <LinearLayout
                     android:orientation="horizontal"

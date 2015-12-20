@@ -142,4 +142,9 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
     public void onPeopleFound(ArrayList<User> users) {
 
     }
+
+    @Override
+    public void onProfileViewsFetched(ArrayList<User> users) {
+
+    }
 }

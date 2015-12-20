@@ -2,6 +2,7 @@ package com.swiftkaydevelopment.findme.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +28,11 @@ public class UpdateStatus extends BaseActivity {
     int charleft = 2000;
     int textcount = 0;
     final int STARTCOUNT = 2000;
+
+    public static Intent createIntent(Context context) {
+        Intent i = new Intent(context, UpdateStatus.class);
+        return i;
+    }
 
     @Override
     protected int getLayoutResource() {

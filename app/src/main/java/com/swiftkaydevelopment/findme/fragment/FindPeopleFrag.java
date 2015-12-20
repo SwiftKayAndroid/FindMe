@@ -121,4 +121,9 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
             mAdapter.addUsers(users);
         }
     }
+
+    @Override
+    public void onProfileViewsFetched(ArrayList<User> users) {
+
+    }
 }

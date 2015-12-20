@@ -26,7 +26,6 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:background="@color/light_gray"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -41,12 +40,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:hint="About Me"
+                    android:hint="Write something about yourself..."
                     android:padding="10dp"
                     android:minHeight="100dp"
                     android:gravity="start|top"
                     android:layout_margin="10dp"
-                    android:inputType="textCapSentences" />
+                    android:inputType="textCapSentences|textMultiLine" />
 
             </LinearLayout>
 
@@ -63,7 +62,6 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:background="@color/light_gray"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -98,6 +96,51 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Bi"
+                        android:layout_marginLeft="16dp"/>
+
+                </RadioGroup>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:padding="15dp"
+                    android:text="Relationship Status"/>
+
+                <RadioGroup
+                    android:id="@+id/editProfileRadioGroupRelationshipStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp">
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileSingle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Single"
+                        android:layout_marginLeft="16dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileTaken"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Taken"
                         android:layout_marginLeft="16dp"/>
 
                 </RadioGroup>

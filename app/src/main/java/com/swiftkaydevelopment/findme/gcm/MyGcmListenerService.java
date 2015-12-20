@@ -37,13 +37,16 @@ public class MyGcmListenerService extends GcmListenerService {
      */
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String type = data.getString("type");
-        Log.w(TAG, "incoming push notification");
-        if (type != null) {
-            if (type.equals("message")) {
-                MessagesManager.messageNotificationReceived(data, getApplicationContext());
-            } else {
-                NotificationManager.getInstance(getApplication()).notifyNewPushNotification(data);
+        if (data != null) {
+            Log.e(TAG, "Push Data: " + data.toString());
+            String type = data.getString("type");
+            Log.w(TAG, "incoming push notification");
+            if (type != null) {
+                if (type.equals("message")) {
+                    MessagesManager.messageNotificationReceived(data, getApplicationContext());
+                } else {
+                    NotificationManager.getInstance(getApplication()).notifyNewPushNotification(data);
+                }
             }
         }
     }

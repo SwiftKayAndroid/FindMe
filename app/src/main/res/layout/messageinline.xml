@@ -20,12 +20,20 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/etmessaget"
-        android:padding="10dp"
         app:stackFromEnd="true"
-        android:background="@color/light_gray"
-        android:divider="@null">
+        android:background="@color/white"
+        android:divider="@null"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
     </android.support.v7.widget.RecyclerView>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_above="@+id/etmessaget" />
 
     <EditText
         android:layout_width="fill_parent"

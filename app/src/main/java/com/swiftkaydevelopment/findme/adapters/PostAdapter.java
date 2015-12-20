@@ -21,6 +21,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +29,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
+import com.swiftkaydevelopment.findme.views.CircleTransform;
 import com.swiftkaydevelopment.findme.views.ExpandableLinearLayout;
 import com.swiftkaydevelopment.findme.views.tagview.TagView;
 import com.swiftkaydevelopment.findme.R;
@@ -39,11 +42,13 @@ import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.views.tagview.Tag;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements View.OnClickListener{
     public interface PostAdapterListener{
         void onCommentsClicked(Post post);
         void onImageClicked(Post post);
+        void onEditClicked();
     }
 
     public static final String TAG = "PostAdapter";
@@ -55,13 +60,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private boolean hasHeader = false;
     private PostAdapterListener mListener;
-    private User user;
+    public User user;
+    private boolean isUser;
 
-    public PostAdapter(Context context, ArrayList<Post> plist, User user, boolean isProfile) {
+    public PostAdapter(Context context, ArrayList<Post> plist, User user, boolean isProfile, boolean isUser) {
         mContext = context;
         mPostList = plist;
         this.user = user;
         this.hasHeader = isProfile;
+        this.isUser = isUser;
     }
 
     public void setPostAdapterListener(PostAdapterListener listener) {
@@ -132,14 +139,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 append = " miles away";
             }
             holder.tvLocation.setText(Integer.toString(distance) + append);
-            holder.tvName.setText(post.getUser().getName());
+            holder.tvName.setText(post.getUser().getFirstname() + " " + post.getUser().getLastname());
             holder.tvTime.setText(post.getTime());
-            ImageLoader imageLoader = new ImageLoader(mContext);
-            if (post.getUser().getPropicloc().equals("")) {
-                holder.ivProfilePicture.setImageResource(R.drawable.ic_placeholder);
-            } else {
-                imageLoader.DisplayImage(post.getUser().getPropicloc(), holder.ivProfilePicture, false);
-            }
+                Picasso.with(mContext)
+                        .load(!TextUtils.isEmpty(post.getUser().getPropicloc()) ? post.getUser().getPropicloc() : "empty")
+                        .transform(new CircleTransform())
+                        .resize(100, 100)
+                        .error(R.drawable.ic_placeholder)
+                        .into(holder.ivProfilePicture);
+
             holder.ivProfilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -159,7 +167,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 Log.e(TAG, "showing post image");
                 holder.ivPostImage.setVisibility(View.VISIBLE);
                 holder.ivPostImage.setImageResource(R.drawable.ic_placeholder);
-                imageLoader.DisplayImage(mPostList.get(position).getPostImage(), holder.ivPostImage, true);
+//                imageLoader.DisplayImage(mPostList.get(position).getPostImage(), holder.ivPostImage, true);
+                Picasso.with(mContext).load(mPostList.get(position).getPostImage()).into(holder.ivPostImage);
                 holder.ivPostImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -202,6 +211,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.location.setText(user.getLocation().getCity());
             holder.gender.setText(user.getGender().toString());
             holder.age.setText(Integer.toString(user.getAge()));
+            if (isUser) {
+                holder.mEditProfile.setVisibility(View.VISIBLE);
+                holder.mEditProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mListener != null) {
+                            mListener.onEditClicked();
+                        }
+                    }
+                });
+            } else {
+                holder.mEditProfile.setVisibility(View.GONE);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry entry : user.getSearchingFor().entrySet()) {
+                if (entry.getValue().equals("yes")) {
+                    sb.append(entry.getKey() + " ");
+                }
+            }
+            holder.lookingfor.setText(sb.toString());
+            holder.status.setText(user.mRelationshipStatus);
         }
         itemView.setTag(position);
     }
@@ -268,7 +299,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TagView tagView;
 
         //header
-        TextView aboutMe, age, gender, orientation, location;
+        TextView aboutMe, age, gender, orientation, location, status, lookingfor;
+        ImageView mEditProfile;
 
         public int viewType;
 
@@ -308,6 +340,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             aboutMe = (TextView) v.findViewById(R.id.profileHeaderAboutMe);
             gender = (TextView) v.findViewById(R.id.profileHeaderGender);
             orientation = (TextView) v.findViewById(R.id.profileHeaderOrientation);
+            status = (TextView) v.findViewById(R.id.profileHeaderStatus);
+            lookingfor = (TextView) v.findViewById(R.id.profileHeaderLookingFor);
+            mEditProfile = (ImageView) v.findViewById(R.id.ivProfileEditProfile);
         }
     }
 

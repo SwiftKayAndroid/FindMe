@@ -133,6 +133,7 @@ public class CommentsDialog extends AppCompatDialogFragment {
                     c.setPostId(mPostid);
                     mAdapter.addComment(c);
                     etComment.setText("");
+                    emptyView.setVisibility(View.GONE);
                 }
             }
         });

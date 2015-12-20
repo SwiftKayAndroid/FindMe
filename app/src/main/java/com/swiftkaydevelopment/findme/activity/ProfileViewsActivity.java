@@ -20,22 +20,19 @@ package com.swiftkaydevelopment.findme.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 
-import com.swiftkaydevelopment.findme.fragment.MessagesListFrag;
 import com.swiftkaydevelopment.findme.R;
-import com.swiftkaydevelopment.findme.managers.MessagesManager;
+import com.swiftkaydevelopment.findme.fragment.ProfileViewsFragment;
 
-public class MessagesListActivity extends BaseActivity {
-    private static final String TAG = "MessagesListActivity";
+public class ProfileViewsActivity extends BaseActivity{
+    private static final String TAG = "ProfileViewsActivity";
 
-    private MessagesListFrag mMessagesListFrag;
+    private static String mUid;
 
     public static Intent createIntent(Context context) {
-        Intent i = new Intent(context, MessagesListActivity.class);
+        Intent i = new Intent(context, ProfileViewsActivity.class);
         return i;
     }
 
@@ -52,26 +49,14 @@ public class MessagesListActivity extends BaseActivity {
     @Override
     protected void createActivity(Bundle inState) {
 
-        if (getSupportFragmentManager().findFragmentByTag(MessagesListFrag.TAG) == null) {
-            mMessagesListFrag = MessagesListFrag.getInstance(uid);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.activityContainer, mMessagesListFrag, MessagesListFrag.TAG)
+        ProfileViewsFragment profileViewsFragment = (ProfileViewsFragment) getSupportFragmentManager().findFragmentByTag(ProfileViewsFragment.TAG);
+        if (profileViewsFragment == null) {
+            profileViewsFragment = ProfileViewsFragment.newInstance(uid);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.activityContainer, profileViewsFragment, ProfileViewsFragment.TAG)
                     .addToBackStack(null)
                     .commit();
         }
-        setUpToolbar();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
-
-    /**
-     * Sets up the toolbar for this Activity
-     */
-    private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -80,16 +65,12 @@ public class MessagesListActivity extends BaseActivity {
                 finish();
             }
         });
-        mToolbar.inflateMenu(R.menu.messages_menu);
-        mToolbar.setTitle("Messages");
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.messagesThreadDeleteAllMessages) {
-                    MessagesManager.getInstance(uid, MessagesListActivity.this).deleteAllThreads(uid);
-                }
-                return true;
-            }
-        });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

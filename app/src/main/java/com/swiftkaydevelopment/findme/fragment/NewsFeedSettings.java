@@ -23,9 +23,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,6 +85,17 @@ public class NewsFeedSettings extends BaseFragment {
                 .inflate(R.layout.newsfeed_settings, container, false);
         mToolbar = (Toolbar) layout.findViewById(R.id.newsfeedSettingsToolbar);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.inflateMenu(R.menu.newsfeed_settings_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.newsfeedSettingsDiscard) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                    return true;
+                }
+                return false;
+            }
+        });
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +126,7 @@ public class NewsFeedSettings extends BaseFragment {
         prefData = AccountManager.getInstance(getActivity()).getNewsfeedPreferences();
         if (prefData.gender.equals("both")) {
             mGenderBoth.setChecked(true);
+            mGenderSwitch.setEnabled(false);
         } else if (prefData.gender.equals("Male")) {
             mGenderBoth.setChecked(false);
             mGenderSwitch.setChecked(false);
@@ -166,6 +180,28 @@ public class NewsFeedSettings extends BaseFragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        mGenderBoth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mGenderSwitch.setEnabled(false);
+                } else {
+                    mGenderSwitch.setEnabled(true);
+                }
+            }
+        });
+
+        mStatusBoth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mStatusSwitch.setEnabled(false);
+                } else {
+                    mStatusSwitch.setEnabled(true);
+                }
             }
         });
     }

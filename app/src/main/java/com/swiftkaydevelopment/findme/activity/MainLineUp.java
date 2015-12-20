@@ -31,6 +31,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
 
     private static final int NEWSFEED = 1;
     private static final int FINDPEOPLE = 2;
+    private static final int PROFILEVIEWS = 3;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -169,6 +170,10 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
                 break;
             case FINDPEOPLE:
                 startActivity(FindPeopleActivity.createIntent(MainLineUp.this));
+                break;
+
+            case PROFILEVIEWS:
+                startActivity(ProfileViewsActivity.createIntent(this));
                 break;
 
             default:

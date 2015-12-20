@@ -25,9 +25,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.data.Comment;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
 
@@ -85,8 +87,11 @@ public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
             if (mCommentList.get(position).getUser().getPropicloc().equals("")) {
                 holder.ivCommentProfilePicture.setImageResource(R.drawable.ic_placeholder);
             } else {
-                ImageLoader imageLoader = new ImageLoader(mContext);
-                imageLoader.DisplayImage(mCommentList.get(position).getUser().getPropicloc(), holder.ivCommentProfilePicture, false);
+                Picasso.with(mContext)
+                        .load(mCommentList.get(position).getUser().getPropicloc())
+                        .transform(new CircleTransform())
+                        .resize(100, 100)
+                        .into(holder.ivCommentProfilePicture);
             }
         }
         return row;

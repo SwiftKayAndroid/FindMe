@@ -33,46 +33,15 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@null"
-        app:layout_anchor="@id/collapsing_toolbar"
-        app:layout_anchorGravity="bottom|center_horizontal">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="23/Male/Orlando"
-        android:id="@+id/tvprofileage"
-        android:layout_marginLeft="10dp"
-        android:textColor="#59b1eb"
-        android:layout_above="@+id/tvProfileOrientation"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Straight"
-            android:id="@+id/tvProfileOrientation"
-            android:textColor="#59b1eb"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"/>
-    </RelativeLayout>
-
-
-    <com.swiftkaydevelopment.findme.views.CircleImageView
+    <ImageView
         android:id="@+id/profileProfilePicture"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginRight="55dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_marginRight="16dp"
         android:src="@drawable/ic_placeholder"
         app:layout_anchor="@id/collapsing_toolbar"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|right|end"
+        android:elevation="3dp" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
@@ -80,7 +49,6 @@
         android:layout_height="match_parent"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:layout_marginTop="80dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewProfile"

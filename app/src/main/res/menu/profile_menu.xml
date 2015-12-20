@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--<item-->
-        <!--android:id="@+id/profileMenuPictures"-->
-        <!--android:title="user photos"-->
-        <!--app:showAsAction="always"-->
-        <!--android:icon="@mipmap/ic_photo_camera_white_24dp" />-->
+    <item
+        android:id="@+id/profileMenuPictures"
+        android:title="user photos"
+        app:showAsAction="always"
+        android:icon="@mipmap/ic_image_multiple_white_24dp" />
 
     <item
         android:id="@+id/profileReportProfile"

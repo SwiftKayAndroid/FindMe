@@ -18,22 +18,22 @@
         android:layout_gravity="center"
         android:src="@drawable/ic_action_edit_dark" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container_comments"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/etcommentonpost"
-        android:layout_below="@+id/baseActivityToolbar"
-        android:background="@color/light_gray">
         <ListView
             android:id="@+id/lvcommentspop"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@null"
             android:divider="@null"
-            android:dividerHeight="0dp" />
+            android:dividerHeight="0dp"
+            android:layout_below="@+id/baseActivityToolbar"
+            android:layout_above="@+id/etcommentonpost" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/etcommentonpost"
+        android:background="@color/dark_gray"
+        android:id="@+id/view2" />
 
     <EditText
         android:id="@+id/etcommentonpost"
@@ -61,12 +61,12 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/ivCommentSend"
-        android:layout_below="@+id/swipe_container_comments"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:src="@mipmap/ic_send_white_24dp"
         android:tint="@color/black"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:layout_alignTop="@+id/view2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <ImageView
         android:layout_width="wrap_content"

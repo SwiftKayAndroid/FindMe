@@ -30,6 +30,7 @@ import android.util.Log;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.FriendsActivity;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
+import com.swiftkaydevelopment.findme.activity.ProfileViewsActivity;
 import com.swiftkaydevelopment.findme.data.Notification;
 import com.swiftkaydevelopment.findme.data.PushData;
 import com.swiftkaydevelopment.findme.data.User;
@@ -122,6 +123,17 @@ public class NotificationManager {
 
                 } else if (type.equals("seen")) {
 
+                } else if (type.equals("view")) {
+                    PushData pd = new PushData();
+                    pd.title = "New Profile View";
+                    pd.message = "Someone viewed your profile";
+                    pd.resId = R.drawable.redfsmall;
+
+                    Intent intent = ProfileViewsActivity.createIntent(mContext);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                    pd.intent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                    sendNotification(pd);
                 }
             }
         }

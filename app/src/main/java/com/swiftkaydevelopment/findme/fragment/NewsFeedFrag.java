@@ -98,7 +98,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         super.onViewCreated(view, savedInstanceState);
 
         if (mPostAdapter == null) {
-            mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid, getActivity()).me(), false);
+            mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid, getActivity()).me(), false, false);
             mRecyclerView.setAdapter(mPostAdapter);
             mPostAdapter.setPostAdapterListener(this);
         }
@@ -220,7 +220,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             swipeLayout.setRefreshing(false);
         } else {
             if (mPostAdapter == null) {
-                mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid, getActivity()).me(), false);
+                mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid, getActivity()).me(), false, false);
                 mRecyclerView.setAdapter(mPostAdapter);
                 mPostAdapter.setPostAdapterListener(this);
             } else {
@@ -245,6 +245,11 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
                 .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onEditClicked() {
+
     }
 
     @Override

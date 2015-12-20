@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
 
@@ -22,7 +24,6 @@ import java.util.ArrayList;
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder> {
     public static final String TAG = "FriendsAdapter";
     Context mContext;
-    ImageLoader imageLoader;
     String uid;
     ArrayList<User> users = new ArrayList<>();
 
@@ -30,7 +31,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         this.mContext = context;
         this.uid = uid;
         this.users = users;
-        imageLoader = new ImageLoader(context);
 
     }
 
@@ -47,7 +47,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         if (user.getPropicloc().equals("")) {
             holder.iv.setImageResource(R.drawable.ic_placeholder);
         } else {
-            imageLoader.DisplayImage(user.getPropicloc(), holder.iv, false);
+            Picasso.with(mContext)
+                    .load(user.getPropicloc())
+                    .transform(new CircleTransform())
+                    .into(holder.iv);
         }
         holder.tvname.setText(user.getFirstname() + " " + user.getLastname());
         holder.tvdesc.setText(user.getAge() + "/" + user.getLocation().getCity() + "/" + user.getGender().toString());

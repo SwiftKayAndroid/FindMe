@@ -21,6 +21,7 @@ public class UserManager {
         void onFriendsRetrieved(ArrayList<User> users);
         void onMatchesRetrieved(ArrayList<User> users);
         void onPeopleFound(ArrayList<User> users);
+        void onProfileViewsFetched(ArrayList<User> users);
     }
     private static final String TAG = "UserManager";
     private static String mUid;
@@ -57,6 +58,10 @@ public class UserManager {
         return me;
     }
 
+    public void getProfileViews(String uid, String lastpage) {
+        new GetProfileViewsTask(uid, lastpage).execute();
+    }
+
     public void invalidateMe() {
         me = null;
     }
@@ -76,6 +81,10 @@ public class UserManager {
      */
     public void sendFriendRequest(String uid, User otherUser) {
         new SendFriendRequestTask(uid, otherUser).execute();
+    }
+
+    public void addProfileView(String uid, User user) {
+        new AddProfileViewTask(uid, user).execute();
     }
 
     /**
@@ -125,8 +134,8 @@ public class UserManager {
         new FindPeopleTask(uid, lastpost).execute();
     }
 
-    public void updateProfile(String about, String orientation) {
-        new UpdateProfileTask(about, orientation, mUid).execute();
+    public void updateProfile(String about, String orientation, String status) {
+        new UpdateProfileTask(about, orientation, status,  mUid).execute();
     }
 
     /**
@@ -142,11 +151,13 @@ public class UserManager {
         String about;
         String orientation;
         String uid;
+        String status;
 
-        public UpdateProfileTask(String about, String orientation, String uid) {
+        public UpdateProfileTask(String about, String orientation, String status, String uid) {
             this.about = about;
             this.orientation = orientation;
             this.uid = uid;
+            this.status = status;
         }
 
         @Override
@@ -157,8 +168,77 @@ public class UserManager {
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("aboutme", about);
             connectionManager.addParam("orientation", orientation);
+            connectionManager.addParam("status", status);
             connectionManager.sendHttpRequest();
 
+            return null;
+        }
+    }
+
+    private class GetProfileViewsTask extends AsyncTask<Void, Void, ArrayList<User>> {
+        String uid;
+        String lastpage;
+
+        public GetProfileViewsTask(String uid, String lastpage) {
+            this.uid = uid;
+            this.lastpage = lastpage;
+        }
+
+        @Override
+        protected ArrayList<User> doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("lastpage", lastpage);
+            connectionManager.setUri("getprofileviews.php");
+            String result = connectionManager.sendHttpRequest();
+            ArrayList<User> users = new ArrayList<>();
+
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("users");
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject child = jsonArray.getJSONObject(i);
+                        User u = User.createUser(mUid, mContext).createUserFromJson(child);
+                        users.add(u);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return users;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<User> users) {
+            super.onPostExecute(users);
+            for (UserManagerListener l : mListeners) {
+                if (l != null) {
+                    l.onProfileViewsFetched(users);
+                }
+            }
+        }
+    }
+
+    private  class AddProfileViewTask extends AsyncTask<Void, Void, Void> {
+        String uid;
+        User user;
+
+        public AddProfileViewTask(String uid, User user) {
+            this.uid = uid;
+            this.user = user;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("ouid", user.getOuid());
+            connectionManager.setUri("addprofileview.php");
+            String result = connectionManager.sendHttpRequest();
             return null;
         }
     }

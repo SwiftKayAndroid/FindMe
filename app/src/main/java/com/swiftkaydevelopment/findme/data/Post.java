@@ -66,7 +66,7 @@ public class Post implements Serializable{
     public Post fetchPost(String postid){
         mPostId = postid;
         try {
-            new FetchPostTask(postid, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,null).get();
+            new FetchPostTask(postid, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
             setUser(User.createUser(mUid, mContext).fetchUser(getPostingUsersId(), mContext));
             setComments(CommentsManager.getInstance(mUid, mContext).fetchComments(mPostId));
             return this;
@@ -74,6 +74,25 @@ public class Post implements Serializable{
             e.printStackTrace();
         }
         Log.i(TAG, "fetchPost - returning null");
+        return this;
+    }
+
+    public Post createPostFromJson(JSONObject object) {
+        try {
+            setPostText(object.getString("post"));
+            setPostingUsersId(object.getString("postingusersid"));
+            setNumComments(object.getInt("numcomments"));
+            setNumLikes(object.getInt("numlikes"));
+            setTime(object.getString("time"));
+            setPostId(object.getString("postid"));
+            setLiked(object.getBoolean("liked"));
+            setPostImage(object.getString("postpicloc"));
+            JSONObject user = object.getJSONObject("user");
+            User u = User.createUser(mUid, mContext).createUserFromJson(user);
+            setUser(u);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
@@ -107,6 +126,7 @@ public class Post implements Serializable{
                 post.setTime(jsonObject.getString("time"));
                 post.setLiked(jsonObject.getBoolean("liked"));
                 post.setPostImage(jsonObject.getString("postpicloc"));
+                post.setUser(User.createUser(mUid, mContext).createUserFromJson(jsonObject.getJSONObject("user")));
 
             } catch(JSONException e) {
                 e.printStackTrace();

@@ -2,6 +2,7 @@ package com.swiftkaydevelopment.findme.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
+import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
     public interface MessagesAdapterListener{
         void onMessageLongClick(View itemView, Message message);
+        void onProfileImageClicked(Message message);
     }
     public static final String TAG = "MessagesAdapter";
     private static final int VIEW_TYPE_USER_MESSAGE = 0;
@@ -62,10 +66,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
         holder.tvMessage.setText(mMessageList.get(position).getMessage());
         holder.tvTime.setText(mMessageList.get(position).getTime());
-        if (mMessageList.get(position).getUser().getPropicloc().isEmpty()) {
+        if (TextUtils.isEmpty(mMessageList.get(position).getUser().getPropicloc())) {
             holder.profilePicture.setImageResource(R.drawable.ic_placeholder);
         } else {
-            imageLoader.DisplayImage(mMessageList.get(position).getUser().getPropicloc(), holder.profilePicture, false);
+            Picasso.with(mContext)
+                    .load(mMessageList.get(position).getUser().getPropicloc())
+                    .transform(new CircleTransform())
+                    .into(holder.profilePicture);
         }
 
         if (getItemViewType(position) == VIEW_TYPE_USER_MESSAGE) {
@@ -86,6 +93,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                 return true;
             }
 
+        });
+
+        holder.profilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onProfileImageClicked(mMessageList.get(position));
+                }
+            }
         });
     }
 

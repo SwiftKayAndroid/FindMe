@@ -27,24 +27,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.managers.PersistenceManager;
+import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 
-public class FullImageFragment extends BaseFragment{
+public class FullImageFragment extends BaseFragment implements OkCancelDialog.OkCancelDialogListener{
+
+    public interface FullImageFragListener {
+        void onImageDeleted(String picloc);
+    }
     public static final String TAG = "FullImageFragment";
 
     private static final String ARG_PIC = "ARG_PIC";
     private static final String ARG_ISUSER = "ARG_ISUSER";
+    private static final String DELETE_LABEL = "DELETE";
 
     private String picloc;
     private ImageView ivPicture;
     private ImageLoader imageLoader;
     private Toolbar mToolbar;
     private boolean isUser;
+
+    private FullImageFragListener mListener;
 
     public static FullImageFragment newInstance(String uid, String picloc, boolean isUser) {
         FullImageFragment frag = new FullImageFragment();
@@ -54,6 +63,10 @@ public class FullImageFragment extends BaseFragment{
         b.putBoolean(ARG_ISUSER, isUser);
         frag.setArguments(b);
         return frag;
+    }
+
+    public void setFullImageFragListener(FullImageFragListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -88,21 +101,47 @@ public class FullImageFragment extends BaseFragment{
         if (isUser) {
             mToolbar.setVisibility(View.VISIBLE);
             mToolbar.inflateMenu(R.menu.fullimage_menu);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            });
             mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     if (item.getItemId() == R.id.fullImageMenuDelete) {
-                        AccountManager.getInstance(getActivity()).deletePicture(uid, picloc);
+                        showDialog("Delete", "Are you sure you want to delete this picture", "Delete", DELETE_LABEL);
                     } else if (item.getItemId() == R.id.fullImageMenuMakeProfilePicture) {
                         Log.e(TAG, "clicked");
                         AccountManager.getInstance(getActivity()).changeProfilePicture(uid, picloc);
                         PersistenceManager.getInstance(getActivity()).updatePropicloc(picloc);
+                        Toast.makeText(getActivity(), "Profile picture updated", Toast.LENGTH_LONG).show();
+                        UserManager.getInstance(uid, getActivity()).invalidateMe();
                     }
                     return true;
                 }
             });
         } else {
             mToolbar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        OkCancelDialog dialog = (OkCancelDialog) getActivity().getSupportFragmentManager().findFragmentByTag(OkCancelDialog.TAG);
+        if (dialog != null) {
+            dialog.setOkCancelDialogListener(this);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        OkCancelDialog dialog = (OkCancelDialog) getActivity().getSupportFragmentManager().findFragmentByTag(OkCancelDialog.TAG);
+        if (dialog != null) {
+            dialog.setOkCancelDialogListener(null);
         }
     }
 
@@ -118,5 +157,29 @@ public class FullImageFragment extends BaseFragment{
         outState.putString(ARG_PIC, picloc);
         outState.putBoolean(ARG_ISUSER, isUser);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onOkPressed(Object tag) {
+        AccountManager.getInstance(getActivity()).deletePicture(uid, picloc);
+        if (mListener != null) {
+            mListener.onImageDeleted(picloc);
+        }
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onCancelPressed(Object tag) {
+
+    }
+
+    private void showDialog(String title, String message, String pos, String label) {
+        OkCancelDialog dialog = (OkCancelDialog) getActivity().getSupportFragmentManager().findFragmentByTag(OkCancelDialog.TAG);
+        if (dialog == null) {
+            dialog = OkCancelDialog.newInstance(title, message, pos, null);
+            dialog.show(getActivity().getSupportFragmentManager(), OkCancelDialog.TAG);
+            dialog.setOkCancelDialogListener(this);
+        }
+
     }
 }

@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.MessagesAdapter;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.UserManager;
@@ -220,6 +221,11 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
             }
         });
         popup.show();//showing popup menu
+    }
+
+    @Override
+    public void onProfileImageClicked(Message message) {
+        getActivity().startActivity(ProfileActivity.createIntent(getActivity(), message.getUser()));
     }
 
     @Override

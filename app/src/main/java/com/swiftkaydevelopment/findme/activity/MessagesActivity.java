@@ -114,6 +114,12 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
     protected void onPostResume() {
         super.onPostResume();
         MessagesManager.getInstance(uid, this).addMessagesListener(this);

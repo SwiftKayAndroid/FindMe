@@ -15,11 +15,12 @@ import com.swiftkaydevelopment.findme.R;
 import org.apmem.tools.layouts.FlowLayout;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Kevin Haines on 8/24/15.
  */
-public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListener, User.UserListener {
+public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListener, User.UserListener, FullImageFragment.FullImageFragListener {
     public static final String TAG = "ViewPhotosFrag";
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_PICS = "ARG_PICS";
@@ -89,12 +90,20 @@ public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListene
     public void onResume() {
         super.onResume();
         user.addListener(this);
+        FullImageFragment fullImageFragment = (FullImageFragment) getActivity().getSupportFragmentManager().findFragmentByTag(FullImageFragment.TAG);
+        if (fullImageFragment != null) {
+            fullImageFragment.setFullImageFragListener(this);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         user.removeListener(this);
+        FullImageFragment fullImageFragment = (FullImageFragment) getActivity().getSupportFragmentManager().findFragmentByTag(FullImageFragment.TAG);
+        if (fullImageFragment != null) {
+            fullImageFragment.setFullImageFragListener(null);
+        }
     }
 
     @Override
@@ -125,6 +134,18 @@ public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListene
     }
 
     @Override
+    public void onImageDeleted(String picloc) {
+        Iterator<String> iterator = urls.iterator();
+
+        while (iterator.hasNext()) {
+            if (iterator.next().equals(picloc)) {
+                iterator.remove();
+            }
+        }
+        reinitializeViews();
+    }
+
+    @Override
     public void onClick(View v) {
         String url = (String) v.getTag();
         FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, url, user.getOuid().equals(uid));
@@ -132,5 +153,6 @@ public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListene
                 .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
                 .addToBackStack(null)
                 .commit();
+        fullImageFragment.setFullImageFragListener(this);
     }
 }

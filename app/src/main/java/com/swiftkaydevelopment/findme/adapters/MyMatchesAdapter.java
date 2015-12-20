@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.swiftkaydevelopment.findme.activity.MyMatches;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
-import com.swiftkaydevelopment.findme.views.CircleImageView;
 
 import java.util.List;
 
@@ -56,7 +55,6 @@ public class MyMatchesAdapter extends BaseAdapter {
 
         View row = inflater.inflate(R.layout.matchlistitem,parent,false);
         final ViewHolder holder = new ViewHolder();
-        holder.propic = (CircleImageView) row.findViewById(R.id.ivmymatches);
         holder.tvage = (TextView) row.findViewById(R.id.tvmymatchesage);
         holder.tvname = (TextView) row.findViewById(R.id.tvmymatchesname);
 
@@ -66,9 +64,7 @@ public class MyMatchesAdapter extends BaseAdapter {
 
         if(thismatch != null){
             if(thismatch.propicloc.equals("null")){
-                holder.propic.setImageResource(R.drawable.ic_placeholder);
             }else{
-                imageLoader.DisplayImage(thismatch.propicloc,holder.propic,false);
             }
             holder.tvname.setText(thismatch.name);
             holder.tvage.setText(thismatch.dob + "/" + thismatch.city);
@@ -82,7 +78,6 @@ public class MyMatchesAdapter extends BaseAdapter {
     }
 
     class ViewHolder{
-        CircleImageView propic;
         TextView tvname;
         TextView tvage;
 

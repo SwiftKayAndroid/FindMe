@@ -30,7 +30,9 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -66,7 +68,7 @@ public class User implements Serializable{
         }, GAY {
             @Override
             public String toString() {
-                return "Interested in men";
+                return "Interested in same sex";
             }
         }, LESBIAN {
             @Override
@@ -99,6 +101,8 @@ public class User implements Serializable{
     private String mName;
     private String mFirstname;
     private String mLastname;
+    private JSONObject mSearchingFor;
+    private Map<String, String> mSearchingForMap;
     private int mAge;
     private boolean mIsFriend;
     private boolean mIsBlocked;
@@ -106,6 +110,7 @@ public class User implements Serializable{
     private Location mLocation;
     private Orientation mOrientation;
     private OnlineStatus mOnlineStatus;
+    public String mRelationshipStatus;
     private ArrayList<String> mPictures;
     private List<Tag> mTags;
     private String mAboutMe;
@@ -136,9 +141,37 @@ public class User implements Serializable{
         mGender = setGenderFromString(object.getString("gender"));
         mInterestIn = setInterestedInFromString(object.getString("looking_for_gender"));
         mOrientation = setOrientationFromString(object.getString("orientation"));
+        mIsFriend = object.getBoolean("isfriend");
+        createExtendedInfo(object.getJSONObject("extended"));
+        mIsMatch = object.getBoolean("ismatch");
         mAboutMe = object.getString("aboutme");
         mAge = Integer.parseInt(object.getString("age"));
         return this;
+    }
+
+    public Map<String, String> getSearchingFor() {
+        return mSearchingForMap;
+    }
+
+    private void createExtendedInfo(JSONObject object) {
+
+        Map<String, String> map = new HashMap<>();
+        try {
+            //Create Looking for map
+            map.put("Sex", object.getString("sex"));
+            map.put("Friends", object.getString("friends"));
+            map.put("FWB", object.getString("fwb"));
+            map.put("Something Serious", object.getString("something_serious"));
+            map.put("idk", object.getString("idk"));
+            map.put("Chat", object.getString("chat"));
+
+            //relationship status
+            mRelationshipStatus = object.getString("relationshipstatus");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSearchingForMap = map;
     }
 
     public User fetchUser(String ouid, Context context){
@@ -179,20 +212,7 @@ public class User implements Serializable{
 
                 try {
                     JSONObject jsonObject = new JSONObject(result);
-                    user.setName(jsonObject.getString("name"));
-                    user.setFirstname(jsonObject.getString("firstname"));
-                    user.setLastname(jsonObject.getString("lastname"));
-                    user.setGender(setGenderFromString(jsonObject.getString("gender")));
-                    user.setPropicloc(jsonObject.getString("propicloc"));
-                    user.setAge(Integer.parseInt(jsonObject.getString("age")));
-                    user.setIsFriend(jsonObject.getBoolean("isfriend"));
-                    user.setIsBlocked(jsonObject.getBoolean("isblocked"));
-                    user.setIsMatch(jsonObject.getBoolean("ismatch"));
-                    user.setOrientation(setOrientationFromString(jsonObject.getString("orientation")));
-                    user.setOnlineStatus(setOnlineStatusFromString(jsonObject.getString("onlinestatus")));
-                    user.setAboutMe(jsonObject.getString("aboutme"));
-                    user.setInterestedIn(setInterestedInFromString(jsonObject.getString("looking_for_gender")));
-                    user.setLocation(setLocationFromArray(jsonObject.getJSONObject("location")));
+                    user  = User.createUser(uid, mContext).createUserFromJson(jsonObject);
 
                 } catch (final JSONException e) {
                     e.printStackTrace();
@@ -554,7 +574,7 @@ public class User implements Serializable{
      * @return string users full mName
      */
     public String getName() {
-        return mName;
+        return mFirstname + " " + mLastname;
     }
 
     /**

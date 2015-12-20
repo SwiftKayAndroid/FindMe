@@ -17,15 +17,14 @@
 
 package com.swiftkaydevelopment.findme.managers;
 
-import android.content.Context;
-import android.util.Base64;
 import android.util.Log;
+
+import com.swiftkaydevelopment.findme.BuildConfig;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +50,6 @@ public class ConnectionManager {
     private boolean useJson;
     private boolean basicAuth = false;
     private String baseUrl = "http://www.swiftkay.com/findme/";
-
 
     private boolean usePinnedCertifate = false;
     private Map<String,String> params;
@@ -118,44 +116,14 @@ public class ConnectionManager {
         return sb.toString();
     }
 
-    public void setUseJson(boolean usejson){
-        this.useJson = usejson;
-    }
-
-    public void useBasicAuth(boolean useAuth){
-        this.basicAuth = useAuth;
-    }
-
-    public void setPassword(String pass){
-        this.password = pass;
-    }
-
-    public void setUsername(String username){
-        this.username = username;
-    }
-
-    public String getUsername(){
-        return this.username;
-    }
-
-    public String getPassword(){
-        return this.password;
-    }
-
-    public boolean isUsePinnedCertifate() {
-        return usePinnedCertifate;
-    }
-
-    public void setUsePinnedCertifate(boolean usePinnedCertifate) {
-        this.usePinnedCertifate = usePinnedCertifate;
-    }
-
     public String sendHttpRequest(){
+
+        addParam("version_code", Integer.toString(BuildConfig.VERSION_CODE));
+
         if(this.uri == null){
             err("Can't connect - missing URI");
             return null;
         }
-
 
         boolean redirect = false;
 
@@ -164,7 +132,6 @@ public class ConnectionManager {
 
         try{
 
-            //GET METHOD
             if(getMethod().equals(GET)){
                 if(params != null) {
                     uri += "?" + getEncodedParams();
@@ -179,15 +146,6 @@ public class ConnectionManager {
             con.setRequestMethod(getMethod());
             con.setDoInput(true);
             log("Request Method is: " + getMethod());
-//this throws an exception stating we are already connected when trying to do a post
-            //todo:figure out a way to implement this automatically without throwing this exception
-//            int status = con.getResponseCode();
-//            if (status != HttpURLConnection.HTTP_OK) {
-//                if (status == HttpURLConnection.HTTP_MOVED_TEMP
-//                        || status == HttpURLConnection.HTTP_MOVED_PERM
-//                        || status == HttpURLConnection.HTTP_SEE_OTHER)
-//                    redirect = true;
-//            }
 
             if (redirect) {
                 log("is redirect");
@@ -196,18 +154,6 @@ public class ConnectionManager {
 
                 url = new URL(newUrl);
                 con = (HttpURLConnection) url.openConnection();
-            }
-
-            //if USER NEEDS TO USE BASIC AUTHENTICATION
-            if(basicAuth) {
-
-                log("Basic Auth being used: username: " + getUsername() + " password: " + getPassword());
-                byte[] loginBytes = (username + ":" + password).getBytes();
-                StringBuilder loginBuilder = new StringBuilder()
-                        .append("basic ")
-                        .append(Base64.encodeToString(loginBytes, Base64.DEFAULT));
-
-                con.addRequestProperty("Authorization", loginBuilder.toString());
             }
 
             //POST METHOD
@@ -231,7 +177,6 @@ public class ConnectionManager {
             StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-
             String line;
             while((line = reader.readLine()) !=null){
                 sb.append(line);
@@ -240,10 +185,10 @@ public class ConnectionManager {
 
             log("http request result: " + sb.toString());
             return  sb.toString();
-        }catch(Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
 
-        }finally {
+        } finally {
             if(reader != null){
                 try{
                     reader.close();
@@ -317,20 +262,6 @@ public class ConnectionManager {
 
             }
 
-
-            //if USER NEEDS TO USE BASIC AUTHENTICATION
-            if(basicAuth) {
-
-                log("Basic Auth being used: username: " + getUsername() + " password: " + getPassword());
-                byte[] loginBytes = (username + ":" + password).getBytes();
-                StringBuilder loginBuilder = new StringBuilder()
-                        .append("basic ")
-                        .append(Base64.encodeToString(loginBytes, Base64.DEFAULT));
-
-                con.addRequestProperty("Authorization", loginBuilder.toString());
-
-            }
-
             //POST METHOD
             if(getMethod().equals(POST)){
 
@@ -349,9 +280,7 @@ public class ConnectionManager {
                 }
 
                 writer.flush();
-
             }
-
 
             StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));

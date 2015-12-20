@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.NavDrawerItem;
 import com.swiftkaydevelopment.findme.activity.FriendsActivity;
 import com.swiftkaydevelopment.findme.activity.NotificationActivity;
@@ -31,6 +32,7 @@ import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.MessagesListActivity;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.NavDrawerListAdapter;
+import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
 
@@ -52,7 +54,6 @@ public class NavigationDrawerFragment extends Fragment {
     //gui elements
     TextView tvname;
 
-    ImageLoader imageloader;
     SharedPreferences prefs;
     String uid;
 
@@ -93,7 +94,6 @@ public class NavigationDrawerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        imageloader = new ImageLoader(getActivity());
 
         mUserLearnedDrawer = prefs.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
@@ -136,12 +136,13 @@ public class NavigationDrawerFragment extends Fragment {
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
         // Find People
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+        // profile views
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), false, "Coming Soon"));
+
 //        // Photos
 //        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
 //        // My Matches,
 //        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
-//        // profile views
-//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), false, "Coming Soon"));
         // settings
 //        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
 
@@ -306,7 +307,10 @@ public class NavigationDrawerFragment extends Fragment {
         LinearLayout headermenu = (LinearLayout) header.findViewById(R.id.fggf);
 
         tvname.setText(prefs.getString("firstname", null) + " " + prefs.getString("lastname", null));
-        imageloader.DisplayImage(prefs.getString("propicloc", ""), ivusersphoto, false);
+        Picasso.with(getActivity())
+                .load(prefs.getString("propicloc", ""))
+                .transform(new CircleTransform())
+                .into(ivusersphoto);
 
 
 //        headermatch.setOnClickListener(new View.OnClickListener() {

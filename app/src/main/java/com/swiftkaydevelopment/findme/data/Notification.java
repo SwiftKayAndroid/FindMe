@@ -2,6 +2,8 @@ package com.swiftkaydevelopment.findme.data;
 
 import android.content.Intent;
 
+import com.swiftkaydevelopment.findme.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,6 +46,12 @@ public class Notification implements Serializable {
             description = object.getString("message");
             title = object.getString("title");
             data = object.getString("data");
+
+            if (type.equals("like")) {
+                resId = R.drawable.checkmark;
+            } else if (type.equals("comment")) {
+                resId = R.mipmap.ic_message_black_24dp;
+            }
             //todo: we will have to create an individual post thing for this
             //user = User.createUser(null, null).createUserFromJson(object.getJSONObject("data"));
 

@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -44,6 +45,10 @@ public class EditProfile extends BaseFragment{
     private RadioButton rbStraight;
     private RadioButton rbGay;
     private RadioButton rbBi;
+
+    private RadioGroup rgStatus;
+    private RadioButton rbSingle;
+    private RadioButton rbTaken;
 
     public static EditProfile newInstance(String uid, User user) {
         EditProfile frag = new EditProfile();
@@ -78,8 +83,23 @@ public class EditProfile extends BaseFragment{
         rbGay = (RadioButton) layout.findViewById(R.id.rbEditProfileGay);
         rbBi = (RadioButton) layout.findViewById(R.id.rbEditProfileBi);
 
+        rgStatus = (RadioGroup) layout.findViewById(R.id.editProfileRadioGroupRelationshipStatus);
+        rbSingle = (RadioButton) layout.findViewById(R.id.rbEditProfileSingle);
+        rbTaken = (RadioButton) layout.findViewById(R.id.rbEditProfileTaken);
+
         mToolbar = (Toolbar) layout.findViewById(R.id.editProfileToolbar);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.inflateMenu(R.menu.newsfeed_settings_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.newsfeedSettingsDiscard) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                    return true;
+                }
+                return false;
+            }
+        });
         mToolbar.setTitle("Edit Profile");
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,13 +147,22 @@ public class EditProfile extends BaseFragment{
         } else if (id == rbGay.getId()) {
             orientation = rbGay.getText().toString();
         } else if (id == rbBi.getId()) {
-            orientation = rbBi.getText().toString();
+            orientation = "Bisexual";
         } else {
             orientation = "Straight";
         }
 
+        int statusId = rgStatus.getCheckedRadioButtonId();
+        String status = "";
+        if (statusId == rbSingle.getId()) {
+            status = "Single";
+        } else if (statusId == rbTaken.getId()) {
+            status = "Taken";
+        }
+
         user.setAboutMe(about);
         user.setOrientation(User.setOrientationFromString(orientation));
-        UserManager.getInstance(uid, getActivity()).updateProfile(about, orientation);
+        user.mRelationshipStatus = status;
+        UserManager.getInstance(uid, getActivity()).updateProfile(about, orientation, status);
     }
 }

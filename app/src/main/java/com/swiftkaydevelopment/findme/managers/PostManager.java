@@ -21,8 +21,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.data.Post;
+import com.swiftkaydevelopment.findme.data.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,9 +71,6 @@ public class PostManager {
     public ArrayList<Post> fetchPosts(Context context, String lastpost){
         Log.d(TAG, "fetching posts");
         new FetchPostsTask(mUid, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-//        for (Post post : mPosts) {
-//            //TagManager.getInstance(mUid).fetchTags(post.getPostId(), context, post);
-//        }
         return mPosts;
     }
 
@@ -108,29 +105,7 @@ public class PostManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        Post post = Post.createPost(mUid, mContext);
-                        post.setPostText(child.getString("post"));
-                        post.setPostingUsersId(child.getString("postingusersid"));
-                        post.setNumComments(child.getInt("numcomments"));
-                        post.setNumLikes(child.getInt("numlikes"));
-                        post.setTime(child.getString("time"));
-                        post.setPostId(child.getString("postid"));
-                        post.setLiked(child.getBoolean("liked"));
-                        post.setPostImage(child.getString("postpicloc"));
-                        User u = User.createUser(mUid, mContext);
-                        JSONObject user = child.getJSONObject("user");
-                        u.setInterestedIn(User.setInterestedInFromString(user.getString("looking_for_gender")));
-                        u.setOuid(user.getString("uid"));
-                        u.setFirstname(user.getString("firstname"));
-                        u.setLastname(user.getString("lastname"));
-                        u.setGender(User.setGenderFromString(user.getString("gender")));
-                        u.setIsBlocked(false);
-                        u.setOrientation(User.setOrientationFromString(user.getString("orientation")));
-                        u.setPropicloc(user.getString("propicloc"));
-                        u.setAboutMe(user.getString("aboutme"));
-                        u.setAge(Integer.parseInt(user.getString("age")));
-                        post.setUser(u);
-                        u.setLocation(User.setLocationFromArray(user.getJSONObject("location")));
+                        Post post = Post.createPost(mUid, mContext).createPostFromJson(child);
 
                         pList.add(post);
                     }
