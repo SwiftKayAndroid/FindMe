@@ -51,6 +51,7 @@ public class NotificationActivity extends BaseActivity {
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        toolbar.setTitle("Notifications");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,5 +72,11 @@ public class NotificationActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(ARG_UID, uid);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

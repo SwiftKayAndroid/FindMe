@@ -100,6 +100,7 @@ public class CommentsDialog extends AppCompatDialogFragment {
 
         Toolbar toolbar = (Toolbar) layout.findViewById(R.id.baseActivityToolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        toolbar.setTitle("Comments");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

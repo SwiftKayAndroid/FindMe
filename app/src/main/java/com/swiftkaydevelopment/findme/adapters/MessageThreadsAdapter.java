@@ -68,6 +68,11 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
                         .load(thread.threadUser.getPropicloc())
                         .transform(new CircleTransform())
                         .into(holder.ivpropic);
+            } else {
+                Picasso.with(mContext)
+                        .load(R.drawable.ic_placeholder)
+                        .transform(new CircleTransform())
+                        .into(holder.ivpropic);
             }
             holder.tvname.setText(thread.threadUser.getFirstname() + " " + thread.threadUser.getLastname());
             holder.tvmessage.setText(thread.lastMessage);

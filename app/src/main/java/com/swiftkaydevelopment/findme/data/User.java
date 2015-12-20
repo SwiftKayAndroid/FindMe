@@ -116,6 +116,12 @@ public class User implements Serializable{
     private String mAboutMe;
     private InterestedIn mInterestIn;
 
+    public String hasKids;
+    public String wantsKids;
+    public String profession;
+    public String school;
+    public String weed;
+
     private CopyOnWriteArrayList<UserListener> mListeners = new CopyOnWriteArrayList<>();
 
     private static Context mContext;
@@ -167,6 +173,11 @@ public class User implements Serializable{
 
             //relationship status
             mRelationshipStatus = object.getString("relationshipstatus");
+            hasKids = object.getString("haskids");
+            wantsKids = object.getString("wantskids");
+            profession = object.getString("profession");
+            school = object.getString("school");
+            weed = object.getString("weed");
 
         } catch (JSONException e) {
             e.printStackTrace();

@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.UserManager;
@@ -49,6 +50,25 @@ public class EditProfile extends BaseFragment{
     private RadioGroup rgStatus;
     private RadioButton rbSingle;
     private RadioButton rbTaken;
+
+    private RadioGroup rgHasKids;
+    private RadioButton rbHavekids;
+    private RadioButton rbNoKids;
+    private RadioButton rbKidsPreferNoSay;
+
+    private RadioGroup rgWantsKids;
+    private RadioButton rbWantsKids;
+    private RadioButton rbDoesntWantKids;
+    private RadioButton rbWantsKidsPreferNoSay;
+
+    private RadioGroup rgWeed;
+    private RadioButton rbWeedOccasionally;
+    private RadioButton rbWeedOften;
+    private RadioButton rbWeedNever;
+    private RadioButton rbWeedPreferNoSay;
+
+    EditText etProfession;
+    private EditText etSchool;
 
     public static EditProfile newInstance(String uid, User user) {
         EditProfile frag = new EditProfile();
@@ -87,6 +107,25 @@ public class EditProfile extends BaseFragment{
         rbSingle = (RadioButton) layout.findViewById(R.id.rbEditProfileSingle);
         rbTaken = (RadioButton) layout.findViewById(R.id.rbEditProfileTaken);
 
+        rgHasKids = (RadioGroup) layout.findViewById(R.id.editProfileRadioGroupHasKids);
+        rbHavekids = (RadioButton) layout.findViewById(R.id.rbEditProfileHaveKids);
+        rbNoKids = (RadioButton) layout.findViewById(R.id.rbEditProfileNoKids);
+        rbKidsPreferNoSay = (RadioButton) layout.findViewById(R.id.rbEditProfileKidsPreferNoSay);
+
+        rgWantsKids = (RadioGroup) layout.findViewById(R.id.editProfileRadioGroupWantsKids);
+        rbWantsKids = (RadioButton) layout.findViewById(R.id.rbEditProfileSomeday);
+        rbDoesntWantKids = (RadioButton) layout.findViewById(R.id.rbEditProfileDoesntWant);
+        rbWantsKidsPreferNoSay = (RadioButton) layout.findViewById(R.id.rbEditProfileWantsKidsPreferNoSay);
+
+        rgWeed = (RadioGroup) layout.findViewById(R.id.editProfileRadioWeed);
+        rbWeedOccasionally = (RadioButton) layout.findViewById(R.id.rbEditProfileWeedSocially);
+        rbWeedNever = (RadioButton) layout.findViewById(R.id.rbEditProfileWeedNever);
+        rbWeedOften = (RadioButton) layout.findViewById(R.id.rbEditProfileWeedOften);
+        rbWeedPreferNoSay = (RadioButton) layout.findViewById(R.id.rbEditProfileWeedPreferNoSay);
+
+        etProfession = (EditText) layout.findViewById(R.id.editProfileProfession);
+        etSchool = (EditText) layout.findViewById(R.id.editProfileSchool);
+
         mToolbar = (Toolbar) layout.findViewById(R.id.editProfileToolbar);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         mToolbar.inflateMenu(R.menu.newsfeed_settings_menu);
@@ -105,6 +144,7 @@ public class EditProfile extends BaseFragment{
             @Override
             public void onClick(View v) {
                 saveProfile();
+                Toast.makeText(getActivity(), "Profile Updated", Toast.LENGTH_SHORT).show();
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
@@ -118,6 +158,7 @@ public class EditProfile extends BaseFragment{
 
         etAboutme.setText(user.getAboutMe());
 
+        //Set orientation
         switch (user.getOrientation()) {
             case STRAIGHT:
                 rbStraight.setChecked(true);
@@ -129,6 +170,41 @@ public class EditProfile extends BaseFragment{
             default:
                 rbStraight.setChecked(true);
                 break;
+        }
+
+        etProfession.setText(user.profession);
+        etSchool.setText(user.school);
+
+        if (user.mRelationshipStatus.equals(rbSingle.getText().toString())) {
+            rbSingle.setChecked(true);
+        } else {
+            rbTaken.setChecked(true);
+        }
+
+        if (user.hasKids.equals(rbHavekids.getText().toString())) {
+            rbHavekids.setChecked(true);
+        } else if (user.hasKids.equals(rbNoKids.getText().toString())) {
+            rbNoKids.setChecked(true);
+        } else {
+            rbKidsPreferNoSay.setChecked(true);
+        }
+
+        if (user.wantsKids.equals(rbWantsKids.getText().toString())) {
+            rbWantsKids.setChecked(true);
+        } else if (user.wantsKids.equals(rbDoesntWantKids.getText().toString())) {
+            rbDoesntWantKids.setChecked(true);
+        } else {
+            rbWantsKidsPreferNoSay.setChecked(true);
+        }
+
+        if (user.weed.equals(rbWeedOccasionally.getText().toString())) {
+            rbWeedOccasionally.setChecked(true);
+        } else if (user.weed.equals(rbWeedOften.getText().toString())) {
+            rbWeedOften.setChecked(true);
+        } else if (user.weed.equals(rbWeedNever.getText().toString())) {
+            rbWeedNever.setChecked(true);
+        } else {
+            rbWeedPreferNoSay.setChecked(true);
         }
     }
 
@@ -160,9 +236,21 @@ public class EditProfile extends BaseFragment{
             status = "Taken";
         }
 
+        String haskids = ((RadioButton) getView().findViewById(rgHasKids.getCheckedRadioButtonId())).getText().toString();
+        String wantskids = ((RadioButton) getView().findViewById(rgWantsKids.getCheckedRadioButtonId())).getText().toString();
+        String weed = ((RadioButton) getView().findViewById(rgWeed.getCheckedRadioButtonId())).getText().toString();
+        String profession = etProfession.getText().toString();
+        String school = etSchool.getText().toString();
+
         user.setAboutMe(about);
         user.setOrientation(User.setOrientationFromString(orientation));
         user.mRelationshipStatus = status;
-        UserManager.getInstance(uid, getActivity()).updateProfile(about, orientation, status);
+        user.profession = profession;
+        user.school = school;
+        user.weed = weed;
+        user.hasKids = haskids;
+        user.wantsKids = wantskids;
+
+        UserManager.getInstance(uid, getActivity()).updateProfile(about, orientation, status, haskids, wantskids, weed, profession, school);
     }
 }

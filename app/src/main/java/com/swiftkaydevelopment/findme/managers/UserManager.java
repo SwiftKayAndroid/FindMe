@@ -134,8 +134,9 @@ public class UserManager {
         new FindPeopleTask(uid, lastpost).execute();
     }
 
-    public void updateProfile(String about, String orientation, String status) {
-        new UpdateProfileTask(about, orientation, status,  mUid).execute();
+    public void updateProfile(String about, String orientation, String status,
+                              String haskids, String wantskids, String weed, String profession, String school) {
+        new UpdateProfileTask(about, orientation, status, haskids, wantskids, weed, profession, school, mUid).execute();
     }
 
     /**
@@ -152,12 +153,24 @@ public class UserManager {
         String orientation;
         String uid;
         String status;
+        String haskids;
+        String wantskids;
+        String weed;
+        String profession;
+        String school;
 
-        public UpdateProfileTask(String about, String orientation, String status, String uid) {
+        public UpdateProfileTask(String about, String orientation, String status,
+                                 String haskids, String wantskids, String weed, String profession,
+                                 String school, String uid) {
             this.about = about;
             this.orientation = orientation;
             this.uid = uid;
             this.status = status;
+            this.haskids = haskids;
+            this.wantskids = wantskids;
+            this.weed = weed;
+            this.profession = profession;
+            this.school = school;
         }
 
         @Override
@@ -169,6 +182,12 @@ public class UserManager {
             connectionManager.addParam("aboutme", about);
             connectionManager.addParam("orientation", orientation);
             connectionManager.addParam("status", status);
+            connectionManager.addParam("haskids", haskids);
+            connectionManager.addParam("wantskids", wantskids);
+            connectionManager.addParam("weed", weed);
+            connectionManager.addParam("profession", profession);
+            connectionManager.addParam("school", school);
+
             connectionManager.sendHttpRequest();
 
             return null;

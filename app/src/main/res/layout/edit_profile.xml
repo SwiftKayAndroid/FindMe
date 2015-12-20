@@ -148,6 +148,230 @@
 
         </android.support.v7.widget.CardView>
 
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:padding="15dp"
+                    android:text="Do you have kids"/>
+
+                <RadioGroup
+                    android:id="@+id/editProfileRadioGroupHasKids"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp">
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileHaveKids"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Have kids"
+                        android:layout_marginLeft="16dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileNoKids"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No kids"
+                        android:layout_marginLeft="16dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileKidsPreferNoSay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Prefer not to say"
+                        android:layout_marginLeft="16dp"/>
+                </RadioGroup>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:padding="15dp"
+                    android:text="Do you have kids"/>
+
+                <RadioGroup
+                    android:id="@+id/editProfileRadioGroupWantsKids"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp">
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileSomeday"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Someday"
+                        android:layout_marginLeft="16dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileDoesntWant"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Never want kids"
+                        android:layout_marginLeft="16dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileWantsKidsPreferNoSay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Unsure"
+                        android:layout_marginLeft="16dp"/>
+                </RadioGroup>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:padding="15dp"
+                    android:text="420"/>
+
+                <RadioGroup
+                    android:id="@+id/editProfileRadioWeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp">
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileWeedSocially"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Socially"
+                        android:layout_marginLeft="16dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileWeedOften"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Often"
+                        android:layout_marginLeft="16dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileWeedNever"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Never"
+                        android:layout_marginLeft="16dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbEditProfileWeedPreferNoSay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Prefer not to say"
+                        android:layout_marginLeft="16dp"/>
+                </RadioGroup>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:padding="15dp"
+                    android:text="Profession"/>
+
+                <EditText
+                    android:id="@+id/editProfileProfession"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:hint="Profession"
+                    android:padding="10dp"
+                    android:gravity="start|top"
+                    android:layout_margin="10dp"
+                    android:inputType="textCapSentences|textMultiLine" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:padding="15dp"
+                    android:text="School"/>
+
+                <EditText
+                    android:id="@+id/editProfileSchool"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:hint="School"
+                    android:padding="10dp"
+                    android:gravity="start|top"
+                    android:layout_margin="10dp"
+                    android:inputType="textCapSentences|textMultiLine" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
     </LinearLayout>
 
 </ScrollView>

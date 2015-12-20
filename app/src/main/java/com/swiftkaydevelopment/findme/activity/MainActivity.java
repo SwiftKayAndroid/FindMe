@@ -40,6 +40,7 @@ public class MainActivity extends Activity {
                 AuthenticateUser au = AuthenticateUser.getInstance(this);
                 au.authenticate(prefs.getString("email", null), prefs.getString("password", null));
                 startActivity(MainLineUp.createIntent(this));
+                finish();
             }
         } else {
             setGUI();

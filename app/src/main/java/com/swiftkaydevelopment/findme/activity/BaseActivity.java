@@ -44,7 +44,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutResource());
+        if (getLayoutResource() != 0) {
+            setContentView(getLayoutResource());
+        }
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         uid = initializeUser();
          if (uid == null || uid.isEmpty()) {

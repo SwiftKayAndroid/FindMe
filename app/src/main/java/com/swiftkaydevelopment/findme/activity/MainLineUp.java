@@ -76,6 +76,12 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        finish();
+    }
+
+    @Override
     protected void onPostResume() {
         super.onPostResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,

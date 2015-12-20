@@ -233,6 +233,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
             holder.lookingfor.setText(sb.toString());
             holder.status.setText(user.mRelationshipStatus);
+
+            holder.hasKids.setText(user.hasKids);
+            holder.wantsKids.setText(user.wantsKids);
+            holder.profession.setText(user.profession);
+            holder.school.setText(user.school);
+            holder.weed.setText(user.weed);
         }
         itemView.setTag(position);
     }
@@ -300,6 +306,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         //header
         TextView aboutMe, age, gender, orientation, location, status, lookingfor;
+        TextView hasKids, wantsKids, profession, school, weed;
         ImageView mEditProfile;
 
         public int viewType;
@@ -343,6 +350,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             status = (TextView) v.findViewById(R.id.profileHeaderStatus);
             lookingfor = (TextView) v.findViewById(R.id.profileHeaderLookingFor);
             mEditProfile = (ImageView) v.findViewById(R.id.ivProfileEditProfile);
+
+            hasKids = (TextView) v.findViewById(R.id.profileHeaderHasKids);
+            wantsKids = (TextView) v.findViewById(R.id.profileHeaderWantsKids);
+            profession = (TextView) v.findViewById(R.id.profileHeaderProfession);
+            school = (TextView) v.findViewById(R.id.profileHeaderSchool);
+            weed = (TextView) v.findViewById(R.id.profileHeaderWeed);
         }
     }
 

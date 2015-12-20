@@ -76,4 +76,10 @@ public class FriendsActivity extends BaseActivity{
         outState.putString(ARG_UID, uid);
         super.onSaveInstanceState(outState);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

@@ -3,12 +3,14 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/ivnotificationimage"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:padding="5dp"
+        android:layout_marginLeft="16dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,7 +21,8 @@
         android:layout_alignTop="@+id/ivnotificationimage"
         android:layout_toRightOf="@+id/ivnotificationimage"
         android:layout_toEndOf="@+id/ivnotificationimage"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginLeft="16dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,7 +32,8 @@
         android:id="@+id/tvnotificationdesc"
         android:layout_below="@+id/tvnotificationtitle"
         android:layout_toRightOf="@+id/ivnotificationimage"
-        android:layout_toEndOf="@+id/ivnotificationimage" />
+        android:layout_toEndOf="@+id/ivnotificationimage"
+        android:layout_marginLeft="16dp" />
 
     <TextView
         android:layout_width="wrap_content"

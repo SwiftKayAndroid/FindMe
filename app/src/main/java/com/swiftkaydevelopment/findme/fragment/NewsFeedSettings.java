@@ -124,6 +124,7 @@ public class NewsFeedSettings extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         prefData = AccountManager.getInstance(getActivity()).getNewsfeedPreferences();
+
         if (prefData.gender.equals("both")) {
             mGenderBoth.setChecked(true);
             mGenderSwitch.setEnabled(false);
@@ -155,6 +156,7 @@ public class NewsFeedSettings extends BaseFragment {
 
         if (prefData.status.equals("both")) {
             mStatusBoth.setChecked(true);
+            mStatusSwitch.setEnabled(false);
         } else if (prefData.status.equals("single")) {
             mStatusBoth.setChecked(false);
             mStatusSwitch.setChecked(true);

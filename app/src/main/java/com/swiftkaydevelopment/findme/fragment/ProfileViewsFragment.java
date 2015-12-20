@@ -76,6 +76,11 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (savedInstanceState != null) {
+            uid = savedInstanceState.getString(ARG_UID);
+            users = (ArrayList) savedInstanceState.getSerializable(ARG_USERS);
+        }
+
         if (mAdapter == null) {
             mAdapter = new ProfileViewsAdapter(getActivity(), users);
         }
