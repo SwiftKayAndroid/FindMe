@@ -2,12 +2,16 @@ package com.swiftkaydevelopment.findme.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.swiftkaydevelopment.findme.adapters.PicturesAdapter;
+import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
@@ -20,16 +24,16 @@ import java.util.Iterator;
 /**
  * Created by Kevin Haines on 8/24/15.
  */
-public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListener, User.UserListener, FullImageFragment.FullImageFragListener {
+public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.PicturesAdapterListener, User.UserListener, FullImageFragment.FullImageFragListener {
     public static final String TAG = "ViewPhotosFrag";
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_PICS = "ARG_PICS";
 
     private User user;
-    private ArrayList<String> urls;
+    private ArrayList<Post> posts =  new ArrayList<>();
 
-    private FlowLayout mFlowLayout;
-    private ImageLoader imageLoader;
+    private RecyclerView mRecyclerView;
+    private PicturesAdapter mAdapter;
 
     public static ViewPhotosFrag newInstance(String uid, User user) {
         ViewPhotosFrag frag = new ViewPhotosFrag();
@@ -46,7 +50,7 @@ public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListene
         if (savedInstanceState != null) {
             user = (User) savedInstanceState.getSerializable(ARG_USER);
             uid = savedInstanceState.getString(ARG_UID);
-            urls = savedInstanceState.getStringArrayList(ARG_PICS);
+            posts = (ArrayList) savedInstanceState.getSerializable(ARG_PICS);
         } else {
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
@@ -58,7 +62,7 @@ public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.viewpicturesfrag,container,false);
-        mFlowLayout = (FlowLayout) layout.findViewById(R.id.flowLayoutViewPhotos);
+        mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewViewPhotos);
 
         return layout;
     }
@@ -67,22 +71,25 @@ public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListene
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
-            urls = savedInstanceState.getStringArrayList(ARG_PICS);
+            posts = (ArrayList) savedInstanceState.getSerializable(ARG_PICS);
         }
 
-        if (imageLoader == null) {
-            imageLoader = new ImageLoader(getActivity());
-        }
-        if (urls == null) {
+        if (posts == null) {
             user.getPictures();
         }
+        if (mAdapter == null) {
+            mAdapter = new PicturesAdapter(posts, getActivity());
+        }
+
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(ARG_UID, uid);
         outState.putSerializable(ARG_USER, user);
-        outState.putStringArrayList(ARG_PICS, urls);
+        outState.putSerializable(ARG_PICS, posts);
         super.onSaveInstanceState(outState);
     }
 
@@ -107,48 +114,20 @@ public class ViewPhotosFrag extends BaseFragment implements  View.OnClickListene
     }
 
     @Override
-    public void onPicturesFetched(ArrayList<String> urls) {
+    public void onPicturesFetched(ArrayList<Post> posts) {
         Log.w(TAG, "onPicturesFetched");
-        if (this.urls == null) {
-           this.urls = new ArrayList<>();
-        }
-        this.urls.addAll(urls);
-        reinitializeViews();
-    }
+        mAdapter.addPictures(posts);
 
-    private void reinitializeViews() {
-        mFlowLayout.removeAllViews();
-
-        for (String url : urls) {
-            addPictureView(url);
-        }
-    }
-
-    public void addPictureView(String url) {
-        ImageView iv = (ImageView) ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                .inflate(R.layout.sgvitem, null);
-        imageLoader.DisplayImage(url, iv, true);
-        iv.setTag(url);
-        iv.setOnClickListener(this);
-        mFlowLayout.addView(iv);
     }
 
     @Override
-    public void onImageDeleted(String picloc) {
-        Iterator<String> iterator = urls.iterator();
-
-        while (iterator.hasNext()) {
-            if (iterator.next().equals(picloc)) {
-                iterator.remove();
-            }
-        }
-        reinitializeViews();
+    public void onImageDeleted(Post post) {
+        mAdapter.removePicture(post);
     }
 
     @Override
-    public void onClick(View v) {
-        String url = (String) v.getTag();
-        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, url, user.getOuid().equals(uid));
+    public void onImageClicked(Post post) {
+        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, post, user.getOuid().equals(uid));
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
                 .addToBackStack(null)

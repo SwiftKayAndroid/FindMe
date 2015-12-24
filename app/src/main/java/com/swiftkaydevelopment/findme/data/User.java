@@ -38,10 +38,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by Kevin Haines on 10/21/15.
  */
-public class User implements Serializable{
+public class User implements Serializable {
 
     public interface UserListener {
-        void onPicturesFetched(ArrayList<String> urls);
+        void onPicturesFetched(ArrayList<Post> picPosts);
     }
 
     public static final String TAG = "FindMe - User";
@@ -233,7 +233,7 @@ public class User implements Serializable{
         }
     }
 
-    private class FetchPhotosTask extends AsyncTask<Void, Void, ArrayList<String>> {
+    private class FetchPhotosTask extends AsyncTask<Void, Void, ArrayList<Post>> {
         User user;
         String uid;
 
@@ -243,14 +243,14 @@ public class User implements Serializable{
         }
 
         @Override
-        protected ArrayList<String> doInBackground(Void... params) {
+        protected ArrayList<Post> doInBackground(Void... params) {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.setUri("getpictures.php");
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("ouid", user.getOuid());
             String result = connectionManager.sendHttpRequest();
-            ArrayList<String> pics = new ArrayList<>();
+            ArrayList<Post> pics = new ArrayList<>();
 
             if (result != null) {
                 try {
@@ -259,9 +259,9 @@ public class User implements Serializable{
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        pics.add(child.getString("postpicloc"));
+                        Post p = Post.createPost(mUid, mContext).createPostFromJson(child);
+                        pics.add(p);
                     }
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -271,7 +271,7 @@ public class User implements Serializable{
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> pics) {
+        protected void onPostExecute(ArrayList<Post> pics) {
             super.onPostExecute(pics);
             for (UserListener l : mListeners) {
                 if (l != null) {

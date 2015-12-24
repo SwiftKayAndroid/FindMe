@@ -29,7 +29,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.managers.PersistenceManager;
@@ -39,7 +41,7 @@ import com.swiftkaydevelopment.findme.utils.ImageLoader;
 public class FullImageFragment extends BaseFragment implements OkCancelDialog.OkCancelDialogListener{
 
     public interface FullImageFragListener {
-        void onImageDeleted(String picloc);
+        void onImageDeleted(Post post);
     }
     public static final String TAG = "FullImageFragment";
 
@@ -47,7 +49,7 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
     private static final String ARG_ISUSER = "ARG_ISUSER";
     private static final String DELETE_LABEL = "DELETE";
 
-    private String picloc;
+    private Post post;
     private ImageView ivPicture;
     private ImageLoader imageLoader;
     private Toolbar mToolbar;
@@ -55,10 +57,10 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
 
     private FullImageFragListener mListener;
 
-    public static FullImageFragment newInstance(String uid, String picloc, boolean isUser) {
+    public static FullImageFragment newInstance(String uid, Post post, boolean isUser) {
         FullImageFragment frag = new FullImageFragment();
         Bundle b = new Bundle();
-        b.putSerializable(ARG_PIC, picloc);
+        b.putSerializable(ARG_PIC, post);
         b.putString(ARG_UID, uid);
         b.putBoolean(ARG_ISUSER, isUser);
         frag.setArguments(b);
@@ -74,12 +76,12 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             uid = savedInstanceState.getString(ARG_UID);
-            picloc = savedInstanceState.getString(ARG_PIC);
+            post = (Post) savedInstanceState.getSerializable(ARG_PIC);
             isUser = savedInstanceState.getBoolean(ARG_ISUSER);
         } else {
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
-                picloc = getArguments().getString(ARG_PIC);
+                post = (Post) getArguments().getSerializable(ARG_PIC);
                 isUser = getArguments().getBoolean(ARG_ISUSER);
             }
         }
@@ -97,7 +99,10 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        imageLoader.DisplayImage(picloc, ivPicture, true);
+        Picasso.with(getActivity())
+                .load(post.getPostImage())
+                .into(ivPicture);
+
         if (isUser) {
             mToolbar.setVisibility(View.VISIBLE);
             mToolbar.inflateMenu(R.menu.fullimage_menu);
@@ -114,8 +119,8 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
                         showDialog("Delete", "Are you sure you want to delete this picture", "Delete", DELETE_LABEL);
                     } else if (item.getItemId() == R.id.fullImageMenuMakeProfilePicture) {
                         Log.e(TAG, "clicked");
-                        AccountManager.getInstance(getActivity()).changeProfilePicture(uid, picloc);
-                        PersistenceManager.getInstance(getActivity()).updatePropicloc(picloc);
+                        AccountManager.getInstance(getActivity()).changeProfilePicture(uid, post.getPostImage());
+                        PersistenceManager.getInstance(getActivity()).updatePropicloc(post.getPostImage());
                         Toast.makeText(getActivity(), "Profile picture updated", Toast.LENGTH_LONG).show();
                         UserManager.getInstance(uid, getActivity()).invalidateMe();
                     }
@@ -154,16 +159,16 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(ARG_UID, uid);
-        outState.putString(ARG_PIC, picloc);
+        outState.putSerializable(ARG_PIC, post);
         outState.putBoolean(ARG_ISUSER, isUser);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onOkPressed(Object tag) {
-        AccountManager.getInstance(getActivity()).deletePicture(uid, picloc);
+        AccountManager.getInstance(getActivity()).deletePicture(uid, post.getPostImage());
         if (mListener != null) {
-            mListener.onImageDeleted(picloc);
+            mListener.onImageDeleted(post);
         }
         getActivity().getSupportFragmentManager().popBackStack();
     }
