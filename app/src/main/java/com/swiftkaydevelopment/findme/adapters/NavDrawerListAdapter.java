@@ -4,6 +4,7 @@ package com.swiftkaydevelopment.findme.adapters;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,8 @@ public class NavDrawerListAdapter extends BaseAdapter {
         RelativeLayout lay = (RelativeLayout) convertView.findViewById(R.id.rldrawerlistitem);
 
 
-        imgIcon.setImageResource(navDrawerItems.get(position).getIcon());        
+        imgIcon.setImageResource(navDrawerItems.get(position).getIcon());
+        imgIcon.setColorFilter(Color.BLACK);
         txtTitle.setText(navDrawerItems.get(position).getTitle());
          
         // displaying count

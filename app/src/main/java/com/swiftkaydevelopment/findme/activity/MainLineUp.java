@@ -12,7 +12,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -22,6 +21,7 @@ import com.swiftkaydevelopment.findme.fragment.NavigationDrawerFragment;
 import com.swiftkaydevelopment.findme.fragment.NewsFeedFrag;
 import com.swiftkaydevelopment.findme.gcm.QuickstartPreferences;
 import com.swiftkaydevelopment.findme.gcm.RegistrationIntentService;
+import com.swiftkaydevelopment.findme.managers.UserManager;
 
 
 /**
@@ -32,13 +32,15 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     private static final int NEWSFEED = 1;
     private static final int FINDPEOPLE = 2;
     private static final int PROFILEVIEWS = 3;
+    private static final int MATCHES = 4;
+    private static final int PHOTOS = 5;
+
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     public static Intent createIntent(Context context){
-        Intent i = new Intent(context, MainLineUp.class);
-        return i;
+        return new Intent(context, MainLineUp.class);
     }
 
     @Override
@@ -50,8 +52,6 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     protected Context getContext() {
         return this;
     }
-
-    private NavigationDrawerFragment mNavigationDrawerFragment;
 
     @Override
     protected void createActivity(Bundle b) {
@@ -78,7 +78,6 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        finish();
     }
 
     @Override
@@ -131,11 +130,11 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     }
 
     public void initializeDrawer(){
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
+        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mNavigationDrawerFragment.setUid(uid);
+        navigationDrawerFragment.setUid(uid);
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
+        navigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
@@ -151,19 +150,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void displayView(int position) {
-
         switch (position) {
             case NEWSFEED:
                 if (getSupportFragmentManager().findFragmentByTag(NewsFeedFrag.TAG) == null) {
@@ -177,15 +164,17 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
             case FINDPEOPLE:
                 startActivity(FindPeopleActivity.createIntent(MainLineUp.this));
                 break;
-
             case PROFILEVIEWS:
                 startActivity(ProfileViewsActivity.createIntent(this));
                 break;
-
+            case MATCHES:
+                startActivity(MatchActivity.createIntent(this));
+                break;
+            case PHOTOS:
+                startActivity(ViewPhotos.createIntent(this, UserManager.getInstance(uid, this).me()));
+                break;
             default:
                 break;
         }
     }
 }
-
-

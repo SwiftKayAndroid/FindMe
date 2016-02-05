@@ -1,16 +1,17 @@
 package com.swiftkaydevelopment.findme.fragment;
 
-import android.content.Context;
-import android.content.res.TypedArray;
 import android.app.Activity;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,14 +25,13 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.NavDrawerItem;
-import com.swiftkaydevelopment.findme.activity.FriendsActivity;
-import com.swiftkaydevelopment.findme.activity.NotificationActivity;
-import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.activity.FriendsActivity;
 import com.swiftkaydevelopment.findme.activity.MessagesListActivity;
+import com.swiftkaydevelopment.findme.activity.NotificationActivity;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.NavDrawerListAdapter;
+import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
@@ -138,11 +138,10 @@ public class NavigationDrawerFragment extends Fragment {
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // profile views
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), false, "Coming Soon"));
-
-//        // Photos
-//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
 //        // My Matches,
-//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+        // Photos
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
         // settings
 //        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
 
@@ -307,10 +306,13 @@ public class NavigationDrawerFragment extends Fragment {
         LinearLayout headermenu = (LinearLayout) header.findViewById(R.id.fggf);
 
         tvname.setText(prefs.getString("firstname", null) + " " + prefs.getString("lastname", null));
-        Picasso.with(getActivity())
-                .load(prefs.getString("propicloc", ""))
-                .transform(new CircleTransform())
-                .into(ivusersphoto);
+        String imgloc = prefs.getString("propicloc", "");
+        if (!TextUtils.isEmpty(imgloc)) {
+            Picasso.with(getActivity())
+                    .load(imgloc)
+                    .transform(new CircleTransform())
+                    .into(ivusersphoto);
+        }
 
 
 //        headermatch.setOnClickListener(new View.OnClickListener() {

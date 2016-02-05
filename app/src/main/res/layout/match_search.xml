@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            layout="@layout/base_toolbar"
+            android:id="@+id/matchPreviewToolbar" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:id="@+id/ivMatchPreviewPhoto"
+            android:layout_gravity="center_horizontal" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="16dp">
+
+                <ImageButton
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:id="@+id/ibMatchDislike"
+                    android:background="@drawable/circle_stroke"
+                    android:layout_marginRight="10dp"
+                    android:src="@mipmap/ic_close_white_36dp"
+                    android:tint="@color/red" />
+
+                <ImageButton
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:id="@+id/ibMatchLike"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/circle_stroke_green"
+                    android:src="@mipmap/ic_heart_white_36dp"
+                    android:tint="@color/primary_dark"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/matchesProfileHeader"
+            layout="@layout/profile_header"/>
+
+    </LinearLayout>
+</ScrollView>

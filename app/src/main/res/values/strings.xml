@@ -21,8 +21,8 @@
         <item>@mipmap/ic_home_black_24dp</item>
         <item>@mipmap/ic_people_black_24dp</item>
         <item>@mipmap/ic_remove_red_eye_black_24dp</item>
-        <item>@mipmap/ic_image_multiple_white_24dp</item>
         <item>@mipmap/ic_heart_black_24dp</item>
+        <item>@mipmap/ic_image_multiple_white_24dp</item>
 
         <item>@mipmap/ic_settings_white_24dp</item>
     </array>
@@ -31,8 +31,9 @@
         <item>Home</item>
         <item>Find People</item>
         <item>Profile Views</item>
+        <item>Matches</item>
         <item>Photos</item>
-        <item>My Matches</item>
+
         <item>Settings</item>
     </string-array>
 

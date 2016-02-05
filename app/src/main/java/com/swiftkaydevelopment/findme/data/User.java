@@ -395,6 +395,17 @@ public class User implements Serializable {
         this.mInterestIn = interestedIn;
     }
 
+    public String getLookingForString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry entry : getSearchingFor().entrySet()) {
+            if (entry.getValue().equals("yes")) {
+                sb.append(entry.getKey() + " ");
+            }
+        }
+
+        return sb.toString();
+    }
+
     /**
      * gets the users about me
      * @return String users about me

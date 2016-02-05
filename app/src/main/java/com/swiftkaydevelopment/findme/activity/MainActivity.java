@@ -1,26 +1,28 @@
 package com.swiftkaydevelopment.findme.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 
+import com.crashlytics.android.Crashlytics;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.tasks.AuthenticateUser;
 
+import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends Activity {
 
-    Button btncreate, btnlogin;
+public class MainActivity extends AppCompatActivity {
+
+    private Button btncreate, btnlogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Fabric.with(this, new Crashlytics());
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean saved = prefs.getBoolean("loginsaved", false);

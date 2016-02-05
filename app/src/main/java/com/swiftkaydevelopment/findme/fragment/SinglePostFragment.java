@@ -181,7 +181,7 @@ public class SinglePostFragment extends BaseFragment {
             ivPostImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, mPost.getPostImage(), mPost.getPostingUsersId().equals(uid));
+                    FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, mPost, mPost.getPostingUsersId().equals(uid));
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
                             .addToBackStack(null)

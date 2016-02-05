@@ -51,8 +51,6 @@
     <dimen name="year_label_height">64dp</dimen>
     <dimen name="year_label_text_size">22dp</dimen>
 
-
-
     <!--floating action button-->
     <dimen name="floating_action_button_size_normal">56dp</dimen>
     <dimen name="floating_action_button_size_mini">40dp</dimen>

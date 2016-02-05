@@ -1,6 +1,5 @@
 package com.swiftkaydevelopment.findme.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -8,18 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
+import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.PicturesAdapter;
 import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.data.User;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
-import com.swiftkaydevelopment.findme.R;
-
-import org.apmem.tools.layouts.FlowLayout;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Created by Kevin Haines on 8/24/15.
@@ -56,6 +50,9 @@ public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.Pict
                 uid = getArguments().getString(ARG_UID);
                 user = (User) getArguments().getSerializable(ARG_USER);
             }
+            if (user != null) {
+                user.getPictures();
+            }
         }
     }
 
@@ -74,9 +71,6 @@ public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.Pict
             posts = (ArrayList) savedInstanceState.getSerializable(ARG_PICS);
         }
 
-        if (posts == null) {
-            user.getPictures();
-        }
         if (mAdapter == null) {
             mAdapter = new PicturesAdapter(posts, getActivity());
         }
@@ -101,6 +95,9 @@ public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.Pict
         if (fullImageFragment != null) {
             fullImageFragment.setFullImageFragListener(this);
         }
+        if (mAdapter != null) {
+            mAdapter.setPicturesAdapterListener(this);
+        }
     }
 
     @Override
@@ -110,6 +107,9 @@ public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.Pict
         FullImageFragment fullImageFragment = (FullImageFragment) getActivity().getSupportFragmentManager().findFragmentByTag(FullImageFragment.TAG);
         if (fullImageFragment != null) {
             fullImageFragment.setFullImageFragListener(null);
+        }
+        if (mAdapter != null) {
+            mAdapter.setPicturesAdapterListener(null);
         }
     }
 

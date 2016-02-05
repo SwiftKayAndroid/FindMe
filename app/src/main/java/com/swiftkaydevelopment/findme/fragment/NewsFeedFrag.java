@@ -240,7 +240,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onImageClicked(Post post) {
-        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, post.getPostImage(), (post.getPostingUsersId().equals(uid)));
+        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, post, (post.getPostingUsersId().equals(uid)));
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
                 .addToBackStack(null)

@@ -17,8 +17,6 @@
 
 package com.swiftkaydevelopment.findme.fragment;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,7 +26,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,19 +35,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.swiftkaydevelopment.findme.activity.UpdateStatus;
-import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.services.UploadService;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.MessagesActivity;
+import com.swiftkaydevelopment.findme.activity.UpdateStatus;
 import com.swiftkaydevelopment.findme.activity.ViewPhotos;
 import com.swiftkaydevelopment.findme.adapters.PostAdapter;
 import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.PostManager;
-import com.swiftkaydevelopment.findme.utils.AndroidUtils;
-import com.swiftkaydevelopment.findme.views.CircleTransform;
+import com.swiftkaydevelopment.findme.managers.UserManager;
+import com.swiftkaydevelopment.findme.services.UploadService;
 
 import java.util.ArrayList;
 
@@ -109,7 +103,7 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.profilefrag, container, false);
+        View layout = inflater.inflate(R.layout.profile_fragment, container, false);
         Toolbar toolbar = (Toolbar) layout.findViewById(R.id.profileToolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         toolbar.setTitle(user.getName());
@@ -169,7 +163,6 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
         } else {
             Picasso.with(getActivity())
                     .load(user.getPropicloc())
-                    .transform(new CircleTransform())
                     .into(mProfilePicture);
 
         }
@@ -245,18 +238,18 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         mSwipeRefreshLayout.setEnabled(verticalOffset == 0);
-        int height = (int) AndroidUtils.convertDpToPixel(130, getActivity());
-        if (verticalOffset > -height) {
-            ViewGroup.LayoutParams params = mProfilePicture.getLayoutParams();
-            params.height = height + verticalOffset - 1;
-            params.width = height + verticalOffset - 1;
-            mProfilePicture.setLayoutParams(params);
-        } else {
-            ViewGroup.LayoutParams params = mProfilePicture.getLayoutParams();
-            params.height = 0;
-            params.width = 0;
-            mProfilePicture.setLayoutParams(params);
-        }
+//        int height = (int) AndroidUtils.convertDpToPixel(130, getActivity());
+//        if (verticalOffset > -height) {
+//            ViewGroup.LayoutParams params = mProfilePicture.getLayoutParams();
+//            params.height = height + verticalOffset - 1;
+//            params.width = height + verticalOffset - 1;
+//            mProfilePicture.setLayoutParams(params);
+//        } else {
+//            ViewGroup.LayoutParams params = mProfilePicture.getLayoutParams();
+//            params.height = 0;
+//            params.width = 0;
+//            mProfilePicture.setLayoutParams(params);
+//        }
     }
 
     /**
@@ -320,7 +313,7 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
 
     @Override
     public void onImageClicked(Post post) {
-        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, post.getPostImage(), (post.getPostingUsersId().equals(uid)));
+        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, post, (post.getPostingUsersId().equals(uid)));
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
                 .addToBackStack(null)
