@@ -17,7 +17,6 @@
 
 package com.swiftkaydevelopment.findme.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -32,11 +31,9 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.Post;
-import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.managers.PersistenceManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
 
 public class FullImageFragment extends BaseFragment implements OkCancelDialog.OkCancelDialogListener{
 
@@ -51,7 +48,6 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
 
     private Post post;
     private ImageView ivPicture;
-    private ImageLoader imageLoader;
     private Toolbar mToolbar;
     private boolean isUser;
 
@@ -148,12 +144,6 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
         if (dialog != null) {
             dialog.setOkCancelDialogListener(null);
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        imageLoader = new ImageLoader(context);
     }
 
     @Override

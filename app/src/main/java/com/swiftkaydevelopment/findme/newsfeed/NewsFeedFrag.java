@@ -1,4 +1,4 @@
-package com.swiftkaydevelopment.findme.fragment;
+package com.swiftkaydevelopment.findme.newsfeed;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -13,11 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.PostAdapter;
 import com.swiftkaydevelopment.findme.data.Post;
+import com.swiftkaydevelopment.findme.fragment.BaseFragment;
+import com.swiftkaydevelopment.findme.fragment.CommentsDialog;
+import com.swiftkaydevelopment.findme.fragment.FullImageFragment;
 import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.R;
 
 import java.util.ArrayList;
 
@@ -31,12 +34,12 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     public static final String ARG_POSTS_LIST = "ARG_POSTS_LIST";
 
     private String lp = "0";
-    private ProgressBar         pb;
     private View                fab;
     private View                fabstatus;
     private View                fabphoto;
     private RecyclerView        mRecyclerView;
     private SwipeRefreshLayout  swipeLayout;
+    private ProgressBar         mProgressBar;
     private boolean             loadingMore;
     private ArrayList<Post>     mPostsList = new ArrayList<>();
 
@@ -61,7 +64,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            PostManager.getInstance(uid, getActivity()).fetchPosts(getActivity(), "0");
+            PostManager.getInstance(uid, getActivity()).fetchPosts("0");
             loadingMore = true;
         }
     }
@@ -76,7 +79,8 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         fabstatus = layout.findViewById(R.id.fabpencil);
         fabphoto = layout.findViewById(R.id.fabcamera);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewNewsFeed);
-        pb = (ProgressBar) layout.findViewById(R.id.pbnewsfeed);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.newsfeedProgressBar);
+        mProgressBar.setVisibility(View.GONE);
 
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
@@ -105,27 +109,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        pb.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int totalItemCount = mRecyclerView.getLayoutManager().getItemCount();
-                int lastVisibleItem = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findLastVisibleItemPosition();
-                Log.i(TAG, "total: " + totalItemCount + " last: " + lastVisibleItem);
-                if (!loadingMore && totalItemCount <= lastVisibleItem + 1) {
-                    loadingMore = true;
-                    loadMorePosts();
-                }
-            }
-        });
     }
 
     @Override
@@ -164,15 +148,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     public void onRefresh() {
         Log.i(TAG, "onRefresh");
         swipeLayout.setRefreshing(true);
-        PostManager.getInstance(uid, getActivity()).refreshPosts(getActivity());
-    }
-
-    private void loadMorePosts() {
-        Log.i(TAG, "loading more posts");
-        if (mPostAdapter.getPosts().size() > 25) {
-            String lastpost = mPostAdapter.getPosts().get(mPostAdapter.getPosts().size() - 1).getPostId();
-            PostManager.getInstance(uid, getActivity()).fetchPosts(getActivity(), lastpost);
-        }
+        PostManager.getInstance(uid, getActivity()).refreshPosts();
     }
 
     private void rotate(View v) {
@@ -190,6 +166,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     /**
      * Animates the fabstatus and fabphoto when the base fab
      * is clicked
+     *
      */
     private void fabClickAnimation() {
         float startRotation = fab.getRotation();
@@ -225,9 +202,10 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
                 mPostAdapter.setPostAdapterListener(this);
             } else {
                 mPostAdapter.addPosts(posts);
-                loadingMore = false;
             }
         }
+        loadingMore = false;
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -248,8 +226,13 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
-    public void onEditClicked() {
-
+    public void onLastPost(Post post) {
+        Log.d(TAG, "onLastPost");
+        if (!loadingMore) {
+            PostManager.getInstance(uid, getActivity()).fetchPosts(post.getPostId());
+            loadingMore = true;
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

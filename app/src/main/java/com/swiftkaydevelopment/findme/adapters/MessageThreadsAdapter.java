@@ -1,7 +1,6 @@
 package com.swiftkaydevelopment.findme.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,11 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
+import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
@@ -88,12 +87,10 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
                 holder.tvname.setTypeface(null, Typeface.NORMAL);
                 holder.tvmessage.setTypeface(null, Typeface.NORMAL);
                 holder.tvtime.setTypeface(null, Typeface.NORMAL);
-                holder.itemView.setBackgroundColor(Color.parseColor("#e4e4e4"));
             } else {
                 holder.tvmessage.setTypeface(null, Typeface.BOLD);
                 holder.tvname.setTypeface(null, Typeface.BOLD);
                 holder.tvtime.setTypeface(null, Typeface.BOLD);
-                holder.itemView.setBackgroundColor(Color.WHITE);
             }
 
             holder.ivpropic.setOnClickListener(new View.OnClickListener() {

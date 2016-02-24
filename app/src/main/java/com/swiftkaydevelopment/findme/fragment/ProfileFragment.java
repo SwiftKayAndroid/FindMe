@@ -17,12 +17,12 @@
 
 package com.swiftkaydevelopment.findme.fragment;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -47,9 +46,10 @@ import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.services.UploadService;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,
-        View.OnClickListener, PostManager.PostsListener, AppBarLayout.OnOffsetChangedListener,
+public class ProfileFragment extends BaseFragment implements
+        View.OnClickListener, PostManager.PostsListener,
         PostAdapter.PostAdapterListener{
     public static final String TAG = "ProfileFragment";
     private static final String ARG_USER = "ARG_USER";
@@ -57,11 +57,7 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
 
     private User                user;
     private RecyclerView        mRecyclerView;
-    private SwipeRefreshLayout  mSwipeRefreshLayout;
-    private TextView            mTvAgeLocation;
-    private AppBarLayout        mAppBarLayout;
-    private ImageView           mProfilePicture;
-    private TextView            mTvOrientation;
+    private ImageView mProfilePicture;
 
     private FloatingActionButton mFabBase;
     private FloatingActionButton mFabLeft;
@@ -93,7 +89,7 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
                 user = (User) getArguments().getSerializable(ARG_USER);
                 uid = getArguments().getString(ARG_UID);
             }
-            PostManager.getInstance(uid, getActivity()).fetchUserPosts(getActivity(), user, "0");
+            PostManager.getInstance(uid, getActivity()).fetchUserPosts(user, "0");
             if (!user.getOuid().equals(uid)) {
                 UserManager.getInstance(uid, getActivity()).addProfileView(uid, user);
             }
@@ -135,15 +131,8 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
         mFabLeft.setOnClickListener(this);
         mFabCenter.setOnClickListener(this);
         mFabUpper.setOnClickListener(this);
-        mAppBarLayout = (AppBarLayout) layout.findViewById(R.id.appbar);
         mProfilePicture = (ImageView) layout.findViewById(R.id.profileProfilePicture);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                R.color.base_green,
-                android.R.color.holo_blue_bright,
-                R.color.base_green);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewProfile);
 
         return layout;
@@ -164,7 +153,6 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
             Picasso.with(getActivity())
                     .load(user.getPropicloc())
                     .into(mProfilePicture);
-
         }
 
         mProfilePicture.setOnClickListener(this);
@@ -182,6 +170,8 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
             mFabBase.setImageResource(R.mipmap.ic_message_black_24dp);
             mFabBase.setColorFilter(Color.WHITE);
         }
+
+        initializeProfileInformation();
     }
 
     @Override
@@ -196,7 +186,6 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
     public void onPause() {
         super.onPause();
         PostManager.getInstance(uid, getActivity()).removeListener(this);
-        mAppBarLayout.removeOnOffsetChangedListener(this);
         mPostAdapter.setPostAdapterListener(null);
     }
 
@@ -207,21 +196,17 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
         if (user.getOuid().equals(uid)) {
             user = UserManager.getInstance(uid, getActivity()).me();
         }
-        mAppBarLayout.addOnOffsetChangedListener(this);
         mPostAdapter.setPostAdapterListener(this);
     }
 
-    @Override
-    public void onRefresh() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        if (user.getOuid().equals(uid)) {
-            UserManager.getInstance(uid, getActivity()).invalidateMe();
-            user = UserManager.getInstance(uid, getActivity()).me();
-        } else {
-            user = user.fetchUser(user.getOuid(), getActivity());
-            mPostAdapter.user = user;
+    private void initializeProfileInformation() {
+
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry entry : user.getSearchingFor().entrySet()) {
+            if (entry.getValue().equals("yes")) {
+                sb.append(entry.getKey() + " ");
+            }
         }
-        PostManager.getInstance(uid, getActivity()).fetchUserPosts(getActivity(), user, "0");
     }
 
     /**
@@ -233,23 +218,6 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
         mFabUpper.setVisibility(mFabUpper.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
         setVisibility();
 
-    }
-
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        mSwipeRefreshLayout.setEnabled(verticalOffset == 0);
-//        int height = (int) AndroidUtils.convertDpToPixel(130, getActivity());
-//        if (verticalOffset > -height) {
-//            ViewGroup.LayoutParams params = mProfilePicture.getLayoutParams();
-//            params.height = height + verticalOffset - 1;
-//            params.width = height + verticalOffset - 1;
-//            mProfilePicture.setLayoutParams(params);
-//        } else {
-//            ViewGroup.LayoutParams params = mProfilePicture.getLayoutParams();
-//            params.height = 0;
-//            params.width = 0;
-//            mProfilePicture.setLayoutParams(params);
-//        }
     }
 
     /**
@@ -274,6 +242,18 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
             mFabUpper.setVisibility(View.GONE);
             mFabLeft.setVisibility(View.GONE);
         }
+    }
+
+    private void rotate(View v) {
+        AnimatorSet set = new AnimatorSet();
+        float startRotation = v.getRotation();
+        float endRotation = 0;
+        if (startRotation == 0) {
+            endRotation = 45;
+        }
+        set.play(ObjectAnimator.ofFloat(v, View.ROTATION, startRotation, endRotation));
+        set.setDuration(200);
+        set.start();
     }
 
     /**
@@ -303,14 +283,11 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
         mPostList = posts;
         mPostAdapter.clearAdapter();
         mPostAdapter.addPosts(posts);
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onCommentsClicked(Post post) {
-
     }
-
     @Override
     public void onImageClicked(Post post) {
         FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, post, (post.getPostingUsersId().equals(uid)));
@@ -321,8 +298,8 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
     }
 
     @Override
-    public void onEditClicked() {
-        editProfile();
+    public void onLastPost(Post post) {
+
     }
 
     @Override
@@ -332,6 +309,7 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
             isSameProfile = true;
         }
         if (v.getId() == R.id.profileFabBase) {
+            rotate(v);
             if (isSameProfile) {
                 expandOwnProfileFabs();
             } else {
@@ -350,10 +328,12 @@ public class ProfileFragment extends BaseFragment implements SwipeRefreshLayout.
             } else {
                 getActivity().startActivity(UploadService.createIntent(getActivity()));
             }
-        } else if (v.getId() == R.id.ivProfileEditProfile) {
-            editProfile();
         } else if (v.getId() == R.id.profileProfilePicture) {
-            getActivity().startActivity(ViewPhotos.createIntent(getActivity(), user));
+            FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, null, (user.getOuid().equals(uid)));
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 }

@@ -15,9 +15,8 @@
  *
  */
 
-package com.swiftkaydevelopment.findme.fragment;
+package com.swiftkaydevelopment.findme.settings;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
@@ -32,14 +31,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.NewsfeedPrefData;
+import com.swiftkaydevelopment.findme.fragment.BaseFragment;
+import com.swiftkaydevelopment.findme.managers.AccountManager;
 
 public class NewsFeedSettings extends BaseFragment {
     public static final String TAG = "NewsFeedSettings";
-
-    private static String mUid;
 
     private CheckBox mGenderBoth;
     private CheckBox mStatusBoth;
@@ -81,37 +79,20 @@ public class NewsFeedSettings extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                .inflate(R.layout.newsfeed_settings, container, false);
+        View layout = inflater.inflate(R.layout.newsfeed_settings, container, false);
+
         mToolbar = (Toolbar) layout.findViewById(R.id.newsfeedSettingsToolbar);
-        mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
-        mToolbar.inflateMenu(R.menu.newsfeed_settings_menu);
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.newsfeedSettingsDiscard) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                    return true;
-                }
-                return false;
-            }
-        });
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateSettings();
-            }
-        });
+        setUpToolbar();
 
-        mGenderBoth = (CheckBox) layout.findViewById(R.id.checkboxNewsfeedSettingsGenderBoth);
-        mStatusBoth = (CheckBox) layout.findViewById(R.id.checkboxNewsfeedSettingsStatusBoth);
-
-        mGenderSwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsGender);
-        mStatusSwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsStatus);
-
-        mStraightSwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsStraight);
-        mGaySwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsGay);
-        mBiSwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsBi);
+//        mGenderBoth = (CheckBox) layout.findViewById(R.id.checkboxNewsfeedSettingsGenderBoth);
+//        mStatusBoth = (CheckBox) layout.findViewById(R.id.checkboxNewsfeedSettingsStatusBoth);
+//
+//        mGenderSwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsGender);
+//        mStatusSwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsStatus);
+//
+//        mStraightSwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsStraight);
+//        mGaySwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsGay);
+//        mBiSwitch = (SwitchCompat) layout.findViewById(R.id.switchNewsfeedSettingsBi);
 
         mDistanceSeek = (SeekBar) layout.findViewById(R.id.seekNewsfeedSettingsDistance);
         mDistanceWriter = (TextView) layout.findViewById(R.id.newsfeedSettingsDistanceWriter);
@@ -212,6 +193,32 @@ public class NewsFeedSettings extends BaseFragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(ARG_UID, uid);
         super.onSaveInstanceState(outState);
+    }
+
+    /**
+     * Sets up the Toolbar for Connect Settings
+     *
+     */
+    private void setUpToolbar() {
+        mToolbar.setTitle("Filters");
+        mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.inflateMenu(R.menu.newsfeed_settings_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.newsfeedSettingsDiscard) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                    return true;
+                }
+                return false;
+            }
+        });
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateSettings();
+            }
+        });
     }
 
     private void updateSettings() {

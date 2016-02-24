@@ -53,7 +53,7 @@ public class MatchPreviewFragment extends BaseFragment implements View.OnClickLi
     //header
     TextView aboutMe, age, gender, orientation, location, status, lookingfor;
     TextView hasKids, wantsKids, profession, school, weed;
-    ImageView mEditProfile;
+//    ImageView mEditProfile;
 
     public static MatchPreviewFragment newInstance(String uid) {
         MatchPreviewFragment frag = new MatchPreviewFragment();
@@ -102,8 +102,8 @@ public class MatchPreviewFragment extends BaseFragment implements View.OnClickLi
         orientation = (TextView) headerView.findViewById(R.id.profileHeaderOrientation);
         status = (TextView) headerView.findViewById(R.id.profileHeaderStatus);
         lookingfor = (TextView) headerView.findViewById(R.id.profileHeaderLookingFor);
-        mEditProfile = (ImageView) headerView.findViewById(R.id.ivProfileEditProfile);
-        mEditProfile.setVisibility(View.GONE);
+//        mEditProfile = (ImageView) headerView.findViewById(R.id.ivProfileEditProfile);
+//        mEditProfile.setVisibility(View.GONE);
 
         hasKids = (TextView) headerView.findViewById(R.id.profileHeaderHasKids);
         wantsKids = (TextView) headerView.findViewById(R.id.profileHeaderWantsKids);

@@ -18,7 +18,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.fragment.NavigationDrawerFragment;
-import com.swiftkaydevelopment.findme.fragment.NewsFeedFrag;
+import com.swiftkaydevelopment.findme.newsfeed.NewsFeedFrag;
 import com.swiftkaydevelopment.findme.gcm.QuickstartPreferences;
 import com.swiftkaydevelopment.findme.gcm.RegistrationIntentService;
 import com.swiftkaydevelopment.findme.managers.UserManager;

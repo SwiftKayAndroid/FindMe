@@ -34,7 +34,7 @@ import java.util.ArrayList;
 /**
  * Created by Kevin Haines on 10/21/15.
  */
-public class Post implements Serializable{
+public class Post implements Serializable {
 
     public static final String TAG = "FindMe-Post";
     private String mPostId;

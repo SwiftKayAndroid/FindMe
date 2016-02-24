@@ -1,370 +1,390 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#ffffff">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardViewNewsfeedSettingsDistance"
+    <RelativeLayout
+        android:id="@+id/personalInfoContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:paddingRight="10dp">
+        android:background="#ffffff"
+        android:layout_below="@+id/profileToolbar"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="About Me:"
+            android:id="@+id/textView10"
+            android:layout_marginLeft="83dp"
+            android:layout_marginStart="83dp"
+            android:layout_marginTop="16dp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:visibility="visible" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Just a little sumphin sumphin about me. I&apos;m Kevin and I&apos;m the coolest mother fucker you will ever meet in this whole fucking world. Go Android!"
+            android:id="@+id/profileHeaderAboutMe"
+            android:layout_below="@+id/textView10"
+            android:layout_alignLeft="@+id/textView10"
+            android:layout_alignStart="@+id/textView10"
+            android:textColor="#000000"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="5dp" />
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ivProfileEditProfile"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:src="@mipmap/ic_pencil_white_24dp"
-                android:tint="@color/dark_gray" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:padding="15dp"
-                android:textStyle="bold"
-                android:text="About Me"/>
-
-            <TextView
-                android:id="@+id/profileHeaderAboutMe"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="About Me"/>
-
-            <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileHeaderAboutMe"
+            android:layout_marginTop="16dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="left"
-                android:layout_weight="1"
-                android:layout_marginLeft="16dp"
-                android:textStyle="bold"
-                android:text="Age:"
-                android:layout_marginTop="15dp" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
 
-            <TextView
-                android:id="@+id/profileHeaderAge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
-                android:gravity="right"
-                android:layout_marginRight="16dp"
-                tools:text="Age"
-                android:layout_marginTop="15dp" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="Age:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Age"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="5dp" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="Gender:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderGender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Gender"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="5dp" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="Location:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Location"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="5dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="Orientation:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderOrientation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Orientation"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="5dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="Status:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Single"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="5dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="Looking For:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderLookingFor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Sex, Love"
+                        android:layout_marginTop="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="Has Kids:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderHasKids"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Sex, Love"
+                        android:layout_marginTop="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="Wants Kids:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderWantsKids"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Sex, Love"
+                        android:layout_marginTop="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="Profession:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderProfession"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Sex, Love"
+                        android:layout_marginTop="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="School:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderSchool"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Sex, Love"
+                        android:layout_marginTop="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="16dp"
+                        android:textStyle="bold"
+                        android:text="420:"
+                        android:layout_marginTop="15dp" />
+
+                    <TextView
+                        android:id="@+id/profileHeaderWeed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="right"
+                        android:layout_marginRight="16dp"
+                        tools:text="Sex, Love"
+                        android:layout_marginTop="15dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="Gender:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderGender"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Gender"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="Location:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Location"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="Orientation:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderOrientation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Orientation"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-
-
-
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="Status:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Single"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="Looking For:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderLookingFor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Sex, Love"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="Has Kids:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderHasKids"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Sex, Love"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="Wants Kids:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderWantsKids"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Sex, Love"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="Profession:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderProfession"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Sex, Love"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="School:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderSchool"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Sex, Love"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="16dp"
-                    android:textStyle="bold"
-                    android:text="420:"
-                    android:layout_marginTop="15dp" />
-
-                <TextView
-                    android:id="@+id/profileHeaderWeed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="right"
-                    android:layout_marginRight="16dp"
-                    tools:text="Sex, Love"
-                    android:layout_marginTop="15dp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-</LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

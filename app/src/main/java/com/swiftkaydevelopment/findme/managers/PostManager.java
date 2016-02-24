@@ -46,18 +46,30 @@ public class PostManager {
     private CopyOnWriteArrayList<PostsListener> mListeners = new CopyOnWriteArrayList<>();
 
     public static PostManager getInstance(String uid, Context context){
-        if (manager == null) {
-            manager = new PostManager();
+        synchronized (PostManager.class) {
+            if (manager == null) {
+                manager = new PostManager();
+            }
+            manager.mUid = uid;
+            mContext = context.getApplicationContext();
         }
-        manager.mUid = uid;
-        mContext = context;
         return manager;
     }
 
+    /**
+     * Adds a listener to the list of listeners
+     *
+     * @param listener Listener to add
+     */
     public void addPostListener(PostsListener listener) {
         mListeners.add(listener);
     }
 
+    /**
+     * Remove a listener from the list of listeners
+     *
+     * @param listener
+     */
     public void removeListener(PostsListener listener) {
         mListeners.remove(listener);
     }
@@ -65,16 +77,15 @@ public class PostManager {
     /**
      * Gets an arraylist of posts from the server
      * todo: will get posts from db first and sync with that
-     * @param context
      * @return
      */
-    public ArrayList<Post> fetchPosts(Context context, String lastpost){
+    public ArrayList<Post> fetchPosts(String lastpost){
         Log.d(TAG, "fetching posts");
         new FetchPostsTask(mUid, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
         return mPosts;
     }
 
-    public void fetchUserPosts(Context context, User user, String lastpost) {
+    public void fetchUserPosts(User user, String lastpost) {
         new FetchUserPosts(user, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
@@ -188,21 +199,21 @@ public class PostManager {
     }
 
 
-    public ArrayList<Post> getPosts(Context context){
+    public ArrayList<Post> getPosts(){
         if (mPosts != null) {
             if (mPosts.size() > 0) {
                 return mPosts;
             } else {
-                return fetchPosts(context, "0");
+                return fetchPosts("0");
             }
         } else {
-            return fetchPosts(context, "0");
+            return fetchPosts("0");
         }
     }
 
-    public ArrayList<Post> refreshPosts(Context context) {
+    public ArrayList<Post> refreshPosts() {
         mPosts.clear();
-        return fetchPosts(context, "0");
+        return fetchPosts("0");
     }
 
     public void likePost(String postid) {

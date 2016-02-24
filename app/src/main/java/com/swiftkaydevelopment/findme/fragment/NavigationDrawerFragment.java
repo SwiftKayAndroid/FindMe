@@ -32,6 +32,7 @@ import com.swiftkaydevelopment.findme.activity.NotificationActivity;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.NavDrawerListAdapter;
 import com.swiftkaydevelopment.findme.managers.UserManager;
+import com.swiftkaydevelopment.findme.settings.NewsFeedSettings;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;

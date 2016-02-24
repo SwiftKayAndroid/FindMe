@@ -33,14 +33,14 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 android:padding="15dp"
-                android:text="Connect Settings"/>
+                android:text="General"/>
 
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardViewPostContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="16dp"
             android:paddingRight="10dp">
 
@@ -49,210 +49,105 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:padding="15dp"
-                    android:text="General"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:padding="7dp"
-                    android:layout_marginLeft="16dp"
-                    android:text="Select which Gender and Relationship Status you want to see"/>
-
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="32dp"
                         android:padding="16dp"
                         android:text="Gender"/>
 
-                    <CheckBox
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Both"
-                        android:layout_gravity="end"
-                        android:padding="16dp"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Small Text"
+                        android:id="@+id/tvGender"
                         android:layout_weight="1"
-                        android:checked="true"
-                        android:id="@+id/checkboxNewsfeedSettingsGenderBoth" />
+                        android:padding="16dp"
+                        android:gravity="end|right"
+                        android:textColor="@color/primary_dark" />
 
-                    <android.support.v7.widget.SwitchCompat
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_gravity="end"
-                        android:padding="16dp"
-                        android:layout_marginRight="16dp"
-                        android:text="M/F"
-                        android:checked="false"
-                        android:id="@+id/switchNewsfeedSettingsGender" />
                 </LinearLayout>
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="32dp"
                         android:padding="16dp"
-                        android:text="Status"/>
+                        android:text="Relationship Status"/>
 
-                    <CheckBox
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Both"
-                        android:layout_gravity="end"
-                        android:padding="16dp"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Small Text"
+                        android:id="@+id/tvRelationship"
                         android:layout_weight="1"
-                        android:checked="true"
-                        android:id="@+id/checkboxNewsfeedSettingsStatusBoth" />
+                        android:padding="16dp"
+                        android:gravity="end|right"
+                        android:textColor="@color/primary_dark" />
 
-                    <android.support.v7.widget.SwitchCompat
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_gravity="end"
-                        android:padding="16dp"
-                        android:layout_marginRight="16dp"
-                        android:text="Single"
-                        android:checked="false"
-                        android:id="@+id/switchNewsfeedSettingsStatus" />
                 </LinearLayout>
 
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/cardViewNewsfeedSettingsOrientation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:paddingRight="10dp">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:padding="15dp"
-                    android:text="Orientation"/>
+                    android:layout_gravity="center_horizontal">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:padding="7dp"
-                    android:layout_marginLeft="16dp"
-                    android:text="Select which orientations you want to see"/>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="32dp"
                         android:padding="16dp"
-                        android:text="Straight"/>
+                        android:text="Orientation" />
 
-                    <android.support.v7.widget.SwitchCompat
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_gravity="end"
-                        android:padding="16dp"
-                        android:layout_marginRight="16dp"
-                        android:checked="true"
-                        android:text="Y/N"
-                        android:id="@+id/switchNewsfeedSettingsStraight" />
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Small Text"
+                        android:id="@+id/tvOrientation"
                         android:layout_weight="1"
-                        android:layout_gravity="left"
-                        android:layout_marginLeft="32dp"
                         android:padding="16dp"
-                        android:text="Gay"/>
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_gravity="end"
-                        android:padding="16dp"
-                        android:layout_marginRight="16dp"
-                        android:text="Y/N"
-                        android:checked="true"
-                        android:id="@+id/switchNewsfeedSettingsGay" />
+                        android:gravity="end|right"
+                        android:textColor="@color/primary_dark" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content" >
+
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="32dp"
                         android:padding="16dp"
-                        android:text="Bi"/>
+                        android:text="Age" />
 
-                    <android.support.v7.widget.SwitchCompat
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Small Text"
+                        android:id="@+id/tvAge"
                         android:layout_weight="1"
-                        android:layout_gravity="end"
                         android:padding="16dp"
-                        android:layout_marginRight="16dp"
-                        android:text="Y/N"
-                        android:checked="true"
-                        android:id="@+id/switchNewsfeedSettingsBi" />
+                        android:gravity="end|right"
+                        android:textColor="@color/primary_dark" />
                 </LinearLayout>
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/cardViewNewsfeedSettingsDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:paddingRight="10dp">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -281,6 +176,7 @@
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -30,16 +30,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.swiftkaydevelopment.findme.data.User;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
-import com.swiftkaydevelopment.findme.views.CircleTransform;
-import com.swiftkaydevelopment.findme.views.ExpandableLinearLayout;
-import com.swiftkaydevelopment.findme.views.tagview.TagView;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.data.Post;
+import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.PostManager;
+import com.swiftkaydevelopment.findme.views.CircleTransform;
+import com.swiftkaydevelopment.findme.views.ExpandableLinearLayout;
 import com.swiftkaydevelopment.findme.views.tagview.Tag;
+import com.swiftkaydevelopment.findme.views.tagview.TagView;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -48,7 +47,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public interface PostAdapterListener{
         void onCommentsClicked(Post post);
         void onImageClicked(Post post);
-        void onEditClicked();
+        void onLastPost(Post post);
     }
 
     public static final String TAG = "PostAdapter";
@@ -211,19 +210,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.location.setText(user.getLocation().getCity());
             holder.gender.setText(user.getGender().toString());
             holder.age.setText(Integer.toString(user.getAge()));
-            if (isUser) {
-                holder.mEditProfile.setVisibility(View.VISIBLE);
-                holder.mEditProfile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mListener != null) {
-                            mListener.onEditClicked();
-                        }
-                    }
-                });
-            } else {
-                holder.mEditProfile.setVisibility(View.GONE);
-            }
 
             StringBuilder sb = new StringBuilder();
             for (Map.Entry entry : user.getSearchingFor().entrySet()) {
@@ -241,6 +227,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.weed.setText(user.weed);
         }
         itemView.setTag(position);
+
+        if (pos >= getItemCount() - 1) {
+            if (mListener != null) {
+                mListener.onLastPost(mPostList.get(pos));
+            }
+        }
     }
 
     private void setExtrasContainer(int pos, PostAdapter.PostViewHolder holder) {
@@ -258,6 +250,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     /**
      * used to rotate the toggle button for the extras layout
      * at bottom of cardview on each post
+     *
      * @param v toggle imageview to be rotated
      */
     private void rotate(View v) {
@@ -307,7 +300,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //header
         TextView aboutMe, age, gender, orientation, location, status, lookingfor;
         TextView hasKids, wantsKids, profession, school, weed;
-        ImageView mEditProfile;
+//        ImageView mEditProfile;
 
         public int viewType;
 
@@ -349,7 +342,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             orientation = (TextView) v.findViewById(R.id.profileHeaderOrientation);
             status = (TextView) v.findViewById(R.id.profileHeaderStatus);
             lookingfor = (TextView) v.findViewById(R.id.profileHeaderLookingFor);
-            mEditProfile = (ImageView) v.findViewById(R.id.ivProfileEditProfile);
+//            mEditProfile = (ImageView) v.findViewById(R.id.ivProfileEditProfile);
 
             hasKids = (TextView) v.findViewById(R.id.profileHeaderHasKids);
             wantsKids = (TextView) v.findViewById(R.id.profileHeaderWantsKids);

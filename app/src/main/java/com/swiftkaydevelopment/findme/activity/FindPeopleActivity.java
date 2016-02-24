@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.swiftkaydevelopment.findme.fragment.FindPeopleFrag;
-import com.swiftkaydevelopment.findme.fragment.NewsFeedSettings;
+import com.swiftkaydevelopment.findme.settings.NewsFeedSettings;
 import com.swiftkaydevelopment.findme.R;
 
 /**

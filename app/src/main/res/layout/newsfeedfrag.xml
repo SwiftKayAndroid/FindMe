@@ -33,15 +33,6 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <ProgressBar
-        android:id="@+id/pbnewsfeed"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="visible" />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -83,5 +74,15 @@
         android:layout_toLeftOf="@+id/fab"
         android:layout_marginRight="10dp"
         android:layout_alignBottom="@+id/fab" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/newsfeedProgressBar"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:indeterminate="false" />
 
 </RelativeLayout>
