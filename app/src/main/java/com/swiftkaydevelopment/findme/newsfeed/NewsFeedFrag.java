@@ -33,7 +33,6 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     public static final String TAG = "NewsFeedFrag";
     public static final String ARG_POSTS_LIST = "ARG_POSTS_LIST";
 
-    private String lp = "0";
     private View                fab;
     private View                fabstatus;
     private View                fabphoto;
@@ -64,7 +63,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            PostManager.getInstance(uid, getActivity()).fetchPosts("0");
+            PostManager.getInstance().fetchPosts(uid, "0");
             loadingMore = true;
         }
     }
@@ -116,7 +115,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     public void onPause() {
         Log.i(TAG, "onPause");
         super.onPause();
-        PostManager.getInstance(uid, getActivity()).removeListener(this);
+        PostManager.getInstance().removeListener(this);
         if (mPostAdapter != null) {
             mPostAdapter.setPostAdapterListener(null);
         }
@@ -126,7 +125,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     public void onResume() {
         Log.i(TAG, "onResume");
         super.onResume();
-        PostManager.getInstance(uid, getActivity()).addPostListener(this);
+        PostManager.getInstance().addPostListener(this);
         if (mPostAdapter != null) {
             mPostAdapter.setPostAdapterListener(this);
         }
@@ -148,9 +147,14 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     public void onRefresh() {
         Log.i(TAG, "onRefresh");
         swipeLayout.setRefreshing(true);
-        PostManager.getInstance(uid, getActivity()).refreshPosts();
+        PostManager.getInstance().refreshPosts(uid);
     }
 
+    /**
+     * Rotates the View either to 45 degrees or back to zero
+     *
+     * @param v View to rotate
+     */
     private void rotate(View v) {
         AnimatorSet set = new AnimatorSet();
         float startRotation = v.getRotation();
@@ -229,11 +233,14 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     public void onLastPost(Post post) {
         Log.d(TAG, "onLastPost");
         if (!loadingMore) {
-            PostManager.getInstance(uid, getActivity()).fetchPosts(post.getPostId());
+            PostManager.getInstance().fetchPosts(uid, post.getPostId());
             loadingMore = true;
             mProgressBar.setVisibility(View.VISIBLE);
         }
     }
+
+    @Override
+    public void onProfilePostsRetrieved(ArrayList<Post> posts) {}
 
     @Override
     public void onClick(View v) {

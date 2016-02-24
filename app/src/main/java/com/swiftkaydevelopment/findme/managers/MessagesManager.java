@@ -181,18 +181,7 @@ public class MessagesManager {
 //
 //    public void showAsTypingStopped(){}
 
-    public static void messageNotificationReceived(Bundle data, Context context) {
-        mContext = context;
-        Message msg = Message.instance(mUid);
-        msg.setMessageId(data.getString("id"));
-        msg.setDeletedStatus(0);
-        msg.setReadStatus(0);
-        msg.setMessage(data.getString("message"));
-        msg.setSeenStatus(0);
-        msg.setThreadId(data.getString("threadid"));
-        msg.setTime(data.getString("time"));
-        msg.setUser(User.createUser(mUid, mContext).fetchUser(data.getString("senderid"), mContext));
-        Log.w(TAG, "notify new message: {" + msg.toString());
+    public static void messageNotificationReceived(Message msg) {
 
         if (mMessageThreadListeners.size() < 1 && mMessagesListeners.size() <1) {
             sendNotification(msg);
@@ -273,7 +262,7 @@ public class MessagesManager {
                 int length = jsonArray.length();
                 for(int i = 0; i < length; i++) {
                     JSONObject child = jsonArray.getJSONObject(i);
-                    Message m = Message.instance(mUid);
+                    Message m = Message.instance();
                     m.setTime(child.getString("time"));
 
                     if (child.getString("deleted_status").equals("deleted")) {
@@ -297,7 +286,7 @@ public class MessagesManager {
                     }
                     m.setTag(child.getString("tag"));
                     m.setThreadId(child.getString("threadid"));
-                    m.setUser(User.createUser(mUid, mContext).createUserFromJson(child.getJSONObject("user")));
+                    m.setUser(User.createUserFromJson(child.getJSONObject("user")));
                     mList.add(m);
                 }
             } catch(JSONException e) {
@@ -352,7 +341,7 @@ public class MessagesManager {
                             t.readStatus = 0;
                         }
                         t.threadId = child.getString("threadid");
-                        t.threadUser = User.createUser(mUid, mContext).createUserFromJson(child.getJSONObject("user"));
+                        t.threadUser = User.createUserFromJson(child.getJSONObject("user"));
                         t.time = child.getString("time");
                         tList.add(t);
                     }
@@ -398,7 +387,7 @@ public class MessagesManager {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Message m = Message.instance(mUid);
+            Message m = Message.instance();
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 JSONObject child = jsonObject.getJSONObject("lastmessage");

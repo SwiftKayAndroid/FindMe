@@ -156,7 +156,7 @@ public class MatchManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUser(uid, mContext).createUserFromJson(child);
+                        User u = User.createUserFromJson(child);
                         users.add(u);
                     }
 
@@ -205,7 +205,7 @@ public class MatchManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUser(uid, mContext).createUserFromJson(child);
+                        User u = User.createUserFromJson(child);
                         users.add(u);
                     }
 
@@ -254,7 +254,7 @@ public class MatchManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUser(uid, mContext).createUserFromJson(child);
+                        User u = User.createUserFromJson(child);
                         users.add(u);
                     }
 
@@ -303,7 +303,7 @@ public class MatchManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUser(uid, mContext).createUserFromJson(child);
+                        User u = User.createUserFromJson(child);
                         users.add(u);
                     }
 

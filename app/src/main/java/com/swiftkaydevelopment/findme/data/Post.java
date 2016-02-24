@@ -38,7 +38,6 @@ public class Post implements Serializable {
 
     public static final String TAG = "FindMe-Post";
     private String mPostId;
-    private static String mUid;
     private String mPostingUsersId;
     private User mUser;
     private String mPostText;
@@ -49,90 +48,34 @@ public class Post implements Serializable {
     private boolean mLiked;
     private ArrayList<Comment> comments;
     private ArrayList<Tag> mTags;
-    private static Context mContext;
-
-    public static Post createPost(String uid, Context context){
-        Post post = new Post();
-        mUid = uid;
-        mContext = context;
-        return post;
-    }
 
     /**
-     * This method is called to fetch a single post from the server
-     * @param postid The unique id of the post
-     * @return Post the post to be returned
+     * Creates a new Post object
+     *
+     * @return new Post object
      */
-    public Post fetchPost(String postid){
-        mPostId = postid;
-        try {
-            new FetchPostTask(postid, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
-            setUser(User.createUser(mUid, mContext).fetchUser(getPostingUsersId(), mContext));
-            setComments(CommentsManager.getInstance(mUid, mContext).fetchComments(mPostId));
-            return this;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Log.i(TAG, "fetchPost - returning null");
-        return this;
+    public static Post createPost(){
+        return new Post();
     }
 
-    public Post createPostFromJson(JSONObject object) {
+    public static Post createPostFromJson(JSONObject object) {
+        Post post = new Post();
         try {
-            setPostText(object.getString("post"));
-            setPostingUsersId(object.getString("postingusersid"));
-            setNumComments(object.getInt("numcomments"));
-            setNumLikes(object.getInt("numlikes"));
-            setTime(object.getString("time"));
-            setPostId(object.getString("postid"));
-            setLiked(object.getBoolean("liked"));
-            setPostImage(object.getString("postpicloc"));
+            post.setPostText(object.getString("post"));
+            post.setPostingUsersId(object.getString("postingusersid"));
+            post.setNumComments(object.getInt("numcomments"));
+            post.setNumLikes(object.getInt("numlikes"));
+            post.setTime(object.getString("time"));
+            post.setPostId(object.getString("postid"));
+            post.setLiked(object.getBoolean("liked"));
+            post.setPostImage(object.getString("postpicloc"));
             JSONObject user = object.getJSONObject("user");
-            User u = User.createUser(mUid, mContext).createUserFromJson(user);
-            setUser(u);
+            User u = User.createUser().createUserFromJson(user);
+            post.setUser(u);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return this;
-    }
-
-    /**
-     * This class is used to fetch a single post
-     */
-    private static class FetchPostTask extends AsyncTask<Void,Void,Post> implements  Serializable{
-        String postid;
-        Post post;
-        public FetchPostTask(String postid,Post post){
-            this.postid = postid;
-            this.post = post;
-        }
-
-        @Override
-        protected Post doInBackground(Void... params) {
-            Log.i(TAG, "fetchPost-doInBackground");
-
-            ConnectionManager connectionManager = new ConnectionManager();
-            connectionManager.setMethod(ConnectionManager.POST);
-            connectionManager.setUri("getpost.php");
-            connectionManager.addParam("postid", postid);
-            connectionManager.addParam("uid", mUid);
-
-            try {
-                JSONObject jsonObject = new JSONObject(connectionManager.sendHttpRequest());
-                post.setPostText(jsonObject.getString("post"));
-                post.setPostingUsersId(jsonObject.getString("postingusersid"));
-                post.setNumComments(Integer.parseInt(jsonObject.getString("numcomments")));
-                post.setNumLikes(Integer.parseInt(jsonObject.getString("numlikes")));
-                post.setTime(jsonObject.getString("time"));
-                post.setLiked(jsonObject.getBoolean("liked"));
-                post.setPostImage(jsonObject.getString("postpicloc"));
-                post.setUser(User.createUser(mUid, mContext).createUserFromJson(jsonObject.getJSONObject("user")));
-
-            } catch(JSONException e) {
-                e.printStackTrace();
-            }
-            return post;
-        }
+        return post;
     }
 
     /**
@@ -213,14 +156,6 @@ public class Post implements Serializable {
      */
     public void setPostText(String postText) {
         this.mPostText = postText;
-    }
-
-    /**
-     * gets the device users uid
-     * @return device users uid
-     */
-    public String getUid(){
-        return mUid;
     }
 
     /**

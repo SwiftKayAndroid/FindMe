@@ -2,6 +2,7 @@ package com.swiftkaydevelopment.findme.managers;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.swiftkaydevelopment.findme.data.User;
 
@@ -9,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -24,8 +26,8 @@ public class UserManager {
         void onProfileViewsFetched(ArrayList<User> users);
     }
     private static final String TAG = "UserManager";
-    private static String mUid;
-    private static Context mContext;
+    private String mUid;
+    private Context mContext;
     private static User me;
 
     private CopyOnWriteArrayList<UserManagerListener> mListeners = new CopyOnWriteArrayList<>();
@@ -34,11 +36,13 @@ public class UserManager {
 
 
     public static UserManager getInstance(String uid, Context context){
-        if (manager == null) {
-            manager = new UserManager();
+        synchronized (UserManager.class) {
+            if (manager == null) {
+                manager = new UserManager();
+            }
+            manager.mUid = uid;
+            manager.mContext = context;
         }
-        manager.mUid = uid;
-        manager.mContext = context;
 
         return manager;
     }
@@ -53,11 +57,21 @@ public class UserManager {
 
     public User me() {
         if (me == null) {
-            me = User.createUser(mUid, mContext).fetchUser(mUid, mContext);
+            try {
+                me = new FetchUserTask(mUid, User.createUser()).execute().get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return me;
     }
 
+    /**
+     * Gets the list of profile views for the user
+     *
+     * @param uid User's id
+     * @param lastpage lastpage of views fetched
+     */
     public void getProfileViews(String uid, String lastpage) {
         new GetProfileViewsTask(uid, lastpage).execute();
     }
@@ -194,6 +208,43 @@ public class UserManager {
         }
     }
 
+    /**
+     * Class to fetch all of the users details
+     *
+     */
+    private class FetchUserTask extends AsyncTask<Void,Void,User> implements Serializable {
+        String uid;
+        User user;
+
+        public FetchUserTask(String uid, User user){
+            this.uid = uid;
+            this.user = user;
+        }
+
+        @Override
+        protected User doInBackground(Void... params) {
+            Log.i(TAG, "fetchUser-doInBackground");
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("getuser.php");
+            connectionManager.addParam("uid",mUid);
+            connectionManager.addParam("ouid",uid);
+            final String result = connectionManager.sendHttpRequest();
+
+            if (result != null) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    user  = User.createUserFromJson(jsonObject);
+
+                } catch (final JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return user;
+        }
+    }
+
     private class GetProfileViewsTask extends AsyncTask<Void, Void, ArrayList<User>> {
         String uid;
         String lastpage;
@@ -220,7 +271,7 @@ public class UserManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUser(mUid, mContext).createUserFromJson(child);
+                        User u = User.createUserFromJson(child);
                         users.add(u);
                     }
                 } catch (JSONException e) {
@@ -285,7 +336,7 @@ public class UserManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUser(mUid, mContext).createUserFromJson(child.getJSONObject("user"));
+                        User u = User.createUserFromJson(child.getJSONObject("user"));
                         users.add(u);
                     }
                 } catch (JSONException e) {
@@ -351,7 +402,7 @@ public class UserManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUser(mUid, mContext).createUserFromJson(child.getJSONObject("user"));
+                        User u = User.createUserFromJson(child.getJSONObject("user"));
                         users.add(u);
                     }
                 } catch (JSONException e) {
@@ -500,7 +551,7 @@ public class UserManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUser(uid, mContext).createUserFromJson(child);
+                        User u = User.createUserFromJson(child);
                         if (u != null) {
                             users.add(u);
                         }

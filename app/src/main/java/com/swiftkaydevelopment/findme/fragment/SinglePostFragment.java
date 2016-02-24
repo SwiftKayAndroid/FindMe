@@ -197,7 +197,7 @@ public class SinglePostFragment extends BaseFragment {
         ivPostLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PostManager.getInstance(uid, getActivity()).likePost(mPost.getPostId());
+                PostManager.getInstance().likePost(uid, mPost.getPostId());
             }
         });
 

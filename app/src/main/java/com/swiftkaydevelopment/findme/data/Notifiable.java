@@ -17,31 +17,35 @@
 
 package com.swiftkaydevelopment.findme.data;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
+import android.os.Bundle;
 
-public class PushData {
-    private static final String TAG = "PushData";
-
-    public String message;
-    public String title;
-    public int resId;
-    public int notificationId;
-    public int notificationTypeCount;
-    public PendingIntent intent;
+/**
+ * Created by Kevin Haines on 2/24/16.
+ * Class Overview:
+ */
+public interface Notifiable {
 
     /**
-     * Creates a pending intent from an intent
+     * This will cause the data object to create and show a
+     * notification.
      *
-     * @param intent Intent to create pending intent from
-     * @param context context
-     * @return new pending intent
+     * @param data push notification data
      */
-    public static PendingIntent createPendingIntent(Intent intent, Context context) {
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-    }
+    PushData getPushData(Bundle data, Context context);
 
+    /**
+     * Gets the notification type id
+     *
+     * @return int id of the notification type
+     */
+    int getNotificationId();
+
+    /**
+     * Gets the total number of existing notifications for
+     * the notification type.
+     *
+     * @return number of current notifications for the type
+     */
+    int getNotificationTypeCount();
 }

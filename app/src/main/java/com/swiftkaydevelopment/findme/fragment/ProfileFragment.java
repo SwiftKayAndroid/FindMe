@@ -89,7 +89,7 @@ public class ProfileFragment extends BaseFragment implements
                 user = (User) getArguments().getSerializable(ARG_USER);
                 uid = getArguments().getString(ARG_UID);
             }
-            PostManager.getInstance(uid, getActivity()).fetchUserPosts(user, "0");
+            PostManager.getInstance().fetchUserPosts(user, "0", uid);
             if (!user.getOuid().equals(uid)) {
                 UserManager.getInstance(uid, getActivity()).addProfileView(uid, user);
             }
@@ -185,14 +185,14 @@ public class ProfileFragment extends BaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        PostManager.getInstance(uid, getActivity()).removeListener(this);
+        PostManager.getInstance().removeListener(this);
         mPostAdapter.setPostAdapterListener(null);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        PostManager.getInstance(uid, getActivity()).addPostListener(this);
+        PostManager.getInstance().addPostListener(this);
         if (user.getOuid().equals(uid)) {
             user = UserManager.getInstance(uid, getActivity()).me();
         }
@@ -280,7 +280,11 @@ public class ProfileFragment extends BaseFragment implements
 
     @Override
     public void onPostsRetrieved(ArrayList<Post> posts) {
-        mPostList = posts;
+
+    }
+
+    @Override
+    public void onProfilePostsRetrieved(ArrayList<Post> posts) {
         mPostAdapter.clearAdapter();
         mPostAdapter.addPosts(posts);
     }

@@ -1,11 +1,14 @@
 package com.swiftkaydevelopment.findme.data;
 
+import android.content.Context;
+import android.os.Bundle;
+
 import java.io.Serializable;
 
 /**
  * Created by Kevin Haines on 10/21/15.
  */
-public class Message implements Serializable{
+public class Message implements Serializable, Notifiable {
     /**
      * this class will be responsible for storing and managing message data as well as performing
      * operations such as delete, unsend, resend, storing until regained internet access, reporting,
@@ -19,8 +22,6 @@ public class Message implements Serializable{
     public static final int DELETED = 1;
     public static final int NOT_DELETED = 0;
 
-
-    private static String mUid;
     private String mMessageId;
     private String mMessage;
     private String mTime;
@@ -34,24 +35,8 @@ public class Message implements Serializable{
     private String mSenderId;
     private String mMessageImageLocation;
 
-    public static Message instance(String uid) {
-        Message message = new Message();
-        message.mUid = uid;
-        return message;
-    }
-
-    public void attachUser(){
-        //todo: here is where we will call a method from
-        //UserManager to check in cache for user and return
-        //or fetch the user from the server
-    }
-
-    public static String getUid() {
-        return mUid;
-    }
-
-    public static void setUid(String mUid) {
-        Message.mUid = mUid;
+    public static Message instance() {
+        return new Message();
     }
 
     public String getMessageId() {
@@ -136,5 +121,29 @@ public class Message implements Serializable{
 
     public String getTag() {
         return mTag;
+    }
+
+    @Override
+    public PushData getPushData(Bundle data, Context context) {
+        setMessageId(data.getString("id"));
+        setDeletedStatus(0);
+        setReadStatus(0);
+        setMessage(data.getString("message"));
+        setSeenStatus(0);
+        setThreadId(data.getString("threadid"));
+        setTime(data.getString("time"));
+        //todo: the user needs to be passed in with the json data
+//        msg.setUser(User.createUser().fetchUser(data.getString("senderid"), mContext));
+        return null;
+    }
+
+    @Override
+    public int getNotificationId() {
+        return 1234;
+    }
+
+    @Override
+    public int getNotificationTypeCount() {
+        return 0;
     }
 }

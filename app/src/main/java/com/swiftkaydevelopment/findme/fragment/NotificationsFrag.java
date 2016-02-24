@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.NotificationsAdapter;
 import com.swiftkaydevelopment.findme.data.Notification;
-import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.managers.NotificationManager;
 
 import java.util.ArrayList;
@@ -103,13 +102,14 @@ public class NotificationsFrag extends BaseFragment implements NotificationManag
 
     @Override
     public void onNotificationClicked(Notification note) {
-        if (note.type.equals(Notification.TYPE_LIKE) || note.type.equals(Notification.TYPE_COMMENT)) {
-            Post post = Post.createPost(uid, getActivity()).fetchPost(note.data);
-            SinglePostFragment singlePostFragment = SinglePostFragment.newInstance(uid, post);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, singlePostFragment, SinglePostFragment.TAG)
-                    .addToBackStack(null)
-                    .commit();
-        }
+        //todo: fix this
+//        if (note.type.equals(Notification.TYPE_LIKE) || note.type.equals(Notification.TYPE_COMMENT)) {
+//            Post post = PostManager.getInstance().fetchPost(note.data);
+//            SinglePostFragment singlePostFragment = SinglePostFragment.newInstance(uid, post);
+//            getActivity().getSupportFragmentManager().beginTransaction()
+//                    .replace(android.R.id.content, singlePostFragment, SinglePostFragment.TAG)
+//                    .addToBackStack(null)
+//                    .commit();
+//        }
     }
 }

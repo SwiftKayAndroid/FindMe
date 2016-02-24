@@ -15,9 +15,10 @@
  *
  */
 
-package com.swiftkaydevelopment.findme.dialogs;
+package com.swiftkaydevelopment.findme.settings;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -30,24 +31,32 @@ import android.widget.RadioGroup;
 
 import com.swiftkaydevelopment.findme.R;
 
-public class GenderSelectDialog extends AppCompatDialogFragment {
+/**
+ * Created by Kevin Haines on 2/24/16.
+ * Class Overview:
+ */
+public class OrientationSelectDialog extends AppCompatDialogFragment {
 
-    public interface GenderSelectListener {
-        void onGenderSelected(String gender);
+    public interface OrientationSelectListener {
+        void onOrientationSelected(String orientation);
     }
 
-    public static final String TAG = "GenderSelectDialog";
+    public static final String TAG = "Relationshipdialog";
 
     RadioGroup rgGender;
-    private GenderSelectListener mListener;
+    private OrientationSelectListener mListener;
 
-    public void setListener(GenderSelectListener listener) {
+    public void setListener(OrientationSelectListener listener) {
         mListener = listener;
     }
 
-    public static GenderSelectDialog newInstance() {
-        GenderSelectDialog frag = new GenderSelectDialog();
-        return frag;
+    /**
+     * Factory method to create a new instance of the Orientation select dialog
+     *
+     * @return new instance of dialog
+     */
+    public static OrientationSelectDialog newInstance() {
+        return new OrientationSelectDialog();
     }
 
     @Nullable
@@ -59,7 +68,7 @@ public class GenderSelectDialog extends AppCompatDialogFragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (mListener != null) {
-                    mListener.onGenderSelected(((RadioButton) layout.findViewById(checkedId)).getText().toString());
+                    mListener.onOrientationSelected(((RadioButton) layout.findViewById(checkedId)).getText().toString());
                 }
             }
         });
@@ -67,6 +76,7 @@ public class GenderSelectDialog extends AppCompatDialogFragment {
     }
 
     @Override
+    @NonNull
     public AppCompatDialog onCreateDialog(Bundle savedInstanceState) {
         AppCompatDialog dialog = new AppCompatDialog(getActivity());
         dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);

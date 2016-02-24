@@ -17,9 +17,15 @@
 
 package com.swiftkaydevelopment.findme.data;
 
+import android.content.Context;
+import android.os.Bundle;
+
+import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.activity.NotificationActivity;
+
 import java.io.Serializable;
 
-public class Comment implements Serializable{
+public class Comment implements Serializable, Notifiable{
 
     public static final String TAG = "Comment";
     private String mCommentId;
@@ -131,5 +137,30 @@ public class Comment implements Serializable{
      */
     public void setCommentId(String mCommentId) {
         this.mCommentId = mCommentId;
+    }
+
+    @Override
+    public PushData getPushData(Bundle data, Context context) {
+
+//        JSONObject postData = new JSONObject(data.getString("post"));
+//        JSONObject userData = new JSONObject(data.getString("user"));
+
+        PushData pushData = new PushData();
+        pushData.title = "New comment";
+        pushData.message = "Someone commented on your status";
+        pushData.resId = R.mipmap.ic_message_black_24dp;
+        pushData.intent = PushData.createPendingIntent(NotificationActivity.createIntent(context), context);
+        pushData.notificationId = getNotificationId();
+        return pushData;
+    }
+
+    @Override
+    public int getNotificationId() {
+        return 5289;
+    }
+
+    @Override
+    public int getNotificationTypeCount() {
+        return 0;
     }
 }

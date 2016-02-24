@@ -111,8 +111,6 @@ public class User implements Serializable {
     private Orientation mOrientation;
     private OnlineStatus mOnlineStatus;
     public String mRelationshipStatus;
-    private ArrayList<String> mPictures;
-    private List<Tag> mTags;
     private String mAboutMe;
     private InterestedIn mInterestIn;
 
@@ -124,35 +122,43 @@ public class User implements Serializable {
 
     private CopyOnWriteArrayList<UserListener> mListeners = new CopyOnWriteArrayList<>();
 
-    private static Context mContext;
-
     /**
-     * creates a new instance of a user
-     * @param uid the current device users unique id
+     * Creates a new instance of a user
+     *
      * @return new instance of User
      */
-    public static User createUser(String uid, Context context){
-        User user = new User();
-        mUid = uid;
-        mContext = context;
-        return user;
+    public static User createUser(){
+        return new User();
     }
 
-    public User createUserFromJson(JSONObject object) throws JSONException {
-        mOuid = object.getString("uid");
-        mPropicloc = object.getString("propicloc");
-        mFirstname = object.getString("firstname");
-        mLastname = object.getString("lastname");
-        mLocation = setLocationFromArray(object.getJSONObject("location"));
-        mGender = setGenderFromString(object.getString("gender"));
-        mInterestIn = setInterestedInFromString(object.getString("looking_for_gender"));
-        mOrientation = setOrientationFromString(object.getString("orientation"));
-        mIsFriend = object.getBoolean("isfriend");
-        createExtendedInfo(object.getJSONObject("extended"));
-        mIsMatch = object.getBoolean("ismatch");
-        mAboutMe = object.getString("aboutme");
-        mAge = Integer.parseInt(object.getString("age"));
-        return this;
+    /**
+     * Creates a new User from json object
+     *
+     * @param object JsonObject containing user information
+     *
+     * @return new User
+     */
+    public static User createUserFromJson(JSONObject object) {
+        try {
+            User user = createUser();
+            user.mOuid = object.getString("uid");
+            user.mPropicloc = object.getString("propicloc");
+            user.mFirstname = object.getString("firstname");
+            user.mLastname = object.getString("lastname");
+            user.mLocation = setLocationFromArray(object.getJSONObject("location"));
+            user.mGender = setGenderFromString(object.getString("gender"));
+            user.mInterestIn = setInterestedInFromString(object.getString("looking_for_gender"));
+            user.mOrientation = setOrientationFromString(object.getString("orientation"));
+            user.mIsFriend = object.getBoolean("isfriend");
+            user.createExtendedInfo(object.getJSONObject("extended"));
+            user.mIsMatch = object.getBoolean("ismatch");
+            user.mAboutMe = object.getString("aboutme");
+            user.mAge = Integer.parseInt(object.getString("age"));
+            return user;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Map<String, String> getSearchingFor() {
@@ -185,10 +191,9 @@ public class User implements Serializable {
         mSearchingForMap = map;
     }
 
-    public User fetchUser(String ouid, Context context){
-        Log.i(TAG,"fetchUser");
+    public User fetchUser(String ouid){
+        Log.i(TAG, "fetchUser");
         mOuid = ouid;
-        mContext = context;
         try {
             return new FetchUserTask(ouid, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
         } catch (Exception e) {
@@ -223,7 +228,7 @@ public class User implements Serializable {
 
                 try {
                     JSONObject jsonObject = new JSONObject(result);
-                    user  = User.createUser(uid, mContext).createUserFromJson(jsonObject);
+                    user  = User.createUserFromJson(jsonObject);
 
                 } catch (final JSONException e) {
                     e.printStackTrace();
@@ -259,7 +264,7 @@ public class User implements Serializable {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        Post p = Post.createPost(mUid, mContext).createPostFromJson(child);
+                        Post p = Post.createPostFromJson(child);
                         pics.add(p);
                     }
 
@@ -281,16 +286,27 @@ public class User implements Serializable {
         }
     }
 
+    /**
+     * Adds a listener to this manager
+     *
+     * @param listener Listener to add
+     */
     public void addListener(UserListener listener) {
         mListeners.add(listener);
     }
 
+    /**
+     * Removes a listener from this manager
+     *
+     * @param listener Listener to remove
+     */
     public void removeListener(UserListener listener) {
         mListeners.remove(listener);
     }
 
     /**
-     * sets the gender enum based on a string
+     * Sets the gender enum based on a string
+     *
      * @param gender Gender object representing the users gender
      */
     public static Gender setGenderFromString(String gender){
@@ -423,37 +439,10 @@ public class User implements Serializable {
     }
 
     /**
-     * gets the list of mTags pertaining to things the user is interested in
-     * @return list of users interest mTags
-     */
-    public List<Tag> getTags() {
-        //todo: issue # 12 implement getting tags
-        return mTags;
-    }
-
-    /**
-     * sets a list of mTags the user is interested int
-     * EX: netflix, outdoors, puppies, cats etc.
-     * @param tags list of mTags
-     */
-    public void setTags(List<Tag> tags) {
-        this.mTags = tags;
-    }
-
-    /**
      * gets a list of the users picture uri locations
      */
     public void getPictures() {
         new FetchPhotosTask(this, mUid).execute();
-    }
-
-    /**
-     * sets the list of picture mLocation uris
-     * @param pictures list of URIs pointing to the mLocation of
-     *                 the users mPictures
-     */
-    public void setPictures(ArrayList<String> pictures) {
-        this.mPictures = pictures;
     }
 
     /**

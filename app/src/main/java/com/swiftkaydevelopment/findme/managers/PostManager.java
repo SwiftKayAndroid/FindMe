@@ -17,8 +17,8 @@
 
 package com.swiftkaydevelopment.findme.managers;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.swiftkaydevelopment.findme.data.Post;
@@ -35,23 +35,25 @@ public class PostManager {
 
     public interface PostsListener{
         void onPostsRetrieved(ArrayList<Post> posts);
+        void onProfilePostsRetrieved(ArrayList<Post> posts);
     }
 
     public static final String TAG = "FindMe-PostManager";
 
-    private String mUid;
     private ArrayList<Post> mPosts = new ArrayList<>();
     private static PostManager manager = null;
-    private static Context mContext;
     private CopyOnWriteArrayList<PostsListener> mListeners = new CopyOnWriteArrayList<>();
 
-    public static PostManager getInstance(String uid, Context context){
+    /**
+     * Gets the Singleton instance of this manager
+     *
+     * @return Singleton instance of this manager
+     */
+    public static PostManager getInstance(){
         synchronized (PostManager.class) {
             if (manager == null) {
                 manager = new PostManager();
             }
-            manager.mUid = uid;
-            mContext = context.getApplicationContext();
         }
         return manager;
     }
@@ -77,16 +79,208 @@ public class PostManager {
     /**
      * Gets an arraylist of posts from the server
      * todo: will get posts from db first and sync with that
-     * @return
+     * @return will be returning list of posts from db
      */
-    public ArrayList<Post> fetchPosts(String lastpost){
+    public ArrayList<Post> fetchPosts(String uid, String lastpost){
         Log.d(TAG, "fetching posts");
-        new FetchPostsTask(mUid, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(lastpost)) {
+            throw new IllegalArgumentException("invalid params");
+        }
+
+        new FetchPostsTask(uid, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
         return mPosts;
     }
 
-    public void fetchUserPosts(User user, String lastpost) {
-        new FetchUserPosts(user, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+    /**
+     * Called to fetch the list of posts for a specific user
+     *
+     * @param user User to get posts for
+     * @param lastpost last currently fetched post
+     * @param uid Current User's id
+     */
+    public void fetchUserPosts(User user, String lastpost, String uid) {
+        if (TextUtils.isEmpty(uid) || TextUtils.isEmpty(lastpost) || null == user) {
+            throw new IllegalArgumentException("fetch user posts - invalid params");
+        }
+
+        new FetchUserPosts(user, lastpost, uid).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+    }
+
+    /**
+     * Refreshes the posts
+     *
+     * @param uid User's id
+     */
+    public void refreshPosts(String uid) {
+        mPosts.clear();
+        fetchPosts(uid, "0");
+    }
+
+    /**
+     * Likes a post
+     *
+     * @param uid User's id
+     * @param postid Post id to like
+     */
+    public void likePost(String uid, String postid) {
+        new PostLike(uid, postid).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+    }
+
+    /**
+     * Unlikes a posts
+     * todo: this should also be checked on the server to ensure we aren't double liking the same post
+     *
+     * @param uid User's id
+     * @param postid Post id to unlike
+     */
+    public void unLikePost(String uid, String postid) {
+        new UnlikePost(uid, postid).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+    }
+
+    /**
+     * Sends request to server to like a post
+     *
+     */
+    private class PostLike extends AsyncTask<String,String,String> {
+        String uid;
+        String postid;
+
+        public PostLike(String uid, String postid) {
+            this.uid = uid;
+            this.postid = postid;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("likepost.php");
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("postid", postid);
+
+            return connectionManager.sendHttpRequest();
+        }
+    }
+
+    /**
+     * Sends request to server to unlike a post
+     * TODO: This needs to be checked on the server to ensure we aren't
+     * double liking the same post.
+     *
+     */
+    private class UnlikePost extends AsyncTask<String,String,String> {
+        String uid;
+        String postid;
+
+        public UnlikePost(String uid, String postid) {
+            this.uid = uid;
+            this.postid = postid;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("unlikepost.php");
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("postid", postid);
+
+            return connectionManager.sendHttpRequest();
+        }
+    }
+
+    /**
+     * Gets the posts from a specific user to display on their profile
+     *
+     */
+    private class FetchUserPosts extends AsyncTask<Void, Void, ArrayList<Post>> {
+        User user;
+        String lastpost;
+        String uid;
+
+        public FetchUserPosts(User user, String lastpost, String uid) {
+            this.user = user;
+            this.lastpost = lastpost;
+            this.uid = uid;
+        }
+
+        @Override
+        protected ArrayList<Post> doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("getprofileposts.php");
+            connectionManager.addParam("ouid", user.getOuid());
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("lp", "0");
+            ArrayList<Post> pList = new ArrayList<>();
+
+            final String result = connectionManager.sendHttpRequest();
+
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray jsonArray = jsonObject.getJSONArray("posts");
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject child = jsonArray.getJSONObject(i);
+                        Post post = Post.createPostFromJson(child);
+                        pList.add(post);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return pList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Post> posts) {
+            super.onPostExecute(posts);
+            for (PostsListener l : mListeners) {
+                if (l != null) {
+                    l.onProfilePostsRetrieved(posts);
+                }
+            }
+        }
+    }
+
+    /**
+     * This class is used to fetch a single post
+     *
+     */
+    private static class FetchPostTask extends AsyncTask<Void,Void,Post> {
+        String postid;
+        Post post;
+        String uid;
+
+        public FetchPostTask(String postid, Post post, String uid){
+            this.postid = postid;
+            this.post = post;
+            this.uid = uid;
+        }
+
+        @Override
+        protected Post doInBackground(Void... params) {
+            Log.i(TAG, "fetchPost-doInBackground");
+
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("getpost.php");
+            connectionManager.addParam("postid", postid);
+            connectionManager.addParam("uid", uid);
+
+            try {
+                JSONObject jsonObject = new JSONObject(connectionManager.sendHttpRequest());
+                post = Post.createPostFromJson(jsonObject);
+
+            } catch(JSONException e) {
+                e.printStackTrace();
+            }
+            return post;
+        }
     }
 
     private class FetchPostsTask extends AsyncTask<Void,Void,ArrayList<Post>> {
@@ -116,7 +310,7 @@ public class PostManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        Post post = Post.createPost(mUid, mContext).createPostFromJson(child);
+                        Post post = Post.createPostFromJson(child);
 
                         pList.add(post);
                     }
@@ -136,135 +330,6 @@ public class PostManager {
                     l.onPostsRetrieved(posts);
                 }
             }
-        }
-    }
-
-    private class FetchUserPosts extends AsyncTask<Void, Void, ArrayList<Post>> {
-        User user;
-        String lastpost;
-
-        public FetchUserPosts(User user, String lastpost) {
-            this.user = user;
-            this.lastpost = lastpost;
-        }
-
-        @Override
-        protected ArrayList<Post> doInBackground(Void... params) {
-            ConnectionManager connectionManager = new ConnectionManager();
-            connectionManager.setMethod(ConnectionManager.POST);
-            connectionManager.setUri("getprofileposts.php");
-            connectionManager.addParam("ouid", user.getOuid());
-            connectionManager.addParam("uid", mUid);
-            connectionManager.addParam("lp", "0");
-            ArrayList<Post> pList = new ArrayList<>();
-
-            final String result = connectionManager.sendHttpRequest();
-
-            if (result != null) {
-                try {
-                    JSONObject jsonObject = new JSONObject(result);
-                    JSONArray jsonArray = jsonObject.getJSONArray("posts");
-
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject child = jsonArray.getJSONObject(i);
-                        Post post = Post.createPost(mUid, mContext);
-                        post.setPostText(child.getString("post"));
-                        post.setPostingUsersId(child.getString("postingusersid"));
-                        post.setNumComments(child.getInt("numcomments"));
-                        post.setNumLikes(child.getInt("numlikes"));
-                        post.setTime(child.getString("time"));
-                        post.setPostId(child.getString("postid"));
-                        post.setLiked(child.getBoolean("liked"));
-                        post.setPostImage(child.getString("postpicloc"));
-                        post.setUser(user);
-                        pList.add(post);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            return pList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Post> posts) {
-            super.onPostExecute(posts);
-            for (PostsListener l : mListeners) {
-                if (l != null) {
-                    l.onPostsRetrieved(posts);
-                }
-            }
-        }
-    }
-
-
-    public ArrayList<Post> getPosts(){
-        if (mPosts != null) {
-            if (mPosts.size() > 0) {
-                return mPosts;
-            } else {
-                return fetchPosts("0");
-            }
-        } else {
-            return fetchPosts("0");
-        }
-    }
-
-    public ArrayList<Post> refreshPosts() {
-        mPosts.clear();
-        return fetchPosts("0");
-    }
-
-    public void likePost(String postid) {
-        new PostLike(mUid, postid).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,null);
-    }
-
-    public void unLikePost(String postid) {
-        new UnlikePost(mUid, postid).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-    }
-
-    private class PostLike extends AsyncTask<String,String,String> {
-        String uid;
-        String postid;
-
-        public PostLike(String uid, String postid) {
-            this.uid = uid;
-            this.postid = postid;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            ConnectionManager connectionManager = new ConnectionManager();
-            connectionManager.setMethod(ConnectionManager.POST);
-            connectionManager.setUri("likepost.php");
-            connectionManager.addParam("uid", uid);
-            connectionManager.addParam("postid", postid);
-
-            return connectionManager.sendHttpRequest();
-        }
-    }
-
-    private class UnlikePost extends AsyncTask<String,String,String> {
-        String uid;
-        String postid;
-
-        public UnlikePost(String uid, String postid) {
-            this.uid = uid;
-            this.postid = postid;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            ConnectionManager connectionManager = new ConnectionManager();
-            connectionManager.setMethod(ConnectionManager.POST);
-            connectionManager.setUri("unlikepost.php");
-            connectionManager.addParam("uid", uid);
-            connectionManager.addParam("postid", postid);
-
-            return connectionManager.sendHttpRequest();
         }
     }
 }

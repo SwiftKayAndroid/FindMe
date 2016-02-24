@@ -375,10 +375,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             int pos = (Integer) v.getTag();
             Post p = mPostList.get(pos);
             if (!p.getLiked()) {
-                PostManager.getInstance(p.getUid(), mContext).likePost(p.getPostId());
+                PostManager.getInstance().likePost(user.getOuid(), p.getPostId());
                 ((ImageView) v).setImageResource(R.drawable.checkmark_liked);
             } else {
-                PostManager.getInstance(p.getUid(), mContext).unLikePost(p.getPostId());
+                PostManager.getInstance().unLikePost(user.getOuid(), p.getPostId());
                 ((ImageView) v).setImageResource(R.drawable.checkmark);
             }
             p.setLiked(!p.getLiked());
