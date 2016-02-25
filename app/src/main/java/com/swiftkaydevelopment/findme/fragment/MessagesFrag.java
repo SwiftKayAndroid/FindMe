@@ -231,7 +231,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.tvsendmessage && !(etmessage.getText().toString().equals(""))) {
-            Message message = Message.instance(uid);
+            Message message = Message.instance();
             message.setDeletedStatus(0);
             message.setMessage(etmessage.getText().toString());
             message.setOuid(uid);
