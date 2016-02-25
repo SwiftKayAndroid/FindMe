@@ -3,6 +3,12 @@ package com.swiftkaydevelopment.findme.data;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.activity.MessagesListActivity;
+import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
+import com.swiftkaydevelopment.findme.managers.AccountManager;
+import com.swiftkaydevelopment.findme.managers.MessagesManager;
+
 import java.io.Serializable;
 
 /**
@@ -21,6 +27,8 @@ public class Message implements Serializable, Notifiable {
     public static final int UNSEEN = 0;
     public static final int DELETED = 1;
     public static final int NOT_DELETED = 0;
+
+    public static final int MESSAGE_NOTIFICATION_ID = 1234;
 
     private String mMessageId;
     private String mMessage;
@@ -125,6 +133,7 @@ public class Message implements Serializable, Notifiable {
 
     @Override
     public PushData getPushData(Bundle data, Context context) {
+
         setMessageId(data.getString("id"));
         setDeletedStatus(0);
         setReadStatus(0);
@@ -133,13 +142,22 @@ public class Message implements Serializable, Notifiable {
         setThreadId(data.getString("threadid"));
         setTime(data.getString("time"));
         //todo: the user needs to be passed in with the json data
-//        msg.setUser(User.createUser().fetchUser(data.getString("senderid"), mContext));
-        return null;
+        setUser(User.createUser().fetchUser(data.getString("senderid"), AccountManager.getInstance(context).getUserId()));
+        //todo: this is where eventbus will be called.
+        MessagesManager.getInstance("", context).messageNotificationReceived(this);
+
+        PushData pushData = new PushData();
+        pushData.title = user.getFirstname();
+        pushData.message = mMessage;
+        pushData.resId = R.mipmap.ic_message_black_24dp;
+        pushData.notificationId = getNotificationId();
+        pushData.intent = PushData.createPendingIntent(MessagesListActivity.createIntent(context), context);
+        return pushData;
     }
 
     @Override
     public int getNotificationId() {
-        return 1234;
+        return MESSAGE_NOTIFICATION_ID;
     }
 
     @Override

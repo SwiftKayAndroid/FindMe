@@ -27,7 +27,7 @@ import android.text.TextUtils;
 import com.swiftkaydevelopment.findme.data.Comment;
 import com.swiftkaydevelopment.findme.data.FriendRequest;
 import com.swiftkaydevelopment.findme.data.Message;
-import com.swiftkaydevelopment.findme.data.Notifiable;
+import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
 import com.swiftkaydevelopment.findme.data.PushData;
 import com.swiftkaydevelopment.findme.data.StatusLike;
 

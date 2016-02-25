@@ -15,12 +15,15 @@
  *
  */
 
-package com.swiftkaydevelopment.findme.views.advanced_recyclerview.swipeable.action;
+package com.swiftkaydevelopment.findme.data.datainterfaces;
 
-import com.swiftkaydevelopment.findme.views.advanced_recyclerview.swipeable.RecyclerViewSwipeManager;
+import org.json.JSONObject;
 
-public abstract class SwipeResultActionMoveToSwipedDirection extends SwipeResultAction {
-    public SwipeResultActionMoveToSwipedDirection() {
-        super(RecyclerViewSwipeManager.AFTER_SWIPE_REACTION_MOVE_TO_SWIPED_DIRECTION);
-    }
+/**
+ * Created by Kevin Haines on 2/24/16.
+ * Class Overview:
+ */
+public interface JsonCreatable<T> {
+
+    T createObjectFromJson(JSONObject object);
 }

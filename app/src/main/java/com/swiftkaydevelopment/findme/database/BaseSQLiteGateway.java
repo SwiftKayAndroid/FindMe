@@ -15,15 +15,26 @@
  *
  */
 
-package com.swiftkaydevelopment.findme.data;
+package com.swiftkaydevelopment.findme.database;
 
-import org.json.JSONObject;
+import android.database.sqlite.SQLiteDatabase;
 
 /**
- * Created by Kevin Haines on 2/24/16.
- * Class Overview:
+ * Base gateway class to help common operations between gateways
  */
-public interface JsonCreatable<T> {
+public abstract class BaseSQLiteGateway {
 
-    T createObjectFromJson(JSONObject object);
+    protected DatabaseHelper mSqLiteModule;
+
+    protected BaseSQLiteGateway(DatabaseHelper sqLiteModule) {
+        this.mSqLiteModule = sqLiteModule;
+    }
+
+    protected SQLiteDatabase getReadableDatabase() {
+        return mSqLiteModule.getReadableDatabase();
+    }
+
+    protected SQLiteDatabase getWritableDatabase() {
+        return mSqLiteModule.getWritableDatabase();
+    }
 }

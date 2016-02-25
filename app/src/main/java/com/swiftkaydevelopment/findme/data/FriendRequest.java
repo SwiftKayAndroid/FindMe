@@ -22,6 +22,7 @@ import android.os.Bundle;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.FriendsActivity;
+import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
 
 import java.io.Serializable;
 

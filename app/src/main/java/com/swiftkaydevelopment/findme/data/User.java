@@ -17,12 +17,10 @@
 
 package com.swiftkaydevelopment.findme.data;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.swiftkaydevelopment.findme.managers.ConnectionManager;
-import com.swiftkaydevelopment.findme.views.tagview.Tag;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +29,6 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -191,11 +188,11 @@ public class User implements Serializable {
         mSearchingForMap = map;
     }
 
-    public User fetchUser(String ouid){
+    public User fetchUser(String ouid, String uid){
         Log.i(TAG, "fetchUser");
         mOuid = ouid;
         try {
-            return new FetchUserTask(ouid, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
+            return new FetchUserTask(ouid, uid, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -207,11 +204,14 @@ public class User implements Serializable {
      * class to fetch all of the users details
      */
     private static class FetchUserTask extends AsyncTask<Void,Void,User> implements Serializable{
-        String uid;
+        String ouid;
         User user;
-        public FetchUserTask(String uid, User user){
-            this.uid = uid;
+        String uid;
+
+        public FetchUserTask(String ouid, String uid, User user){
+            this.ouid = ouid;
             this.user = user;
+            this.uid = uid;
         }
 
         @Override
@@ -220,8 +220,8 @@ public class User implements Serializable {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.setUri("getuser.php");
-            connectionManager.addParam("uid",mUid);
-            connectionManager.addParam("ouid",uid);
+            connectionManager.addParam("uid", uid);
+            connectionManager.addParam("ouid", ouid);
             final String result = connectionManager.sendHttpRequest();
 
             if (result != null) {

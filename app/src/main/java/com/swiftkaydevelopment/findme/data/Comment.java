@@ -22,10 +22,11 @@ import android.os.Bundle;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.NotificationActivity;
+import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
 
 import java.io.Serializable;
 
-public class Comment implements Serializable, Notifiable{
+public class Comment implements Serializable, Notifiable {
 
     public static final String TAG = "Comment";
     private String mCommentId;

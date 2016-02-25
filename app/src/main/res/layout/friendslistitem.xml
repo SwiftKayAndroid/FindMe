@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:padding="5dp">
 
     <ImageView
         android:layout_width="50dp"
@@ -29,9 +30,6 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Large Text"
             android:id="@+id/tvfriendslistitemname"
-            android:layout_alignTop="@+id/ivfriendslist"
-            android:layout_toEndOf="@+id/ivfriendslist"
-            android:layout_toRightOf="@+id/ivfriendslist"
             android:ellipsize="end" />
 
         <TextView
@@ -39,10 +37,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/tvfriendslistitemdesc"
-            android:layout_alignBottom="@+id/ivfriendslist"
-            android:layout_toRightOf="@+id/ivfriendslist"
-            android:layout_toEndOf="@+id/ivfriendslist" />
+            android:id="@+id/tvfriendslistitemdesc"/>
     </LinearLayout>
 
     <ImageView

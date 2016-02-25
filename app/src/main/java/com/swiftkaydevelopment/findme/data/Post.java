@@ -17,12 +17,11 @@
 
 package com.swiftkaydevelopment.findme.data;
 
-import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-import com.swiftkaydevelopment.findme.managers.CommentsManager;
-import com.swiftkaydevelopment.findme.managers.ConnectionManager;
+import com.swiftkaydevelopment.findme.data.datainterfaces.DatabaseObject;
+import com.swiftkaydevelopment.findme.data.datainterfaces.JsonCreatable;
 import com.swiftkaydevelopment.findme.views.tagview.Tag;
 
 import org.json.JSONException;
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 /**
  * Created by Kevin Haines on 10/21/15.
  */
-public class Post implements Serializable {
+public class Post implements Serializable, JsonCreatable<Post>, DatabaseObject<Post> {
 
     public static final String TAG = "FindMe-Post";
     private String mPostId;
@@ -59,23 +58,56 @@ public class Post implements Serializable {
     }
 
     public static Post createPostFromJson(JSONObject object) {
-        Post post = new Post();
+        return Post.createPost().createObjectFromJson(object);
+    }
+
+    @Override
+    public Post cursorToObject(Cursor c) {
+
+        this.mPostId = c.getString(c.getColumnIndexOrThrow("mPostId"));
+        this.mPostingUsersId = c.getString(c.getColumnIndexOrThrow("mPostingUserId"));
+        this.mPostText = c.getString(c.getColumnIndexOrThrow("mPostText"));
+        this.mNumLikes = Integer.parseInt(c.getString(c.getColumnIndexOrThrow("mNumLikes")));
+        this.mNumComments = Integer.parseInt(c.getString(c.getColumnIndexOrThrow("mNumComments")));
+        this.mLiked = Boolean.valueOf(c.getString(c.getColumnIndexOrThrow("mLiked")));
+
+        //Need to make an additional call to db to get the user and a list of comments
+        //if comments is greater than 0
+
+        return this;
+    }
+
+    @Override
+    public ContentValues objectToContentValues(Post object) {
+        ContentValues values = new ContentValues();
+        values.put("mPostId", mPostId);
+        values.put("mPostingUsersId", mPostingUsersId);
+        values.put("mPostText", mPostText);
+        values.put("mNumLikes", mNumLikes);
+        values.put("mPostImage", mPostImage);
+        values.put("mNumComments", mNumComments);
+        values.put("mLiked", mLiked);
+        return values;
+    }
+
+    @Override
+    public Post createObjectFromJson(JSONObject object) {
         try {
-            post.setPostText(object.getString("post"));
-            post.setPostingUsersId(object.getString("postingusersid"));
-            post.setNumComments(object.getInt("numcomments"));
-            post.setNumLikes(object.getInt("numlikes"));
-            post.setTime(object.getString("time"));
-            post.setPostId(object.getString("postid"));
-            post.setLiked(object.getBoolean("liked"));
-            post.setPostImage(object.getString("postpicloc"));
+            this.setPostText(object.getString("post"));
+            this.setPostingUsersId(object.getString("postingusersid"));
+            this.setNumComments(object.getInt("numcomments"));
+            this.setNumLikes(object.getInt("numlikes"));
+            this.setTime(object.getString("time"));
+            this.setPostId(object.getString("postid"));
+            this.setLiked(object.getBoolean("liked"));
+            this.setPostImage(object.getString("postpicloc"));
             JSONObject user = object.getJSONObject("user");
-            User u = User.createUser().createUserFromJson(user);
-            post.setUser(u);
+            User u = User.createUserFromJson(user);
+            this.setUser(u);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return post;
+        return this;
     }
 
     /**

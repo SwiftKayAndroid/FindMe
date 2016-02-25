@@ -18,6 +18,7 @@
 package com.swiftkaydevelopment.findme.data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class ThreadInfo implements Serializable{
 
@@ -32,6 +33,7 @@ public class ThreadInfo implements Serializable{
     public String   ouid;
     public User     threadUser;
     public String   time;
+    public Date     lastModified;
     public String   lastMessage;
     public int      readStatus;
     public int      seenStatus;

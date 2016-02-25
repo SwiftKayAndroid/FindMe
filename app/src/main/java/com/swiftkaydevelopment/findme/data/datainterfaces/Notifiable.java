@@ -15,10 +15,12 @@
  *
  */
 
-package com.swiftkaydevelopment.findme.data;
+package com.swiftkaydevelopment.findme.data.datainterfaces;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import com.swiftkaydevelopment.findme.data.PushData;
 
 /**
  * Created by Kevin Haines on 2/24/16.

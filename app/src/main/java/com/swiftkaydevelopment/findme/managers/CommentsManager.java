@@ -55,7 +55,7 @@ public class CommentsManager {
             e.printStackTrace();
         }
         for (Comment comment : cList) {
-            comment.setUser(User.createUser().fetchUser(comment.getCommentUserId()));
+            comment.setUser(User.createUser().fetchUser(comment.getCommentUserId(), AccountManager.getInstance(mContext).getUserId()));
         }
         return cList;
     }

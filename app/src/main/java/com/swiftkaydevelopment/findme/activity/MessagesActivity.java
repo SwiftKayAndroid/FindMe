@@ -79,6 +79,7 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
 
     /**
      * Sets up the toolbar for this Activity
+     *
      */
     private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
@@ -90,6 +91,7 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
             }
         });
         mToolbar.inflateMenu(R.menu.messages_menu);
+        mToolbar.setTitle(user.getFirstname() + " " +  user.getLastname());
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

@@ -40,12 +40,17 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
     String                          mUid;
 
     public MessageThreadsAdapter(Context context, List<ThreadInfo> mlist, String uid){
-        this.mContext = context;
+        this.mContext = context.getApplicationContext();
         this.mThreadList = mlist;
         this.mUid = uid;
         imageLoader = new ImageLoader(context);
     }
 
+    /**
+     * Sets the listener for this adapter
+     *
+     * @param listener Listener to assign to this adapter
+     */
     public void setThreadSelectedListener(ThreadSelectedListener listener) {
         mListener = listener;
     }
@@ -73,13 +78,11 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
                         .transform(new CircleTransform())
                         .into(holder.ivpropic);
             }
+
             holder.tvname.setText(thread.threadUser.getFirstname() + " " + thread.threadUser.getLastname());
             holder.tvmessage.setText(thread.lastMessage);
             holder.tvtime.setText(thread.time);
 
-            if(thread.readStatus == ThreadInfo.READ){
-
-            }
             if(thread.seenStatus == ThreadInfo.SEEN){
                 holder.checkmark.setVisibility(View.VISIBLE);
             }
@@ -96,6 +99,7 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
             holder.ivpropic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mThreadList.get(position).readStatus = ThreadInfo.READ;
                     mContext.startActivity(ProfileActivity.createIntent(mContext, mThreadList.get(position).threadUser));
                 }
             });
@@ -121,6 +125,11 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
         }
     }
 
+    /**
+     * Removes a thread from the adapter
+     *
+     * @param threadInfo ThreadInfo to remove
+     */
     public void removeThread(ThreadInfo threadInfo) {
         if (mThreadList.contains(threadInfo)) {
             mThreadList.remove(threadInfo);

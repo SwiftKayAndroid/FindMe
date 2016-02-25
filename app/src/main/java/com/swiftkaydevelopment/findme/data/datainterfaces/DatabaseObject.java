@@ -15,9 +15,18 @@
  *
  */
 
-package com.swiftkaydevelopment.findme.views.advanced_recyclerview.event;
+package com.swiftkaydevelopment.findme.data.datainterfaces;
 
-public interface RecyclerViewEventDistributorListener {
-    void onAddedToEventDistributor(BaseRecyclerViewEventDistributor distributor);
-    void onRemovedFromEventDistributor(BaseRecyclerViewEventDistributor distributor);
+import android.content.ContentValues;
+import android.database.Cursor;
+
+/**
+ * Created by Kevin Haines on 2/25/16.
+ * Class Overview:
+ */
+public interface DatabaseObject<T> {
+
+    T cursorToObject(Cursor c);
+
+    ContentValues objectToContentValues(T object);
 }

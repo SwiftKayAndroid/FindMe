@@ -65,6 +65,15 @@ public class AccountManager {
         new ChangeProfilePictureTask(uid, url).execute();
     }
 
+    /**
+     * Gets the User's id
+     *
+     * @return user's id
+     */
+    public String getUserId() {
+        return PreferenceManager.getDefaultSharedPreferences(mContext).getString("uid", "");
+    }
+
     public NewsfeedPrefData getNewsfeedPreferences() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         NewsfeedPrefData prefData = new NewsfeedPrefData();

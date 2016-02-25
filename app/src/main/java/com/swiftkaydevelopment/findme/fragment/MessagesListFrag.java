@@ -26,8 +26,17 @@ import java.util.List;
  */
 public class MessagesListFrag extends BaseFragment implements MessagesManager.MessageThreadListener,
         MessageThreadsAdapter.ThreadSelectedListener, SwipeRefreshLayout.OnRefreshListener{
+
+    /**
+     * ISSUES:
+     *      Pagination
+     *      Order Threads by lastModified
+     *      Persist to db
+     *
+     */
     public static final String      TAG = "MessagesListFrag";
     private static final String     ARG_THREAD_LIST = "ARG_THREAD_LIST";
+    private static final String     ARG_REFRESHING = "ARG_REFRESHING";
 
     private List<ThreadInfo>        mThreadList = new ArrayList<>();
     private MessageThreadsAdapter   mMessagesAdapter;
@@ -37,6 +46,12 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     private SwipeRefreshLayout      mRefreshLayout;
     private View                    mEmptyView;
 
+    /**
+     * Factory method for getting a new instance of MessagelistFrag
+     *
+     * @param uid User's id (handled by super)
+     * @return new instance of this fragment
+     */
     public static MessagesListFrag getInstance(String uid) {
         MessagesListFrag frag = new MessagesListFrag();
         Bundle b = new Bundle();
@@ -70,6 +85,20 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            mThreadList = (ArrayList) savedInstanceState.getSerializable(ARG_THREAD_LIST);
+            mRefreshing = savedInstanceState.getBoolean(ARG_REFRESHING);
+            if (mThreadList == null || mThreadList.isEmpty()) {
+                mEmptyView.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyView.setVisibility(View.GONE);
+            }
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+            mRefreshing = true;
+            MessagesManager.getInstance(uid, getActivity()).refreshThreads(getActivity());
+        }
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -79,14 +108,13 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
             mRecyclerView.setAdapter(mMessagesAdapter);
         }
         mRefreshLayout.setOnRefreshListener(this);
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(ARG_THREAD_LIST, (ArrayList) mThreadList);
         outState.putString(ARG_UID, uid);
+        outState.putBoolean(ARG_REFRESHING, mRefreshing);
         super.onSaveInstanceState(outState);
     }
 
@@ -118,8 +146,6 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
         if (mMessagesAdapter != null) {
             mMessagesAdapter.setThreadSelectedListener(this);
         }
-        mRefreshing = true;
-        MessagesManager.getInstance(uid, getActivity()).refreshThreads(getActivity());
     }
 
     @Override
@@ -151,7 +177,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
             mMessagesAdapter.addThreads(threadInfos);
         }
 
-        if (mThreadList.size() < 1) {
+        if (mMessagesAdapter.getItemCount() < 1) {
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
             mEmptyView.setVisibility(View.GONE);

@@ -30,6 +30,14 @@ import java.util.ArrayList;
 public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener,
         PostManager.PostsListener, PostAdapter.PostAdapterListener {
 
+    /**
+     * ISSUES:
+     *
+     *      Show progress dialog while newsfeed posts are loading
+     *      Persist to db
+     *
+     */
+
     public static final String TAG = "NewsFeedFrag";
     public static final String ARG_POSTS_LIST = "ARG_POSTS_LIST";
 

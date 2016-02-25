@@ -181,7 +181,7 @@ public class MessagesManager {
 //
 //    public void showAsTypingStopped(){}
 
-    public static void messageNotificationReceived(Message msg) {
+    public void messageNotificationReceived(Message msg) {
 
         if (mMessageThreadListeners.size() < 1 && mMessagesListeners.size() <1) {
             sendNotification(msg);

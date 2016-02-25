@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                xmlns:tools="http://schemas.android.com/tools"
     >
 
     <com.swiftkaydevelopment.findme.views.CircleImageView
@@ -19,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Name"
+        tools:text="Name"
         android:id="@+id/tvmymatchesname"
         android:layout_alignTop="@+id/ivmymatches"
         android:layout_toRightOf="@+id/ivmymatches"
@@ -30,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="age/city"
+        tools:text="age/city"
         android:id="@+id/tvmymatchesage"
         android:layout_below="@+id/tvmymatchesname"
         android:layout_alignLeft="@+id/tvmymatchesname"
