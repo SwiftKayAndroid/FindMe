@@ -69,6 +69,7 @@ public class OrientationSelectDialog extends AppCompatDialogFragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (mListener != null) {
                     mListener.onOrientationSelected(((RadioButton) layout.findViewById(checkedId)).getText().toString());
+                    dismiss();
                 }
             }
         });

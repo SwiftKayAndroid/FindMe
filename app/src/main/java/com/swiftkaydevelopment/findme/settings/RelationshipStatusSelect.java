@@ -65,6 +65,7 @@ public class RelationshipStatusSelect extends AppCompatDialogFragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (mListener != null) {
                     mListener.onRelationshipSelected(((RadioButton) layout.findViewById(checkedId)).getText().toString());
+                    dismiss();
                 }
             }
         });

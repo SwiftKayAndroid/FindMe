@@ -5,7 +5,7 @@
     >
 
 
-    <item android:id="@+id/menusettingsicon" android:title="Settings" android:icon="@mipmap/ic_settings_white_24dp" app:showAsAction="always" />
+    <item android:id="@+id/menusettingsicon" android:title="Settings" android:visible="false" android:icon="@mipmap/ic_settings_white_24dp" app:showAsAction="always" />
 
 
 </menu>

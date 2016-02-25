@@ -61,6 +61,7 @@ public class GenderSelectDialog extends AppCompatDialogFragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (mListener != null) {
                     mListener.onGenderSelected(((RadioButton) layout.findViewById(checkedId)).getText().toString().trim());
+                    dismiss();
                 }
             }
         });

@@ -33,7 +33,8 @@ import com.swiftkaydevelopment.findme.data.NewsfeedPrefData;
 import com.swiftkaydevelopment.findme.fragment.BaseFragment;
 import com.swiftkaydevelopment.findme.managers.AccountManager;
 
-public class NewsFeedSettings extends BaseFragment implements GenderSelectDialog.GenderSelectListener{
+public class NewsFeedSettings extends BaseFragment implements GenderSelectDialog.GenderSelectListener,
+        View.OnClickListener, OrientationSelectDialog.OrientationSelectListener, RelationshipStatusSelect.RelationShipSelectListener{
     public static final String TAG = "NewsFeedSettings";
 
     private TextView mTvGender, mTvOrientation, mTvRelationshipStatus;
@@ -90,18 +91,13 @@ public class NewsFeedSettings extends BaseFragment implements GenderSelectDialog
         super.onViewCreated(view, savedInstanceState);
         prefData = AccountManager.getInstance(getActivity()).getNewsfeedPreferences();
 
-        mTvGender.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GenderSelectDialog dialog = (GenderSelectDialog) getActivity().getSupportFragmentManager().findFragmentByTag(GenderSelectDialog.TAG);
-                if (dialog == null) {
-                    dialog = GenderSelectDialog.newInstance();
-                    dialog.show(getActivity().getSupportFragmentManager(), GenderSelectDialog.TAG);
-                    dialog.setListener(NewsFeedSettings.this);
-                }
-            }
-        });
+        mTvGender.setOnClickListener(this);
+        mTvOrientation.setOnClickListener(this);
+        mTvRelationshipStatus.setOnClickListener(this);
 
+        mTvGender.setText(prefData.gender);
+        mTvRelationshipStatus.setText(prefData.status);
+        mTvOrientation.setText("Any");
 
         mDistanceSeek.setProgress(Integer.parseInt(prefData.distance));
         mDistanceWriter.setText(Integer.toString(mDistanceSeek.getProgress()) + " Miles");
@@ -137,6 +133,16 @@ public class NewsFeedSettings extends BaseFragment implements GenderSelectDialog
         if (dialog != null) {
             dialog.setListener(this);
         }
+
+        RelationshipStatusSelect relationshipDialog = (RelationshipStatusSelect) getActivity().getSupportFragmentManager().findFragmentByTag(RelationshipStatusSelect.TAG);
+        if (relationshipDialog != null) {
+            relationshipDialog.setListener(this);
+        }
+
+        OrientationSelectDialog orientationDialog = (OrientationSelectDialog) getActivity().getSupportFragmentManager().findFragmentByTag(OrientationSelectDialog.TAG);
+        if (orientationDialog != null) {
+            orientationDialog.setListener(this);
+        }
     }
 
     @Override
@@ -145,6 +151,16 @@ public class NewsFeedSettings extends BaseFragment implements GenderSelectDialog
         GenderSelectDialog dialog = (GenderSelectDialog) getActivity().getSupportFragmentManager().findFragmentByTag(GenderSelectDialog.TAG);
         if (dialog != null) {
             dialog.setListener(null);
+        }
+
+        RelationshipStatusSelect relationshipDialog = (RelationshipStatusSelect) getActivity().getSupportFragmentManager().findFragmentByTag(RelationshipStatusSelect.TAG);
+        if (relationshipDialog != null) {
+            relationshipDialog.setListener(null);
+        }
+
+        OrientationSelectDialog orientationDialog = (OrientationSelectDialog) getActivity().getSupportFragmentManager().findFragmentByTag(OrientationSelectDialog.TAG);
+        if (orientationDialog != null) {
+            orientationDialog.setListener(null);
         }
     }
 
@@ -166,7 +182,7 @@ public class NewsFeedSettings extends BaseFragment implements GenderSelectDialog
                 return false;
             }
         });
-        
+
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,6 +191,10 @@ public class NewsFeedSettings extends BaseFragment implements GenderSelectDialog
         });
     }
 
+    /**
+     * Updates the User's Newsfeed preferences
+     *
+     */
     private void updateSettings() {
         String gender;
         String status = "both";
@@ -196,5 +216,65 @@ public class NewsFeedSettings extends BaseFragment implements GenderSelectDialog
     @Override
     public void onGenderSelected(String gender) {
         mTvGender.setText(gender);
+    }
+
+    @Override
+    public void onOrientationSelected(String orientation) {
+        mTvOrientation.setText(orientation);
+    }
+
+    @Override
+    public void onRelationshipSelected(String status) {
+        mTvRelationshipStatus.setText(status);
+    }
+
+    /**
+     * Shows the Gender Select Dialog
+     *
+     */
+    private void showGenderSelectDialog() {
+        GenderSelectDialog dialog = (GenderSelectDialog) getActivity().getSupportFragmentManager().findFragmentByTag(GenderSelectDialog.TAG);
+        if (dialog == null) {
+            dialog = GenderSelectDialog.newInstance();
+            dialog.show(getActivity().getSupportFragmentManager(), GenderSelectDialog.TAG);
+            dialog.setListener(NewsFeedSettings.this);
+        }
+    }
+
+    /**
+     * Shows the RelationShip Status Dialog
+     *
+     */
+    private void showRelationShipStatusDialog(){
+        RelationshipStatusSelect dialog = (RelationshipStatusSelect) getActivity().getSupportFragmentManager().findFragmentByTag(RelationshipStatusSelect.TAG);
+        if (dialog == null) {
+            dialog = RelationshipStatusSelect.newInstance();
+            dialog.show(getActivity().getSupportFragmentManager(), RelationshipStatusSelect.TAG);
+            dialog.setListener(this);
+        }
+    }
+
+    /**
+     * Shows the Orientation Dialog
+     *
+     */
+    private void showOrientationDialog() {
+        OrientationSelectDialog dialog = (OrientationSelectDialog) getActivity().getSupportFragmentManager().findFragmentByTag(OrientationSelectDialog.TAG);
+        if (dialog == null) {
+            dialog = OrientationSelectDialog.newInstance();
+            dialog.show(getActivity().getSupportFragmentManager(), OrientationSelectDialog.TAG);
+            dialog.setListener(this);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == mTvGender.getId()) {
+          showGenderSelectDialog();
+        } else if (v.getId() == mTvRelationshipStatus.getId()) {
+            showRelationShipStatusDialog();
+        } else if (v.getId() == mTvOrientation.getId()) {
+            showOrientationDialog();
+        }
     }
 }
