@@ -18,10 +18,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.fragment.NavigationDrawerFragment;
-import com.swiftkaydevelopment.findme.newsfeed.NewsFeedFrag;
 import com.swiftkaydevelopment.findme.gcm.QuickstartPreferences;
 import com.swiftkaydevelopment.findme.gcm.RegistrationIntentService;
 import com.swiftkaydevelopment.findme.managers.UserManager;
+import com.swiftkaydevelopment.findme.newsfeed.NewsFeedFrag;
 
 
 /**
@@ -32,13 +32,19 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     private static final int NEWSFEED = 1;
     private static final int FINDPEOPLE = 2;
     private static final int PROFILEVIEWS = 3;
-    private static final int MATCHES = 4;
-    private static final int PHOTOS = 5;
+    private static final int MATCHES = 1000;
+    private static final int PHOTOS = 4;
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
+    /**
+     * Creates a new Intent to start this activity
+     *
+     * @param context Calling Context
+     * @return new Intent to start this activity with
+     */
     public static Intent createIntent(Context context){
         return new Intent(context, MainLineUp.class);
     }
@@ -76,11 +82,6 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-    @Override
     protected void onPostResume() {
         super.onPostResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
@@ -93,6 +94,10 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         super.onPause();
     }
 
+    /**
+     * Registers the Gcm Broadcast receiver
+     *
+     */
     private void registerGCMReceiver() {
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -112,6 +117,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
      * the Google Play Store or enable it in the device's system settings.
+     *
      */
     private boolean checkPlayServices() {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
@@ -129,6 +135,10 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         return true;
     }
 
+    /**
+     * Initializes the Navigation Drawer
+     *
+     */
     public void initializeDrawer(){
         NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -150,6 +160,11 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
         return true;
     }
 
+    /**
+     * Displays the appropriate fragment based on navigation drawer selection
+     *
+     * @param position postion selected
+     */
     private void displayView(int position) {
         switch (position) {
             case NEWSFEED:

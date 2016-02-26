@@ -20,8 +20,11 @@ package com.swiftkaydevelopment.findme.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.swiftkaydevelopment.findme.activity.FindMe;
 import com.swiftkaydevelopment.findme.data.datainterfaces.DatabaseObject;
 import com.swiftkaydevelopment.findme.data.datainterfaces.JsonCreatable;
+import com.swiftkaydevelopment.findme.managers.AccountManager;
+import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.views.tagview.Tag;
 
 import org.json.JSONException;

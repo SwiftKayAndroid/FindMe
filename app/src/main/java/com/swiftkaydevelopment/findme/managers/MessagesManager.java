@@ -183,46 +183,17 @@ public class MessagesManager {
 
     public void messageNotificationReceived(Message msg) {
 
-        if (mMessageThreadListeners.size() < 1 && mMessagesListeners.size() <1) {
-            sendNotification(msg);
-        } else {
-            for (MessagesListener l : mMessagesListeners) {
-                if (l != null) {
-                    l.onMessageReceived(msg);
-                }
-            }
-            for (MessageThreadListener l : mMessageThreadListeners) {
-                if (l != null) {
-                    l.onMessageRecevied(msg);
-                }
+        for (MessagesListener l : mMessagesListeners) {
+            if (l != null) {
+                l.onMessageReceived(msg);
             }
         }
-    }
+        for (MessageThreadListener l : mMessageThreadListeners) {
+            if (l != null) {
+                l.onMessageRecevied(msg);
+            }
+        }
 
-    /**
-     * Create and show a simple notification containing the received GCM message.
-     *
-     * @param message GCM message received.
-     */
-    public static void sendNotification(Message message) {
-        Intent intent = MessagesActivity.createIntent(mContext, message.getUser());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext)
-                .setSmallIcon(R.drawable.redfsmall)
-                .setContentTitle("New Message")
-                .setContentText(message.getMessage())
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 
     private class FetchMessagesTask extends AsyncTask<Void, Void, ArrayList<Message>>{

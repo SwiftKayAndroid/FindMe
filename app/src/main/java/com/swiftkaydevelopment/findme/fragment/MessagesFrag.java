@@ -18,10 +18,12 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.MessagesAdapter;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.gcm.PushNotificationManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.Message;
@@ -47,7 +49,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     private ImageView           ivsend;
     private RecyclerView        mRecyclerView;
     private View                mEmptyView;
-
+    private ProgressBar         mProgressBar;
 
     public static MessagesFrag instance(String uid, User user) {
         MessagesFrag frag = new MessagesFrag();
@@ -70,11 +72,6 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
                 user = (User) getArguments().getSerializable(ARG_USER);
-                if (mThreadInfo != null) {
-                    MessagesManager.getInstance(uid, getActivity()).getMoreMessages("0", mThreadInfo, getActivity());
-                } else {
-                    MessagesManager.getInstance(uid, getActivity()).getMoreMessages("0", user, getActivity());
-                }
             }
         };
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -90,6 +87,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         ivsend = (ImageView) layout.findViewById(R.id.tvsendmessage);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.messagesInlineRecyclerView);
         mEmptyView = layout.findViewById(R.id.messageInlineEmptyView);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
 
         ivsend.setOnClickListener(this);
         return layout;
@@ -98,17 +96,31 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mMessagesList = (ArrayList) savedInstanceState.getSerializable(ARG_MESSAGES);
+            mProgressBar.setVisibility(View.GONE);
+            if (mMessagesList == null || mMessagesList.isEmpty()) {
+                mEmptyView.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyView.setVisibility(View.GONE);
+            }
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
+            if (mThreadInfo != null) {
+                MessagesManager.getInstance(uid, getActivity()).getMoreMessages("0", mThreadInfo, getActivity());
+            } else {
+                MessagesManager.getInstance(uid, getActivity()).getMoreMessages("0", user, getActivity());
+            }
+        }
+
         if (mMessageAdapter == null) {
             mMessageAdapter = new MessagesAdapter(getActivity(), mMessagesList, uid);
         }
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mMessageAdapter);
-
-        if (mMessagesList.size() < 1) {
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -140,6 +152,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
      * @param messages Arraylist of Messages
      */
     public void updateMessages(ArrayList<Message> messages) {
+        mProgressBar.setVisibility(View.GONE);
         mMessageAdapter.addAllMessages(messages);
         mMessageAdapter.setMessagesAdapterListener(this);
         int size = mRecyclerView.getLayoutManager().getItemCount() - 1;
@@ -179,7 +192,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
                 mRecyclerView.smoothScrollToPosition(size);
             }
         } else {
-            MessagesManager.sendNotification(message);
+            //todo: should we show push notification or just make notification sound
         }
 
         if (mMessagesList.size() < 1) {

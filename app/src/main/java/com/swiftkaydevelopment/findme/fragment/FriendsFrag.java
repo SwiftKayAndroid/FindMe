@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.FriendsAdapter;
@@ -27,6 +28,7 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
 
     private ArrayList<User> users = new ArrayList<>();
     private View mEmptyView;
+    private ProgressBar mProgressBar;
 
     public static FriendsFrag newInstance(String uid) {
         FriendsFrag frag = new FriendsFrag();
@@ -55,6 +57,7 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
         View layout = inflater.inflate(R.layout.friendslistfrag, container, false);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewFriendsList);
         mEmptyView = layout.findViewById(R.id.friendsEmptyView);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
         return layout;
     }
 
@@ -63,19 +66,21 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState != null) {
+            mProgressBar.setVisibility(View.GONE);
             users = (ArrayList) savedInstanceState.getSerializable(ARG_FRIENDS);
+            if (users == null || users.isEmpty()) {
+                mEmptyView.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyView.setVisibility(View.GONE);
+            }
         } else {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.GONE);
             UserManager.getInstance(uid, getActivity()).getFriends(uid);
         }
 
         if (mAdapter == null) {
             mAdapter = new FriendsAdapter(getActivity(), users, uid);
-        }
-
-        if (mAdapter.getItemCount() < 1) {
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
         }
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -108,6 +113,7 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
 
     @Override
     public void onFriendsRetrieved(ArrayList<User> users) {
+        mProgressBar.setVisibility(View.GONE);
         mAdapter.addFriends(users);
         if (mAdapter.getItemCount() < 1) {
             mEmptyView.setVisibility(View.VISIBLE);

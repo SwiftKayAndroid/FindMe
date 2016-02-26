@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.MessagesActivity;
@@ -45,6 +46,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     private RecyclerView            mRecyclerView;
     private SwipeRefreshLayout      mRefreshLayout;
     private View                    mEmptyView;
+    private ProgressBar             mProgressBar;
 
     /**
      * Factory method for getting a new instance of MessagelistFrag
@@ -79,6 +81,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewMessagesList);
         mRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.messageThreadsSwipeRefreshContainer);
         mEmptyView = layout.findViewById(R.id.messageThreadsEmptyView);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
 
         return layout;
     }
@@ -87,6 +90,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
+            mProgressBar.setVisibility(View.GONE);
             mThreadList = (ArrayList) savedInstanceState.getSerializable(ARG_THREAD_LIST);
             mRefreshing = savedInstanceState.getBoolean(ARG_REFRESHING);
             if (mThreadList == null || mThreadList.isEmpty()) {
@@ -96,6 +100,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
             }
         } else {
             mEmptyView.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
             mRefreshing = true;
             MessagesManager.getInstance(uid, getActivity()).refreshThreads(getActivity());
         }
@@ -168,6 +173,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     @Override
     public void onRetrieveMoreThreads(ArrayList<ThreadInfo> threadInfos) {
         Log.i(TAG, "onRetriveMoreThreads");
+        mProgressBar.setVisibility(View.GONE);
         if (mRefreshing) {
             mMessagesAdapter.removeAllThreads();
             mMessagesAdapter.addThreads(threadInfos);

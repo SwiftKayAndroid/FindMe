@@ -43,7 +43,8 @@ import com.swiftkaydevelopment.findme.views.tagview.TagView;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements View.OnClickListener{
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements View.OnClickListener {
+
     public interface PostAdapterListener{
         void onCommentsClicked(Post post);
         void onImageClicked(Post post);
@@ -70,6 +71,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         this.isUser = isUser;
     }
 
+    /**
+     * Sets the PostAdapterListener
+     *
+     * @param listener PostAdapterListener to assign
+     */
     public void setPostAdapterListener(PostAdapterListener listener) {
         mListener = listener;
     }
@@ -140,12 +146,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.tvLocation.setText(Integer.toString(distance) + append);
             holder.tvName.setText(post.getUser().getFirstname() + " " + post.getUser().getLastname());
             holder.tvTime.setText(post.getTime());
-                Picasso.with(mContext)
-                        .load(!TextUtils.isEmpty(post.getUser().getPropicloc()) ? post.getUser().getPropicloc() : "empty")
-                        .transform(new CircleTransform())
-                        .resize(100, 100)
-                        .error(R.drawable.ic_placeholder)
-                        .into(holder.ivProfilePicture);
+            Picasso.with(mContext)
+                    .load(!TextUtils.isEmpty(post.getUser().getPropicloc()) ? post.getUser().getPropicloc() : "empty")
+                    .transform(new CircleTransform())
+                    .resize(100, 100)
+                    .error(R.drawable.ic_placeholder)
+                    .into(holder.ivProfilePicture);
 
             holder.ivProfilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -166,7 +172,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 Log.e(TAG, "showing post image");
                 holder.ivPostImage.setVisibility(View.VISIBLE);
                 holder.ivPostImage.setImageResource(R.drawable.ic_placeholder);
-//                imageLoader.DisplayImage(mPostList.get(position).getPostImage(), holder.ivPostImage, true);
                 Picasso.with(mContext).load(mPostList.get(position).getPostImage()).into(holder.ivPostImage);
                 holder.ivPostImage.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -228,9 +233,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
         itemView.setTag(position);
 
-        if (pos >= getItemCount() - 1) {
+        if (pos >= getItemCount() - 1 && !mPostList.isEmpty()) {
             if (mListener != null) {
-                mListener.onLastPost(mPostList.get(pos));
+                mListener.onLastPost(hasHeader ? mPostList.get(position) : mPostList.get(pos));
             }
         }
     }
@@ -273,22 +278,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return mPostList.size();
     }
 
-    /**
-     * sets adapter to know that it needs to display a header
-     * @param hasHeader boolean true if needs to show header false otherwise
-     */
-    public void setHasHeader(boolean hasHeader){
-        this.hasHeader = hasHeader;
-    }
-
-    /**
-     * gets whether or not the adapter is set to show a header
-     * @return true if set to show header
-     */
-    public boolean getHasHeader(){
-        return hasHeader;
-    }
-
     public class PostViewHolder extends RecyclerView.ViewHolder {
 
         //contentview
@@ -307,18 +296,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         public PostViewHolder(View itemView, int viewType){
             super(itemView);
             this.viewType = viewType;
-            if (itemView != null) {
 
-                if (viewType == VIEW_TYPE_CONTENT) {
-                    setUpContent(itemView);
-                } else if (viewType == VIEW_TYPE_HEADER) {
-                    setUpHeader(itemView);
-                }
-            } else {
-                Log.e(TAG,"attempting to pass a null view to PostViewHolder");
+            if (viewType == VIEW_TYPE_CONTENT) {
+                setUpContent(itemView);
+            } else if (viewType == VIEW_TYPE_HEADER) {
+                setUpHeader(itemView);
             }
         }
 
+        /**
+         * Sets up the Views for the Posts
+         *
+         * @param v itemView
+         */
         private void setUpContent(View v) {
             tvName = (TextView) v.findViewById(R.id.postUsername);
             tvTime = (TextView) v.findViewById(R.id.postTime);
@@ -334,6 +324,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             tagView = (TagView) v.findViewById(R.id.postTagView);
         }
 
+        /**
+         * Sets up
+         * @param v
+         */
         private void setUpHeader(View v) {
             age = (TextView) v.findViewById(R.id.profileHeaderAge);
             location = (TextView) v.findViewById(R.id.profileHeaderLocation);

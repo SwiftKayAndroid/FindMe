@@ -1,11 +1,12 @@
 package com.swiftkaydevelopment.findme.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by Kevin Haines on 2/25/2015.
  */
-public class FindPeopleFrag extends BaseFragment implements UserManager.UserManagerListener{
+public class FindPeopleFrag extends BaseFragment implements UserManager.UserManagerListener, FindPeopleAdapter.ConnectAdapterListener{
     public static final String TAG = "FindPeopleFrag";
     private static final String ARG_USERS = "ARG_USERS";
 
@@ -27,7 +28,9 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     private ArrayList<User> users = new ArrayList<>();
     private FindPeopleAdapter mAdapter;
 
-    GridView mGridView;
+    private RecyclerView mRecyclerView;
+    private ProgressBar mLoadingMorePb;
+    private ProgressBar mProgressBar;
 
     public static FindPeopleFrag newInstance(String id){
         FindPeopleFrag frag = new FindPeopleFrag();
@@ -48,7 +51,6 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
             if(getArguments() != null){
                 uid = getArguments().getString(UID_ARGS);
             }
-            UserManager.getInstance(uid, getActivity()).findPeople(uid, "0");
         }
     }
 
@@ -56,7 +58,9 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.findpeople, container, false);
-        mGridView = (GridView) layout.findViewById(R.id.gvviewfindpeoplefrag);
+        mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerView);
+        mLoadingMorePb = (ProgressBar) layout.findViewById(R.id.loadingMorePb);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
 
         return layout;
     }
@@ -64,21 +68,25 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mLoadingMorePb.setVisibility(View.GONE);
 
         if (savedInstanceState != null) {
+            mProgressBar.setVisibility(View.GONE);
             users = (ArrayList) savedInstanceState.getSerializable(ARG_USERS);
+        } else {
+            mProgressBar.setVisibility(View.VISIBLE);
+            UserManager.getInstance(uid, getActivity()).findPeople(uid, "0");
         }
+
         if (mAdapter == null) {
             mAdapter = new FindPeopleAdapter(getActivity(), users, uid);
         }
-        mGridView.setAdapter(mAdapter);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                User u = (User) mAdapter.getItem(position);
-                getActivity().startActivity(ProfileActivity.createIntent(getActivity(), u));
-            }
-        });
+        mAdapter.setListener(this);
+
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(
+                getActivity().getResources().getInteger(R.integer.grid_layout_columns_connect),
+                StaggeredGridLayoutManager.VERTICAL));
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -92,12 +100,16 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     public void onResume() {
         super.onResume();
         UserManager.getInstance(uid, getActivity()).addListener(this);
+        if (mAdapter != null) {
+            mAdapter.setListener(this);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         UserManager.getInstance(uid, getActivity()).removeListener(this);
+        mAdapter.setListener(null);
     }
 
     @Override
@@ -117,6 +129,8 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
 
     @Override
     public void onPeopleFound(ArrayList<User> users) {
+        mLoadingMorePb.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
         if (mAdapter != null && users != null) {
             mAdapter.addUsers(users);
         }
@@ -125,5 +139,16 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     @Override
     public void onProfileViewsFetched(ArrayList<User> users) {
 
+    }
+
+    @Override
+    public void onLastItem(User lastUser) {
+        mLoadingMorePb.setVisibility(View.VISIBLE);
+        UserManager.getInstance(uid, getActivity()).findPeople(uid, lastUser.getOuid());
+    }
+
+    @Override
+    public void onUserSelected(User user) {
+        getActivity().startActivity(ProfileActivity.createIntent(getActivity(), user));
     }
 }

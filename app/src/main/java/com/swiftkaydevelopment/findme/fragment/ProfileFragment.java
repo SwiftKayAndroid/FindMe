@@ -285,6 +285,10 @@ public class ProfileFragment extends BaseFragment implements
 
     @Override
     public void onProfilePostsRetrieved(ArrayList<Post> posts) {
+        for (Post post : posts) {
+            post.setUser(user);
+        }
+
         mPostAdapter.clearAdapter();
         mPostAdapter.addPosts(posts);
     }
@@ -292,6 +296,7 @@ public class ProfileFragment extends BaseFragment implements
     @Override
     public void onCommentsClicked(Post post) {
     }
+
     @Override
     public void onImageClicked(Post post) {
         FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, post, (post.getPostingUsersId().equals(uid)));

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.NotificationsAdapter;
@@ -25,7 +26,14 @@ public class NotificationsFrag extends BaseFragment implements NotificationManag
     private ArrayList<Notification> mNotifications = new ArrayList<>();
     private NotificationsAdapter mAdapter;
     private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
 
+    /**
+     * Factory method to create a new instance of this fragment
+     *
+     * @param uid User's id
+     * @return new instance of this fragment
+     */
     public static NotificationsFrag newInstance(String uid) {
         NotificationsFrag frag = new NotificationsFrag();
         Bundle b = new Bundle();
@@ -44,7 +52,6 @@ public class NotificationsFrag extends BaseFragment implements NotificationManag
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            NotificationManager.getInstance(getActivity()).getNotifications(uid, "0");
         }
     }
 
@@ -53,6 +60,7 @@ public class NotificationsFrag extends BaseFragment implements NotificationManag
 
         View layout = inflater.inflate(R.layout.notificationfrag, container,false);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewNotifications);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
 
         return layout;
     }
@@ -62,8 +70,12 @@ public class NotificationsFrag extends BaseFragment implements NotificationManag
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState != null) {
+            mProgressBar.setVisibility(View.GONE);
             uid = savedInstanceState.getString(ARG_UID);
             mNotifications = (ArrayList) savedInstanceState.getSerializable(ARG_NOTES);
+        } else {
+            mProgressBar.setVisibility(View.VISIBLE);
+            NotificationManager.getInstance(getActivity()).getNotifications(uid, "0");
         }
 
         if (mAdapter == null) {
@@ -97,6 +109,7 @@ public class NotificationsFrag extends BaseFragment implements NotificationManag
 
     @Override
     public void onNotificationsFetched(ArrayList<Notification> notifications) {
+        mProgressBar.setVisibility(View.GONE);
         mAdapter.addNotifications(notifications);
     }
 
