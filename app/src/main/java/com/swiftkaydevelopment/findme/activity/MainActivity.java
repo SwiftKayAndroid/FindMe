@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 setGUI();
             } else {
                 AuthenticateUser au = AuthenticateUser.getInstance(this);
-                au.authenticate(prefs.getString("email", null), prefs.getString("password", null));
+                au.authenticate(credemail, credpassword);
                 startActivity(MainLineUp.createIntent(this));
                 finish();
             }

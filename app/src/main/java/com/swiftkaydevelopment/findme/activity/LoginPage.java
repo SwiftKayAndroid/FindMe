@@ -9,17 +9,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.managers.ConnectionManager;
 import com.swiftkaydevelopment.findme.tasks.AuthenticateUser;
-import com.swiftkaydevelopment.findme.R;
 
 /**
  * Created by Kevin Haines on 2/5/2015.
@@ -63,44 +62,30 @@ public class LoginPage extends Activity implements AuthenticateUser.Authenticati
         }
     }
 
-    //GUI ELEMENTS
     private Button btn;
     private EditText etemail,etpassword;
     private CheckBox cb;
-    private
-    TextView tvforgot;
-
-    ProgressDialog pDialog;
+    private TextView tvforgot;
+    private ProgressDialog pDialog;
 
     private boolean checked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);//Remove title bar
         setContentView(R.layout.loginpage);
-
-        setGUI();//initialize ui elements
-        setListeners();//set ui listeners
-    }
-
-    private void setGUI(){
-        //ESTABLISH IDENTITIES OF UI ELEMENTS
-        //CALLED FROM onCreate()
 
         btn = (Button) findViewById(R.id.btnloginlogin);
         etemail = (EditText) findViewById(R.id.etloginemail);
         etpassword = (EditText) findViewById(R.id.etloginpassword);
         cb = (CheckBox) findViewById(R.id.cbloginstayloggedin);
         tvforgot = (TextView) findViewById(R.id.tvloginforgotpassword);
+        setListeners();
 
     }
 
     public void setListeners(){
-        //SET LISTENERS ON UI ELEMENTS
-        //CALLED FROM onCreate()
 
-        //SUBMIT BUTTON
         btn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -130,7 +115,6 @@ public class LoginPage extends Activity implements AuthenticateUser.Authenticati
             }
         });
 
-        //CHECK BOX FOR STAYING LOGGED IN LISTENER
         cb.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -140,7 +124,6 @@ public class LoginPage extends Activity implements AuthenticateUser.Authenticati
             }
         });
 
-        //TEXT VIEW FOR FORGOTTEN PASSWORD LISTENER
         tvforgot.setOnClickListener(new View.OnClickListener() {
 
             @Override
