@@ -145,15 +145,13 @@ public class Message implements Serializable, Notifiable {
         setSeenStatus(0);
         setThreadId(data.getString("threadid"));
         setTime(data.getString("time"));
-        //todo: the user needs to be passed in with the json data
         setUser(User.createUser().fetchUser(data.getString("senderid"), AccountManager.getInstance(context).getUserId()));
-        //todo: this is where eventbus will be called.
         MessagesManager.getInstance("").messageNotificationReceived(this);
 
         PushData pushData = new PushData();
         pushData.title = user.getFirstname();
         pushData.message = mMessage;
-        pushData.resId = R.mipmap.ic_message_black_24dp;
+        pushData.resId = R.mipmap.ic_message_text_white_24dp;
         if (TextUtils.isEmpty(getUser().getPropicloc())) {
             pushData.icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_placeholder);
         } else {

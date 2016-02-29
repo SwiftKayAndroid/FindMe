@@ -21,6 +21,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.swiftkaydevelopment.findme.data.Post;
+import com.swiftkaydevelopment.findme.database.Sqlite.modules.SQLiteModule;
 import com.swiftkaydevelopment.findme.database.gatewayInterfaces.PostsGateway;
 
 import java.util.List;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 public class SqlitePostsGateway extends BaseSQLiteGateway implements PostsGateway {
 
-    public SqlitePostsGateway(DatabaseHelper sqLiteModule) {
+    public SqlitePostsGateway(SQLiteModule sqLiteModule) {
         super(sqLiteModule);
     }
 

@@ -16,11 +16,16 @@ import android.widget.ProgressBar;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.PostAdapter;
 import com.swiftkaydevelopment.findme.data.Post;
+import com.swiftkaydevelopment.findme.events.NewsFeedPostsRetrieved;
 import com.swiftkaydevelopment.findme.fragment.BaseFragment;
 import com.swiftkaydevelopment.findme.fragment.CommentsDialog;
 import com.swiftkaydevelopment.findme.fragment.FullImageFragment;
 import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -39,6 +44,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     private RecyclerView        mRecyclerView;
     private SwipeRefreshLayout  swipeLayout;
     private ProgressBar         mProgressBar;
+    private ProgressBar         mInitialPb;
     private boolean             loadingMore;
     private ArrayList<Post>     mPostsList = new ArrayList<>();
 
@@ -79,6 +85,8 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         mProgressBar = (ProgressBar) layout.findViewById(R.id.newsfeedProgressBar);
         mProgressBar.setVisibility(View.GONE);
 
+        mInitialPb = (ProgressBar) layout.findViewById(R.id.initialPb);
+
         swipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -101,9 +109,10 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         if (savedInstanceState != null) {
             mPostsList = (ArrayList) savedInstanceState.getSerializable(ARG_POSTS_LIST);
             mProgressBar.setVisibility(View.GONE);
+            mInitialPb.setVisibility(View.GONE);
         } else {
-            mProgressBar.setVisibility(View.VISIBLE);
             loadingMore = true;
+            mInitialPb.setVisibility(View.VISIBLE);
             PostManager.getInstance().fetchPosts(uid, "0");
         }
 
@@ -126,6 +135,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         if (mPostAdapter != null) {
             mPostAdapter.setPostAdapterListener(null);
         }
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -141,6 +151,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         }
         fabstatus.setVisibility(View.INVISIBLE);
         fabphoto.setVisibility(View.INVISIBLE);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -198,8 +209,10 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         set.start();
     }
 
-    @Override
-    public void onPostsRetrieved(ArrayList<Post> posts) {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(NewsFeedPostsRetrieved event) {
+        EventBus.getDefault().removeStickyEvent(event);
+        ArrayList<Post> posts = event.posts;
         Log.i(TAG, "onPostsRetrieved size: " + posts.size() + " original size: " + mPostsList.size());
 
         if (swipeLayout.isRefreshing()) {
@@ -217,6 +230,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         }
         loadingMore = false;
         mProgressBar.setVisibility(View.GONE);
+        mInitialPb.setVisibility(View.GONE);
     }
 
     @Override

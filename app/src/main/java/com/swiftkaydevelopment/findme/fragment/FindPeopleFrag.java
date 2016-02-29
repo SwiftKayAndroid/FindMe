@@ -12,7 +12,12 @@ import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.FindPeopleAdapter;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.events.ConnectionsFoundEvent;
 import com.swiftkaydevelopment.findme.managers.UserManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -105,6 +110,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
         if (mAdapter != null) {
             mAdapter.setListener(this);
         }
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -112,6 +118,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
         super.onPause();
         UserManager.getInstance(uid).removeListener(this);
         mAdapter.setListener(null);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -126,13 +133,14 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     @Override
     public void onProfileViewsFetched(ArrayList<User> users) {}
 
-    @Override
-    public void onPeopleFound(ArrayList<User> users) {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(ConnectionsFoundEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
         mLoadingMore = false;
         mLoadingMorePb.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
-        if (mAdapter != null && users != null) {
-            mAdapter.addUsers(users);
+        if (mAdapter != null && event.users != null) {
+            mAdapter.addUsers(event.users);
         }
     }
 

@@ -46,6 +46,7 @@ public class ViewPhotos extends BaseActivity {
                 finish();
             }
         });
+        mToolbar.setTitle("Photos");
 
         if (getIntent().getExtras() != null) {
             user = (User) getIntent().getExtras().getSerializable(ARG_USER);

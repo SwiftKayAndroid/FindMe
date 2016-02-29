@@ -17,6 +17,7 @@
 
 package com.swiftkaydevelopment.findme.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -35,7 +36,10 @@ import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.managers.PersistenceManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 
-public class FullImageFragment extends BaseFragment implements OkCancelDialog.OkCancelDialogListener{
+import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
+
+public class FullImageFragment extends BaseFragment implements OkCancelDialog.OkCancelDialogListener, PhotoViewAttacher.OnViewTapListener{
 
     public interface FullImageFragListener {
         void onImageDeleted(Post post);
@@ -47,9 +51,10 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
     private static final String DELETE_LABEL = "DELETE";
 
     private Post post;
-    private ImageView ivPicture;
+    private PhotoView ivPicture;
     private Toolbar mToolbar;
     private boolean isUser;
+    private boolean mVisible = true;
 
     private FullImageFragListener mListener;
 
@@ -87,7 +92,7 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.viewfullimagepop, container, false);
-        ivPicture = (ImageView) layout.findViewById(R.id.ivviewfullimageimage);
+        ivPicture = (PhotoView) layout.findViewById(R.id.ivviewfullimageimage);
         mToolbar = (Toolbar) layout.findViewById(R.id.fullImageToolbar);
         return layout;
     }
@@ -126,6 +131,7 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
         } else {
             mToolbar.setVisibility(View.GONE);
         }
+        ivPicture.setOnViewTapListener(this);
     }
 
     @Override
@@ -176,5 +182,59 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
             dialog.setOkCancelDialogListener(this);
         }
 
+    }
+
+    @Override
+    public void onViewTap(View view, float x, float y) {
+        toggle();
+    }
+
+    /**
+     * Toggles the system ui visibility
+     *
+     */
+    private void toggle() {
+        if (mVisible) {
+            hide();
+        } else {
+            show();
+        }
+    }
+
+    /**
+     * Hides the system ui
+     *
+     */
+    private void hide() {
+        // Hide UI first
+
+        if (getView() != null) {
+            mVisible = false;
+            mToolbar.setVisibility(View.INVISIBLE);
+            getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE);
+
+            getView().setFitsSystemWindows(mVisible);
+        }
+    }
+
+    /**
+     * Shows the system ui
+     *
+     */
+    @SuppressLint("InlinedApi")
+    private void show() {
+        if (getView() != null) {
+            mToolbar.setVisibility(View.VISIBLE);
+            mVisible = true;
+
+            getView().setFitsSystemWindows(mVisible);
+
+            getView().setSystemUiVisibility(0);
+        }
     }
 }

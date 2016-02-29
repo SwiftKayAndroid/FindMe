@@ -240,10 +240,12 @@ public class User implements Serializable {
     private class FetchPhotosTask extends AsyncTask<Void, Void, ArrayList<Post>> {
         User user;
         String uid;
+        String lastpage;
 
-        public FetchPhotosTask(User user, String uid) {
+        public FetchPhotosTask(User user, String uid, String lastpage) {
             this.user = user;
             this.uid = uid;
+            this.lastpage = lastpage;
         }
 
         @Override
@@ -253,6 +255,7 @@ public class User implements Serializable {
             connectionManager.setUri("getpictures.php");
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("ouid", user.getOuid());
+            connectionManager.addParam("lastpage", lastpage);
             String result = connectionManager.sendHttpRequest();
             ArrayList<Post> pics = new ArrayList<>();
 
@@ -440,8 +443,8 @@ public class User implements Serializable {
     /**
      * gets a list of the users picture uri locations
      */
-    public void getPictures() {
-        new FetchPhotosTask(this, mUid).execute();
+    public void getPictures(String lastpage) {
+        new FetchPhotosTask(this, mUid, lastpage).execute();
     }
 
     /**

@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.PicturesAdapter;
+import com.swiftkaydevelopment.findme.data.AppConstants;
 import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.data.User;
 
@@ -28,6 +30,7 @@ public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.Pict
 
     private RecyclerView mRecyclerView;
     private PicturesAdapter mAdapter;
+    private ProgressBar mProgressBar;
 
     public static ViewPhotosFrag newInstance(String uid, User user) {
         ViewPhotosFrag frag = new ViewPhotosFrag();
@@ -50,9 +53,6 @@ public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.Pict
                 uid = getArguments().getString(ARG_UID);
                 user = (User) getArguments().getSerializable(ARG_USER);
             }
-            if (user != null) {
-                user.getPictures();
-            }
         }
     }
 
@@ -60,6 +60,7 @@ public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.Pict
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.viewpicturesfrag,container,false);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewViewPhotos);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
 
         return layout;
     }
@@ -69,6 +70,10 @@ public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.Pict
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
             posts = (ArrayList) savedInstanceState.getSerializable(ARG_PICS);
+            mProgressBar.setVisibility(View.GONE);
+        } else {
+            mProgressBar.setVisibility(View.VISIBLE);
+            user.getPictures(AppConstants.FIRST_PAGE);
         }
 
         if (mAdapter == null) {
@@ -115,14 +120,18 @@ public class ViewPhotosFrag extends BaseFragment implements PicturesAdapter.Pict
 
     @Override
     public void onPicturesFetched(ArrayList<Post> posts) {
-        Log.w(TAG, "onPicturesFetched");
+        mProgressBar.setVisibility(View.GONE);
         mAdapter.addPictures(posts);
-
     }
 
     @Override
     public void onImageDeleted(Post post) {
         mAdapter.removePicture(post);
+    }
+
+    @Override
+    public void onLastImage(Post post) {
+        user.getPictures(post.getPostId());
     }
 
     @Override

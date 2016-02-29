@@ -15,28 +15,21 @@
  *
  */
 
-package com.swiftkaydevelopment.findme.database;
+package com.swiftkaydevelopment.findme.database.gatewayInterfaces;
 
-import android.database.sqlite.SQLiteDatabase;
+import com.swiftkaydevelopment.findme.data.User;
 
-import com.swiftkaydevelopment.findme.database.Sqlite.modules.SQLiteModule;
+import java.util.List;
 
 /**
- * Base gateway class to help common operations between gateways
+ * Created by Kevin Haines on 2/29/16.
+ * Class Overview:
  */
-public abstract class BaseSQLiteGateway {
+public interface UsersGateway {
 
-    protected SQLiteModule mSqLiteModule;
+    boolean insert(User user);
 
-    protected BaseSQLiteGateway(SQLiteModule sqLiteModule) {
-        this.mSqLiteModule = sqLiteModule;
-    }
+    boolean update(User user);
 
-    protected SQLiteDatabase getReadableDatabase() {
-        return mSqLiteModule.getReadableDatabase();
-    }
-
-    protected SQLiteDatabase getWritableDatabase() {
-        return mSqLiteModule.getWritableDatabase();
-    }
+    User find(String uid);
 }

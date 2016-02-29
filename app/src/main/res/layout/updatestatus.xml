@@ -24,6 +24,7 @@
         android:gravity="left|top"
         android:inputType="textCapSentences"
         android:padding="10dp"
+        android:background="@null"
         android:layout_below="@+id/updateStatusToolbar" />
 
     <TextView
@@ -39,6 +40,5 @@
         android:layout_alignBottom="@+id/updateStatusToolbar"
         android:layout_marginRight="55dp"
         android:textColor="@color/white" />
-
 
 </RelativeLayout>

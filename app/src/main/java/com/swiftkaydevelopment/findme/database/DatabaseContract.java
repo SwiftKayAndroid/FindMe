@@ -41,29 +41,43 @@ public class DatabaseContract {
     private static final String UPDATE              = " UPDATE ";
     private static final String SET                 = " SET ";
 
-//    public static abstract class UserProfileEntry {
-//        public static final String TABLE_NAME = "user_profile";
-//        public static final String COLUMN_NAME_ENTRY_ID = "id";
-//        public static final String COLUMN_NAME_FIRST = "first";
-//        public static final String COLUMN_NAME_LAST = "last";
-//        public static final String COLUMN_NAME_MIDDLE = "middle";
-//        public static final String COLUMN_NAME_TITLE = "title";
-//        public static final String COLUMN_NAME_LAST_MODIFIED = "last_modified";
-//        public static final String COLUMN_NAME_RESTRICTIONS = "restrictions";
-//        public static final String COLUMN_NAME_USER = "user_id";
-//
-//        public static final String CREATE_TABLE = DatabaseContract.CREATE_TABLE +
-//                TABLE_NAME + " (" +
-//                COLUMN_NAME_ENTRY_ID +  INTEGER_TYPE + PRIMARY_KEY + AUTO_INCREMENT + COMMA_SEP +
-//                COLUMN_NAME_FIRST + TEXT_TYPE + COMMA_SEP +
-//                COLUMN_NAME_LAST + TEXT_TYPE + COMMA_SEP +
-//                COLUMN_NAME_MIDDLE + TEXT_TYPE + COMMA_SEP +
-//                COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
-//                COLUMN_NAME_LAST_MODIFIED + TEXT_TYPE + COMMA_SEP +
-//                COLUMN_NAME_RESTRICTIONS + INTEGER_TYPE + COMMA_SEP +
-//                COLUMN_NAME_USER + TEXT_TYPE + COMMA_SEP +
-//                FOREIGN_KEY + " (" + COLUMN_NAME_USER + ")" + REFERENCES + UserEntry.TABLE_NAME + "(" + UserEntry.COLUMN_NAME_USERNAME + ")" + " )";
-//
-//        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
-//    }
+    public static abstract class UserEntry {
+        public static final String TABLE_NAME = "users";
+        public static final String COLUMN_NAME_UID = "uid";
+        public static final String COLUMN_NAME_FIRST = "firstname";
+        public static final String COLUMN_NAME_LAST = "lastname";
+        public static final String COLUMN_NAME_PROPICLOC = "propicloc";
+        public static final String COLUMN_NAME_GENDER = "gender";
+        public static final String COLUMN_NAME_AGE = "age";
+        public static final String COLUMN_NAME_ORIENTATION = "orientation";
+        public static final String COLUMN_NAME_RELATIONSHIP = "relationship_status";
+        public static final String COLUMN_NAME_ABOUT = "about_me";
+        public static final String COLUMN_NAME_HASKIDS = "has_kids";
+        public static final String COLUMN_NAME_WANTSKIDS = "wants_kids";
+        public static final String COLUMN_NAME_PROFESSION = "profession";
+        public static final String COLUMN_NAME_SCHOOL = "school";
+        public static final String COLUMN_NAME_WEED = "weed";
+        public static final String COLUMN_NAME_LOCATION = "location";
+
+        public static final String CREATE_TABLE = DatabaseContract.CREATE_TABLE +
+                TABLE_NAME + " (" +
+                COLUMN_NAME_UID +  TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_FIRST + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_LAST + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_PROPICLOC + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_GENDER + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_AGE + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_ORIENTATION + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_RELATIONSHIP + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_ABOUT + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_HASKIDS + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_WANTSKIDS + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_PROFESSION + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_SCHOOL + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_WEED + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_LOCATION + TEXT_TYPE +
+                " )";
+
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
 }

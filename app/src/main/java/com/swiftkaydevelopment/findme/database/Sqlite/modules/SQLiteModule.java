@@ -15,28 +15,17 @@
  *
  */
 
-package com.swiftkaydevelopment.findme.database;
+package com.swiftkaydevelopment.findme.database.Sqlite.modules;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.swiftkaydevelopment.findme.database.Sqlite.modules.SQLiteModule;
-
 /**
- * Base gateway class to help common operations between gateways
+ * Required implementation for SQLite modules to retrieve the read/write db
  */
-public abstract class BaseSQLiteGateway {
-
-    protected SQLiteModule mSqLiteModule;
-
-    protected BaseSQLiteGateway(SQLiteModule sqLiteModule) {
-        this.mSqLiteModule = sqLiteModule;
-    }
-
-    protected SQLiteDatabase getReadableDatabase() {
-        return mSqLiteModule.getReadableDatabase();
-    }
-
-    protected SQLiteDatabase getWritableDatabase() {
-        return mSqLiteModule.getWritableDatabase();
-    }
+public interface SQLiteModule {
+    void create(SQLiteDatabase db);
+    void upgrade(SQLiteDatabase db, int upgradeTo);
+    void clearTables();
+    SQLiteDatabase getWritableDatabase();
+    SQLiteDatabase getReadableDatabase();
 }

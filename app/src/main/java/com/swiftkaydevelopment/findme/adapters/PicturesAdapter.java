@@ -26,6 +26,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.data.AppConstants;
 import com.swiftkaydevelopment.findme.data.Post;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.Pictur
 
     public interface PicturesAdapterListener {
         void onImageClicked(Post post);
+        void onLastImage(Post post);
     }
 
     private static final String TAG = "PicturesAdapter";
@@ -73,6 +75,12 @@ public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.Pictur
                 }
             }
         });
+
+        if (position == mPosts.size() - 1 && (mPosts.size() % AppConstants.BASE_PAGE_SIZE == 0)) {
+            if (mListener != null) {
+                mListener.onLastImage(mPosts.get(mPosts.size() - 1));
+            }
+        }
     }
 
     public void addPictures(ArrayList<Post> posts) {

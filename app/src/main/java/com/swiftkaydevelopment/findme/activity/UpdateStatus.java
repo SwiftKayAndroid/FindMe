@@ -86,7 +86,7 @@ public class UpdateStatus extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.updateStatusSend) {
-            if (etstatus.toString().equals("")) {
+            if (etstatus.getText().toString().equals("") || etstatus.getText().toString().length() > 2000) {
                 //todo: add error message
             } else {
                 AccountManager.getInstance(UpdateStatus.this).updateStatus(etstatus.getText().toString(), uid);

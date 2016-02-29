@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
@@ -42,6 +43,7 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
     private ProfileViewsAdapter mAdapter;
 
     private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
 
     public static ProfileViewsFragment newInstance(String uid) {
         ProfileViewsFragment frag = new ProfileViewsFragment();
@@ -60,7 +62,6 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            UserManager.getInstance(uid).getProfileViews(uid, "0");
         }
     }
 
@@ -69,6 +70,7 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.profile_views_fragment, container, false);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.profileViewsRecyclerView);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
         return layout;
     }
 
@@ -79,6 +81,10 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
         if (savedInstanceState != null) {
             uid = savedInstanceState.getString(ARG_UID);
             users = (ArrayList) savedInstanceState.getSerializable(ARG_USERS);
+            mProgressBar.setVisibility(View.GONE);
+        } else {
+            mProgressBar.setVisibility(View.VISIBLE);
+            UserManager.getInstance(uid).getProfileViews(uid, "0");
         }
 
         if (mAdapter == null) {
@@ -141,6 +147,7 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
 
     @Override
     public void onProfileViewsFetched(ArrayList<User> users) {
+        mProgressBar.setVisibility(View.GONE);
         mAdapter.addFirstUsers(users);
     }
 }

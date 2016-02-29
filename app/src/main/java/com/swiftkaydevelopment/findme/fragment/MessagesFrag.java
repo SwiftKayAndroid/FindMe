@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 /**
  * Created by Kevin Haines on 3/11/2015.
  */
-public class MessagesFrag extends BaseFragment implements View.OnClickListener, MessagesAdapter.MessagesAdapterListener {
+public class MessagesFrag extends BaseFragment implements View.OnClickListener, MessagesAdapter.MessagesAdapterListener, TextWatcher {
     public static final String  TAG = "MessagesFrag";
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_MESSAGES = "ARG_MESSAGES";
@@ -124,6 +126,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mMessageAdapter);
+        etmessage.addTextChangedListener(this);
     }
 
     @Override
@@ -252,6 +255,27 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         if (event.message.getUser().getOuid().equals(user.getOuid())) {
             mMessageAdapter.addMessage(event.message);
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (count > 0) {
+            ivsend.setEnabled(true);
+            ivsend.setColorFilter(getActivity().getResources().getColor(R.color.base_green));
+        } else {
+            ivsend.setEnabled(false);
+            ivsend.setColorFilter(getActivity().getResources().getColor(R.color.disabled_gray));
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 
     @Override

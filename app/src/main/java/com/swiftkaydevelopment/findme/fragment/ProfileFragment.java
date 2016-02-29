@@ -39,6 +39,7 @@ import com.swiftkaydevelopment.findme.activity.ViewPhotos;
 import com.swiftkaydevelopment.findme.adapters.PostAdapter;
 import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.services.UploadService;
@@ -95,6 +96,7 @@ public class ProfileFragment extends BaseFragment implements
 
             if (!user.getOuid().equals(uid)) {
                 UserManager.getInstance(uid).addProfileView(uid, user);
+                DatabaseManager.instance(getActivity()).createUser(user);
             }
         }
     }
@@ -286,11 +288,6 @@ public class ProfileFragment extends BaseFragment implements
                 .replace(android.R.id.content, editProfile, EditProfile.TAG)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    @Override
-    public void onPostsRetrieved(ArrayList<Post> posts) {
-
     }
 
     @Override

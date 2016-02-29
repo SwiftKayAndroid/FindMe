@@ -263,9 +263,6 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
     }
 
     @Override
-    public void onPostsRetrieved(ArrayList<Post> posts) {}
-
-    @Override
     public void onProfilePostsRetrieved(ArrayList<Post> posts) {}
 
     @Override

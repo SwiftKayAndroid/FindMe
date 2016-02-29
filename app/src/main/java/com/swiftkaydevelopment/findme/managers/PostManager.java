@@ -23,7 +23,9 @@ import android.util.Log;
 
 import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.events.NewsFeedPostsRetrieved;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +36,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class PostManager {
 
     public interface PostsListener{
-        void onPostsRetrieved(ArrayList<Post> posts);
         void onProfilePostsRetrieved(ArrayList<Post> posts);
         void onSinglePostRetrieved(Post post);
     }
@@ -342,11 +343,7 @@ public class PostManager {
         protected void onPostExecute(ArrayList<Post> posts) {
             super.onPostExecute(posts);
             mPosts = posts;
-            for (PostsListener l : mListeners) {
-                if (l != null) {
-                    l.onPostsRetrieved(posts);
-                }
-            }
+            EventBus.getDefault().postSticky(new NewsFeedPostsRetrieved(posts));
         }
     }
 }

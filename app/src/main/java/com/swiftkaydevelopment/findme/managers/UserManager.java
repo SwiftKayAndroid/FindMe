@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.events.ConnectionsFoundEvent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +23,6 @@ public class UserManager {
         void onFriendRequestsRetrieved(ArrayList<User> users);
         void onFriendsRetrieved(ArrayList<User> users);
         void onMatchesRetrieved(ArrayList<User> users);
-        void onPeopleFound(ArrayList<User> users);
         void onProfileViewsFetched(ArrayList<User> users);
     }
     private static final String TAG = "UserManager";
@@ -564,12 +565,7 @@ public class UserManager {
         @Override
         protected void onPostExecute(ArrayList<User> users) {
             super.onPostExecute(users);
-
-            for (UserManagerListener l : mListeners) {
-                if (l != null) {
-                    l.onPeopleFound(users);
-                }
-            }
+            EventBus.getDefault().postSticky(new ConnectionsFoundEvent(users));
         }
     }
 }

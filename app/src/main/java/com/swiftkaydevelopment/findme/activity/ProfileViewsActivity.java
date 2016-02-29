@@ -59,13 +59,13 @@ public class ProfileViewsActivity extends BaseActivity{
         }
         mToolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.setTitle("Profile Views");
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
     }
 
     @Override
