@@ -27,6 +27,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
 
     private ArrayList<User> users = new ArrayList<>();
     private FindPeopleAdapter mAdapter;
+    private boolean mLoadingMore = false;
 
     private RecyclerView mRecyclerView;
     private ProgressBar mLoadingMorePb;
@@ -75,12 +76,13 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
             users = (ArrayList) savedInstanceState.getSerializable(ARG_USERS);
         } else {
             mProgressBar.setVisibility(View.VISIBLE);
-            UserManager.getInstance(uid, getActivity()).findPeople(uid, "0");
+            UserManager.getInstance(uid).findPeople(uid, "0");
         }
 
         if (mAdapter == null) {
             mAdapter = new FindPeopleAdapter(getActivity(), users, uid);
         }
+
         mAdapter.setListener(this);
 
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(
@@ -99,7 +101,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     @Override
     public void onResume() {
         super.onResume();
-        UserManager.getInstance(uid, getActivity()).addListener(this);
+        UserManager.getInstance(uid).addListener(this);
         if (mAdapter != null) {
             mAdapter.setListener(this);
         }
@@ -108,27 +110,25 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     @Override
     public void onPause() {
         super.onPause();
-        UserManager.getInstance(uid, getActivity()).removeListener(this);
+        UserManager.getInstance(uid).removeListener(this);
         mAdapter.setListener(null);
     }
 
     @Override
-    public void onFriendRequestsRetrieved(ArrayList<User> users) {
-
-    }
+    public void onFriendRequestsRetrieved(ArrayList<User> users) {}
 
     @Override
-    public void onFriendsRetrieved(ArrayList<User> users) {
-
-    }
+    public void onFriendsRetrieved(ArrayList<User> users) {}
 
     @Override
-    public void onMatchesRetrieved(ArrayList<User> users) {
+    public void onMatchesRetrieved(ArrayList<User> users) {}
 
-    }
+    @Override
+    public void onProfileViewsFetched(ArrayList<User> users) {}
 
     @Override
     public void onPeopleFound(ArrayList<User> users) {
+        mLoadingMore = false;
         mLoadingMorePb.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
         if (mAdapter != null && users != null) {
@@ -137,14 +137,12 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     }
 
     @Override
-    public void onProfileViewsFetched(ArrayList<User> users) {
-
-    }
-
-    @Override
     public void onLastItem(User lastUser) {
-        mLoadingMorePb.setVisibility(View.VISIBLE);
-        UserManager.getInstance(uid, getActivity()).findPeople(uid, lastUser.getOuid());
+        if (!mLoadingMore) {
+            mLoadingMore = true;
+            mLoadingMorePb.setVisibility(View.VISIBLE);
+            UserManager.getInstance(uid).findPeople(uid, lastUser.getOuid());
+        }
     }
 
     @Override

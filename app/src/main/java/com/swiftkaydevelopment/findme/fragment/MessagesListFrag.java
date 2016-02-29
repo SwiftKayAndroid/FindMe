@@ -14,10 +14,17 @@ import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.MessagesActivity;
+import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.MessageThreadsAdapter;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
+import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.events.MessageReceivedEvent;
 import com.swiftkaydevelopment.findme.managers.MessagesManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +109,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
             mEmptyView.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
             mRefreshing = true;
-            MessagesManager.getInstance(uid, getActivity()).refreshThreads(getActivity());
+            MessagesManager.getInstance(uid).refreshThreads();
         }
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -147,7 +154,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     public void onResume() {
         Log.i(TAG, "onResume");
         super.onResume();
-        MessagesManager.getInstance(uid, getActivity()).addThreadsListener(this);
+        MessagesManager.getInstance(uid).addThreadsListener(this);
         if (mMessagesAdapter != null) {
             mMessagesAdapter.setThreadSelectedListener(this);
         }
@@ -157,7 +164,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     public void onPause() {
         Log.i(TAG, "onPause");
         super.onPause();
-        MessagesManager.getInstance(uid, getActivity()).removeThreadsListener(this);
+        MessagesManager.getInstance(uid).removeThreadsListener(this);
         if (mMessagesAdapter != null) {
             mMessagesAdapter.setThreadSelectedListener(null);
         }
@@ -167,7 +174,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     public void onRefresh() {
         mRefreshLayout.setRefreshing(true);
         mRefreshing = true;
-        MessagesManager.getInstance(uid, getActivity()).refreshThreads(getActivity());
+        MessagesManager.getInstance(uid).refreshThreads();
     }
 
     @Override
@@ -213,7 +220,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                MessagesManager.getInstance(uid, getActivity()).deleteThread(threadInfo);
+                MessagesManager.getInstance(uid).deleteThread(threadInfo);
             }
         });
         builder.setNegativeButton("Cancel", null);
@@ -221,14 +228,14 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     }
 
     @Override
-    public void onMessageRecevied(final Message message) {
-
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mMessagesAdapter.addMessage(message);
-            }
-        });
-
+    public void onThreadUserSelected(User user) {
+        getActivity().startActivity(ProfileActivity.createIntent(getActivity(), user));
     }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageReceivedEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
+        mMessagesAdapter.addMessage(event.message);
+    }
+
 }

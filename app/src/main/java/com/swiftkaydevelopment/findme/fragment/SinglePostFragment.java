@@ -38,22 +38,22 @@ import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.views.ExpandableLinearLayout;
-import com.swiftkaydevelopment.findme.views.tagview.TagView;
 
 import java.util.ArrayList;
 
-public class SinglePostFragment extends BaseFragment {
+public class SinglePostFragment extends BaseFragment implements PostManager.PostsListener {
     public static final String TAG = "SinglePostFragment";
 
     private static final String ARG_COMMENTS = "ARG_COMMENTS";
     private static final String ARG_POST = "ARG_POST";
+    private static final String ARG_POST_ID = "ARG_POST_ID";
 
     private Post mPost;
+    private String mPostid;
 
     TextView tvName, tvTime, tvLocation, tvPost, tvNumLikes, tvNumComments;
     ImageView ivProfilePicture, ivPostImage, ivPostLike, ivPostToggle;
     ExpandableLinearLayout extrasContainer;
-    TagView tagView;
 
     private ArrayList<Comment> mComments;
     private ImageView ivPostComment;
@@ -63,11 +63,11 @@ public class SinglePostFragment extends BaseFragment {
 
     private CommentAdapter mAdapter;
 
-    public static SinglePostFragment newInstance (String uid, Post post) {
+    public static SinglePostFragment newInstance (String uid, String postid) {
         SinglePostFragment frag = new SinglePostFragment();
         Bundle b = new Bundle();
         b.putString(ARG_UID, uid);
-        b.putSerializable(ARG_POST, post);
+        b.putString(ARG_POST_ID, postid);
         frag.setArguments(b);
         return frag;
     }
@@ -80,12 +80,12 @@ public class SinglePostFragment extends BaseFragment {
             uid = savedInstanceState.getString(ARG_UID);
             mPost = (Post) savedInstanceState.getSerializable(ARG_POST);
             mComments = (ArrayList) savedInstanceState.getSerializable(ARG_COMMENTS);
+            mPostid = savedInstanceState.getString(ARG_POST_ID);
         } else {
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
-                mPost = (Post) getArguments().getSerializable(ARG_POST);
+                mPostid = getArguments().getString(ARG_POST_ID);
             }
-            mComments = CommentsManager.getInstance(uid, getActivity()).fetchComments(mPost.getPostId());
         }
     }
 
@@ -105,7 +105,6 @@ public class SinglePostFragment extends BaseFragment {
         ivProfilePicture = (ImageView) layout.findViewById(R.id.ivPostProfilePicture);
         extrasContainer = (ExpandableLinearLayout) layout.findViewById(R.id.postExtrasContainer);
         ivPostToggle = (ImageView) layout.findViewById(R.id.ivPostToggleButton);
-        tagView = (TagView) layout.findViewById(R.id.postTagView);
         lv = (ListView) layout.findViewById(R.id.lvcommentspop);
         emptyView = (ImageView) layout.findViewById(R.id.commentsEmptyView);
         etComment = (EditText) layout.findViewById(R.id.etcommentonpost);
@@ -122,8 +121,41 @@ public class SinglePostFragment extends BaseFragment {
             uid = savedInstanceState.getString(ARG_UID);
             mPost = (Post) savedInstanceState.getSerializable(ARG_POST);
             mComments = (ArrayList) savedInstanceState.getSerializable(ARG_COMMENTS);
+            mPostid = savedInstanceState.getString(ARG_POST_ID);
+            initializePost();
+        } else {
+            PostManager.getInstance().getSinglePost(mPostid, uid);
+            //todo: remove this .get() async call in favor of a listener
+            mComments = CommentsManager.getInstance(uid, getActivity()).fetchComments(mPostid);
         }
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(ARG_UID, uid);
+        outState.putSerializable(ARG_POST, mPost);
+        outState.putSerializable(ARG_COMMENTS, mComments);
+        outState.putString(ARG_POST_ID, mPostid);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        PostManager.getInstance().addPostListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        PostManager.getInstance().removeListener(this);
+    }
+
+    /**
+     * Initializes the views based on the post data
+     *
+     */
+    private void initializePost() {
         if (mPost.getNumLikes() == 0) {
             tvNumLikes.setText("No likes");
         } else {
@@ -220,7 +252,7 @@ public class SinglePostFragment extends BaseFragment {
                     CommentsManager.getInstance(uid, getActivity()).postComment(mPost.getPostId(), comment);
                     Comment c = Comment.createComment(uid);
                     c.setComment(comment);
-                    c.setUser(UserManager.getInstance(uid, getActivity()).me());
+                    c.setUser(UserManager.getInstance(uid).me());
                     c.setTime("Just Now");
                     c.setPostId(mPost.getPostId());
                     mAdapter.addComment(c);
@@ -231,10 +263,14 @@ public class SinglePostFragment extends BaseFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putString(ARG_UID, uid);
-        outState.putSerializable(ARG_POST, mPost);
-        outState.putSerializable(ARG_COMMENTS, mComments);
-        super.onSaveInstanceState(outState);
+    public void onPostsRetrieved(ArrayList<Post> posts) {}
+
+    @Override
+    public void onProfilePostsRetrieved(ArrayList<Post> posts) {}
+
+    @Override
+    public void onSinglePostRetrieved(Post post) {
+        mPost = post;
+        initializePost();
     }
 }

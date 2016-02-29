@@ -20,15 +20,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.MessagesAdapter;
-import com.swiftkaydevelopment.findme.data.User;
-import com.swiftkaydevelopment.findme.gcm.PushNotificationManager;
-import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
+import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.events.MessageReceivedEvent;
 import com.swiftkaydevelopment.findme.managers.MessagesManager;
+import com.swiftkaydevelopment.findme.managers.UserManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -75,7 +79,6 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
             }
         };
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
     }
 
     @Nullable
@@ -109,9 +112,9 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
             mEmptyView.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
             if (mThreadInfo != null) {
-                MessagesManager.getInstance(uid, getActivity()).getMoreMessages("0", mThreadInfo, getActivity());
+                MessagesManager.getInstance(uid).getMoreMessages("0", mThreadInfo, getActivity());
             } else {
-                MessagesManager.getInstance(uid, getActivity()).getMoreMessages("0", user, getActivity());
+                MessagesManager.getInstance(uid).getMoreMessages("0", user, getActivity());
             }
         }
 
@@ -137,6 +140,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         if (mMessageAdapter != null) {
             mMessageAdapter.setMessagesAdapterListener(this);
         }
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -145,6 +149,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         if (mMessageAdapter != null) {
             mMessageAdapter.setMessagesAdapterListener(null);
         }
+        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -179,7 +184,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
                 Log.i(TAG, "Message Adapter isn't null");
                 mMessageAdapter.addMessage(message);
                 if (!message.getUser().getOuid().equals(uid)) {
-                    MessagesManager.getInstance(uid, getActivity()).markThreadAsSeen(uid, message.getThreadId());
+                    MessagesManager.getInstance(uid).markThreadAsSeen(uid, message.getThreadId());
                     try {
                         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                         Ringtone r = RingtoneManager.getRingtone(getActivity(), notification);
@@ -226,9 +231,9 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.messagePopUpMenuDelete) {
-                    MessagesManager.getInstance(uid, getActivity()).deleteMessage(message);
+                    MessagesManager.getInstance(uid).deleteMessage(message);
                 } else if (item.getItemId() == R.id.messagesPopUpMenuUnsend) {
-                    MessagesManager.getInstance(uid, getActivity()).unSendMessage(message);
+                    MessagesManager.getInstance(uid).unSendMessage(message);
                 }
                 return true;
             }
@@ -241,6 +246,14 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         getActivity().startActivity(ProfileActivity.createIntent(getActivity(), message.getUser()));
     }
 
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageReceivedEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
+        if (event.message.getUser().getOuid().equals(user.getOuid())) {
+            mMessageAdapter.addMessage(event.message);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.tvsendmessage && !(etmessage.getText().toString().equals(""))) {
@@ -250,13 +263,13 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
             message.setOuid(uid);
             message.setReadStatus(1);
             message.setSeenStatus(0);
-            message.setUser(UserManager.getInstance(uid, getActivity()).me());
+            message.setUser(UserManager.getInstance(uid).me());
             message.setTime("Just Now");
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromInputMethod(etmessage.getWindowToken(), 0);
             etmessage.setText("");
 
-            MessagesManager.getInstance(uid,getActivity()).sendMessage(message, user);
+            MessagesManager.getInstance(uid).sendMessage(message, user);
         }
     }
 }

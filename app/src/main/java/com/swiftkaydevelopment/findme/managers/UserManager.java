@@ -1,6 +1,5 @@
 package com.swiftkaydevelopment.findme.managers;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -27,7 +26,6 @@ public class UserManager {
     }
     private static final String TAG = "UserManager";
     private String mUid;
-    private Context mContext;
     private static User me;
 
     private CopyOnWriteArrayList<UserManagerListener> mListeners = new CopyOnWriteArrayList<>();
@@ -35,13 +33,12 @@ public class UserManager {
     private static UserManager manager = null;
 
 
-    public static UserManager getInstance(String uid, Context context){
+    public static UserManager getInstance(String uid){
         synchronized (UserManager.class) {
             if (manager == null) {
                 manager = new UserManager();
             }
             manager.mUid = uid;
-            manager.mContext = context;
         }
 
         return manager;

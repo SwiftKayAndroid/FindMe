@@ -98,7 +98,6 @@ public class User implements Serializable {
     private String mName;
     private String mFirstname;
     private String mLastname;
-    private JSONObject mSearchingFor;
     private Map<String, String> mSearchingForMap;
     private int mAge;
     private boolean mIsFriend;

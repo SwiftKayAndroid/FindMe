@@ -27,15 +27,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.CommentAdapter;
 import com.swiftkaydevelopment.findme.data.Comment;
 import com.swiftkaydevelopment.findme.managers.CommentsManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.R;
 
 import java.util.ArrayList;
 
@@ -120,6 +121,7 @@ public class CommentsDialog extends AppCompatDialogFragment {
             emptyView.setVisibility(View.GONE);
         }
         etComment = (EditText) layout.findViewById(R.id.etcommentonpost);
+        etComment.setImeOptions(etComment.getImeOptions() | EditorInfo.IME_FLAG_NO_FULLSCREEN);
         ivPostComment = (ImageView) layout.findViewById(R.id.ivCommentSend);
         ivPostComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +131,7 @@ public class CommentsDialog extends AppCompatDialogFragment {
                     CommentsManager.getInstance(mUid, getActivity()).postComment(mPostid, comment);
                     Comment c = Comment.createComment(mUid);
                     c.setComment(comment);
-                    c.setUser(UserManager.getInstance(mUid, getActivity()).me());
+                    c.setUser(UserManager.getInstance(mUid).me());
                     c.setTime("Just Now");
                     c.setPostId(mPostid);
                     mAdapter.addComment(c);

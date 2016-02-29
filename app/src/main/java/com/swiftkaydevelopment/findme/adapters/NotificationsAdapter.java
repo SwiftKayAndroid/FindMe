@@ -2,12 +2,14 @@ package com.swiftkaydevelopment.findme.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.Notification;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
@@ -50,16 +52,25 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
         final Notification note = nlist.get(position);
-        holder.iv.setImageResource(note.resId);
+
         holder.title.setText(note.title);
         holder.desc.setText(note.description);
-        holder.itemView.setTag(note);
+
+        if (note.user != null && !TextUtils.isEmpty(note.user.getPropicloc())) {
+            Picasso.with(mContext)
+                    .load(note.user.getPropicloc())
+                    .into(holder.iv);
+        } else {
+            Picasso.with(mContext)
+                    .load(note.resId)
+                    .into(holder.iv);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onNotificationClicked((Notification) v.getTag());
+                    mListener.onNotificationClicked(note);
                 }
             }
         });

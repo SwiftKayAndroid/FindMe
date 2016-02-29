@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.NotificationsAdapter;
 import com.swiftkaydevelopment.findme.data.Notification;
 import com.swiftkaydevelopment.findme.managers.NotificationManager;
@@ -115,14 +116,14 @@ public class NotificationsFrag extends BaseFragment implements NotificationManag
 
     @Override
     public void onNotificationClicked(Notification note) {
-        //todo: fix this
-//        if (note.type.equals(Notification.TYPE_LIKE) || note.type.equals(Notification.TYPE_COMMENT)) {
-//            Post post = PostManager.getInstance().fetchPost(note.data);
-//            SinglePostFragment singlePostFragment = SinglePostFragment.newInstance(uid, post);
-//            getActivity().getSupportFragmentManager().beginTransaction()
-//                    .replace(android.R.id.content, singlePostFragment, SinglePostFragment.TAG)
-//                    .addToBackStack(null)
-//                    .commit();
-//        }
+        if (note.type.equals(Notification.TYPE_LIKE) || note.type.equals(Notification.TYPE_COMMENT)) {
+            SinglePostFragment singlePostFragment = SinglePostFragment.newInstance(uid, note.dataParentId);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, singlePostFragment, SinglePostFragment.TAG)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (note.type.equals(Notification.TYPE_NEW_FRIEND) && note.user != null) {
+            getActivity().startActivity(ProfileActivity.createIntent(getActivity(), note.user));
+        }
     }
 }

@@ -76,7 +76,7 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
             }
         } else {
             mProgressBar.setVisibility(View.VISIBLE);
-            UserManager.getInstance(uid, getActivity()).getFriendRequests(uid);
+            UserManager.getInstance(uid).getFriendRequests(uid);
             mEmptyView.setVisibility(View.GONE);
         }
 
@@ -91,7 +91,7 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
     @Override
     public void onResume() {
         super.onResume();
-        UserManager.getInstance(uid, getActivity()).addListener(this);
+        UserManager.getInstance(uid).addListener(this);
         if (mAdapter != null) {
             mAdapter.setFriendRequestsAdapterListener(this);
         }
@@ -100,7 +100,7 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
     @Override
     public void onPause() {
         super.onPause();
-        UserManager.getInstance(uid, getActivity()).removeListener(this);
+        UserManager.getInstance(uid).removeListener(this);
         if (mAdapter != null) {
             mAdapter.setFriendRequestsAdapterListener(null);
         }
@@ -115,12 +115,12 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
 
     @Override
     public void onFriendRequestAccepted(User user) {
-        UserManager.getInstance(uid, getActivity()).sendFriendRequest(uid, user);
+        UserManager.getInstance(uid).sendFriendRequest(uid, user);
     }
 
     @Override
     public void onFriendRequestDenied(User user) {
-        UserManager.getInstance(uid, getActivity()).denyFriendRequest(uid, user);
+        UserManager.getInstance(uid).denyFriendRequest(uid, user);
     }
 
     @Override

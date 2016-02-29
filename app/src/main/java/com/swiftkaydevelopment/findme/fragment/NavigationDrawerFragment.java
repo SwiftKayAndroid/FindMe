@@ -313,6 +313,11 @@ public class NavigationDrawerFragment extends Fragment {
                     .load(imgloc)
                     .transform(new CircleTransform())
                     .into(ivusersphoto);
+        } else {
+            Picasso.with(getActivity())
+                    .load(R.drawable.ic_placeholder)
+                    .transform(new CircleTransform())
+                    .into(ivusersphoto);
         }
 
 
@@ -330,7 +335,7 @@ public class NavigationDrawerFragment extends Fragment {
                 if (mDrawerLayout != null) {
                     mDrawerLayout.closeDrawer(mFragmentContainerView);
                 }
-                getActivity().startActivity(ProfileActivity.createIntent(getActivity(), UserManager.getInstance(uid, getActivity()).me()));
+                getActivity().startActivity(ProfileActivity.createIntent(getActivity(), UserManager.getInstance(uid).me()));
             }
         });
 
@@ -341,7 +346,7 @@ public class NavigationDrawerFragment extends Fragment {
                 if (mDrawerLayout != null) {
                     mDrawerLayout.closeDrawer(mFragmentContainerView);
                 }
-                getActivity().startActivity(ProfileActivity.createIntent(getActivity(), UserManager.getInstance(uid, getActivity()).me()));
+                getActivity().startActivity(ProfileActivity.createIntent(getActivity(), UserManager.getInstance(uid).me()));
             }
         });
 

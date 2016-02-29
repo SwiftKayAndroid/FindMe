@@ -17,23 +17,15 @@
 
 package com.swiftkaydevelopment.findme.managers;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
-import com.swiftkaydevelopment.findme.activity.MessagesActivity;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
 import com.swiftkaydevelopment.findme.data.User;
-import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.events.MessageReceivedEvent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,11 +37,16 @@ public class MessagesManager {
     public static final String TAG = "MessagesManager";
 
     public interface MessagesListener{
+        /**
+         * Called when messages or more messages have been retrieved
+         * from the server
+         *
+         * @param moreMessages list of messages retrieved
+         */
         void onRetrieveMoreMessages(ArrayList<Message> moreMessages);
         void onMessageDeleted(Message message);
         void onMessageSentComplete(Message message);
         void onMessageUnsent(Message message);
-        void onMessageReceived(Message message);
     }
 
     public interface MessageThreadListener{
@@ -57,24 +54,21 @@ public class MessagesManager {
         void onRetrieveMoreThreads(ArrayList<ThreadInfo> threadInfos);
         void onMessageSentComplete(Message message);
         void onMessageUnsent(Message message);
-        void onMessageRecevied(Message message);
         void onThreadsPurged();
     }
 
     private static String mUid;
     private static MessagesManager manager = null;
     private ArrayList<Message> mMessages;
-    private static Context mContext;
 
     private static CopyOnWriteArrayList<MessageThreadListener> mMessageThreadListeners = new CopyOnWriteArrayList<>();
     private static CopyOnWriteArrayList<MessagesListener> mMessagesListeners = new CopyOnWriteArrayList<>();
 
-    public static MessagesManager getInstance(String uid, Context context){
+    public static MessagesManager getInstance(String uid){
         if (manager == null) {
             manager = new MessagesManager();
         }
         manager.mUid = uid;
-        mContext = context;
         return manager;
     }
 
@@ -94,37 +88,24 @@ public class MessagesManager {
         mMessagesListeners.remove(listener);
     }
 
-    public void refreshMessages(ThreadInfo threadInfo, Context context){
-        mContext = context;
+    public void refreshMessages(ThreadInfo threadInfo){
         new FetchMessagesTask("0", threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-    public void refreshThreads(Context context){
-        mContext = context;
+    public void refreshThreads(){
         new FetchThreadsTask("0").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     public void getMoreMessages(String lastMessage, ThreadInfo threadInfo, Context context){
-        mContext = context;
         new FetchMessagesTask(lastMessage, threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     public void getMoreMessages(String lastMessage, User user, Context context){
-        mContext = context;
         new FetchMessagesTask(lastMessage, user).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     public void deleteAllThreads(String uid) {
         new DeleteAllThreadsTask(uid).execute();
-    }
-
-    public ArrayList<Message> getExistingMessages(){
-        if (mMessages != null) {
-            if (mMessages.size() > 0) {
-                return mMessages;
-            }
-        }
-        return null;
     }
 
     public void getMoreThreads(String lastThread){
@@ -155,11 +136,6 @@ public class MessagesManager {
         new ReportMessageTask(message, reason).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-    //todo: issue #69
-//    public void sendPictureMessage(){
-//
-//    }
-
     public void markThreadAsRead(ThreadInfo threadInfo){
         new MarkThreadAsReadTask(threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
@@ -172,28 +148,8 @@ public class MessagesManager {
         new MarkThreadAsSeenTask(uid, threadid).execute();
     }
 
-    //todo: issue #67
-//    public void requestModerationBeforeReading(ThreadInfo threadInfo){
-//    }
-
-    //// TODO: 10/28/15 issue # 71
-//    public void showAsTypingStarted(){}
-//
-//    public void showAsTypingStopped(){}
-
     public void messageNotificationReceived(Message msg) {
-
-        for (MessagesListener l : mMessagesListeners) {
-            if (l != null) {
-                l.onMessageReceived(msg);
-            }
-        }
-        for (MessageThreadListener l : mMessageThreadListeners) {
-            if (l != null) {
-                l.onMessageRecevied(msg);
-            }
-        }
-
+        EventBus.getDefault().postSticky(new MessageReceivedEvent(msg));
     }
 
     private class FetchMessagesTask extends AsyncTask<Void, Void, ArrayList<Message>>{
@@ -276,6 +232,10 @@ public class MessagesManager {
         }
     }
 
+    /**
+     * Class to fetch the list of threads for the current user
+     *
+     */
     private class FetchThreadsTask extends AsyncTask<Void, Void, ArrayList<ThreadInfo>>{
         String lastThread;
 
@@ -371,7 +331,7 @@ public class MessagesManager {
                 m.setMessage(child.getString("message"));
                 m.setMessageId("id");
                 m.setTime("Just now");
-                m.setUser(UserManager.getInstance(mUid, mContext).me());
+                m.setUser(UserManager.getInstance(mUid).me());
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -547,27 +507,6 @@ public class MessagesManager {
             return null;
         }
     }
-//todo:
-//    private class SendPictureMessageTask extends AsyncTask<Void, Void, Void>{
-//        String messageText;
-//        File picture;
-//
-//        public SendPictureMessageTask(String messageText, File picture) {
-//            this.messageText = messageText;
-//            this.picture = picture;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//            ConnectionManager connectionManager = new ConnectionManager();
-//            connectionManager.setMethod(ConnectionManager.POST);
-//            connectionManager.addParam("uid", mUid);
-//            connectionManager.addParam("message", messageText);
-//            connectionManager.setUri("");
-//            connectionManager.sendHttpRequest();
-//            return null;
-//        }
-//    }
 
     private class MarkThreadAsReadTask extends AsyncTask<Void, Void, Void>{
         ThreadInfo threadInfo;
@@ -627,23 +566,4 @@ public class MessagesManager {
             return null;
         }
     }
-//todo:
-//    private class RequestModerationBeforeReadingTask extends AsyncTask<Void, Void, Void>{
-//        ThreadInfo threadInfo;
-//
-//        public RequestModerationBeforeReadingTask(ThreadInfo threadInfo) {
-//            this.threadInfo = threadInfo;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//            ConnectionManager connectionManager = new ConnectionManager();
-//            connectionManager.setMethod(ConnectionManager.POST);
-//            connectionManager.addParam("uid", mUid);
-//            connectionManager.addParam("threadid", threadInfo.threadId);
-//            connectionManager.setUri("");
-//            connectionManager.sendHttpRequest();
-//            return null;
-//        }
-//    }
 }

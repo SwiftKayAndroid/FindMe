@@ -76,7 +76,7 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
         } else {
             mProgressBar.setVisibility(View.VISIBLE);
             mEmptyView.setVisibility(View.GONE);
-            UserManager.getInstance(uid, getActivity()).getFriends(uid);
+            UserManager.getInstance(uid).getFriends(uid);
         }
 
         if (mAdapter == null) {
@@ -97,13 +97,13 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
     @Override
     public void onResume() {
         super.onResume();
-        UserManager.getInstance(uid, getActivity()).addListener(this);
+        UserManager.getInstance(uid).addListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        UserManager.getInstance(uid, getActivity()).removeListener(this);
+        UserManager.getInstance(uid).removeListener(this);
     }
 
     @Override

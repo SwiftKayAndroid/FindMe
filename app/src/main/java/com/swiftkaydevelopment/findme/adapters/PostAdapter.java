@@ -22,7 +22,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,6 @@ import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
 import com.swiftkaydevelopment.findme.views.ExpandableLinearLayout;
-import com.swiftkaydevelopment.findme.views.tagview.Tag;
 import com.swiftkaydevelopment.findme.views.tagview.TagView;
 
 import java.util.ArrayList;
@@ -49,6 +47,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         void onCommentsClicked(Post post);
         void onImageClicked(Post post);
         void onLastPost(Post post);
+        void onProfilePictureClicked();
     }
 
     public static final String TAG = "PostAdapter";
@@ -114,7 +113,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
 
         if (holder.viewType == VIEW_TYPE_CONTENT) {
-            Log.e(TAG, "position: " + position);
             Post post = mPostList.get(position);
 
             if (post.getNumLikes() == 0) {
@@ -161,6 +159,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     }
                 }
             });
+
             holder.ivPostLike.setTag(position);
             if (mPostList.get(position).getLiked()) {
                 holder.ivPostLike.setImageResource(R.drawable.checkmark_liked);
@@ -169,7 +168,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
 
             if (!mPostList.get(position).getPostImage().equals("")) {
-                Log.e(TAG, "showing post image");
                 holder.ivPostImage.setVisibility(View.VISIBLE);
                 holder.ivPostImage.setImageResource(R.drawable.ic_placeholder);
                 Picasso.with(mContext).load(mPostList.get(position).getPostImage()).into(holder.ivPostImage);
@@ -194,21 +192,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 }
             });
 
-            holder.ivPostToggle.setRotation(0);
             holder.ivPostLike.setOnClickListener(this);
-            holder.ivPostToggle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    rotate(v);
-                    Log.i(TAG, "onclick of item");
 
-                    if (holder.extrasContainer.isExpanded()) {
-                        holder.extrasContainer.retract();
-                    } else {
-                        setExtrasContainer(position, holder);
-                    }
-                }
-            });
         } else {
             holder.orientation.setText(user.getOrientation().toString());
             holder.aboutMe.setText(user.getAboutMe());
@@ -230,6 +215,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.profession.setText(user.profession);
             holder.school.setText(user.school);
             holder.weed.setText(user.weed);
+
+            if (TextUtils.isEmpty(user.getPropicloc())) {
+                Picasso.with(mContext)
+                        .load(R.drawable.ic_placeholder)
+                        .into(holder.profilePicture);
+            } else {
+                Picasso.with(mContext)
+                        .load(user.getPropicloc())
+                        .into(holder.profilePicture);
+            }
+
+            holder.profilePicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onProfilePictureClicked();
+                    }
+                }
+            });
         }
         itemView.setTag(position);
 
@@ -238,18 +242,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 mListener.onLastPost(hasHeader ? mPostList.get(position) : mPostList.get(pos));
             }
         }
-    }
-
-    private void setExtrasContainer(int pos, PostAdapter.PostViewHolder holder) {
-        Log.i(TAG, "setting extras container");
-
-        if (mPostList.get(pos).getTags() != null) {
-            holder.tagView.removeAllTags();
-            for (Tag tag : mPostList.get(pos).getTags()) {
-                holder.tagView.addTag(tag);
-            }
-        }
-        holder.extrasContainer.expand();
     }
 
     /**
@@ -289,6 +281,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //header
         TextView aboutMe, age, gender, orientation, location, status, lookingfor;
         TextView hasKids, wantsKids, profession, school, weed;
+        private ImageView profilePicture;
 //        ImageView mEditProfile;
 
         public int viewType;
@@ -337,6 +330,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             status = (TextView) v.findViewById(R.id.profileHeaderStatus);
             lookingfor = (TextView) v.findViewById(R.id.profileHeaderLookingFor);
 //            mEditProfile = (ImageView) v.findViewById(R.id.ivProfileEditProfile);
+            profilePicture = (ImageView) v.findViewById(R.id.profileProfilePicture);
 
             hasKids = (TextView) v.findViewById(R.id.profileHeaderHasKids);
             wantsKids = (TextView) v.findViewById(R.id.profileHeaderWantsKids);

@@ -19,16 +19,18 @@ public class Notification implements Serializable {
      */
     public static final String TYPE_LIKE = "like";
     public static final String TYPE_COMMENT = "comment";
-    public static final String TYPE_NEW_FRIEND = "new_friend";
+    public static final String TYPE_NEW_FRIEND = "friend_request";
     public static final String TYPE_NEW_MATCH = "match";
 
     public String type;
     public String description;
     public User user;
-    public int resId;
+    public int resId = 0;
     public Intent intent;
     public String title;
     public String data;
+    public String seenStat;
+    public String dataParentId; //postid
 
     public static Notification instance() {
         return new Notification();
@@ -45,15 +47,21 @@ public class Notification implements Serializable {
             type = object.getString("type");
             description = object.getString("message");
             title = object.getString("title");
-            data = object.getString("data");
+            data = object.getString("data_id");
+            seenStat = object.getString("seen_stat");
 
-            if (type.equals("like")) {
-                resId = R.drawable.checkmark;
-            } else if (type.equals("comment")) {
-                resId = R.mipmap.ic_message_black_24dp;
+            if (type.equals(TYPE_LIKE)) {
+                resId = R.drawable.ic_placeholder;
+                dataParentId = object.getString("postid");
+            } else if (type.equals(TYPE_COMMENT)) {
+                resId = R.drawable.ic_placeholder;
+                dataParentId = object.getString("postid");
+            } else if (type.equals(TYPE_NEW_FRIEND)) {
+                resId = R.drawable.ic_placeholder;
             }
+
             //todo: we will have to create an individual post thing for this
-            //user = User.createUser(null, null).createUserFromJson(object.getJSONObject("data"));
+            user = User.createUserFromJson(object.getJSONObject("user"));
 
             return this;
         } catch (JSONException e) {

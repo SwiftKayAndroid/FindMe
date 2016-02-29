@@ -20,6 +20,7 @@ package com.swiftkaydevelopment.findme.data;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 
 public class PushData {
     private static final String TAG = "PushData";
@@ -30,6 +31,7 @@ public class PushData {
     public int notificationId;
     public int notificationTypeCount;
     public PendingIntent intent;
+    public Bitmap icon = null;
 
     /**
      * Creates a pending intent from an intent

@@ -70,6 +70,7 @@ public class MessagesListActivity extends BaseActivity {
 
     /**
      * Sets up the toolbar for this Activity
+     *
      */
     private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
@@ -86,7 +87,7 @@ public class MessagesListActivity extends BaseActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.messagesThreadDeleteAllMessages) {
-                    MessagesManager.getInstance(uid, MessagesListActivity.this).deleteAllThreads(uid);
+                    MessagesManager.getInstance(uid).deleteAllThreads(uid);
                 }
                 return true;
             }

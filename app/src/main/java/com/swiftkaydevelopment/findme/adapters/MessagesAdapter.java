@@ -67,7 +67,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         holder.tvMessage.setText(mMessageList.get(position).getMessage());
         holder.tvTime.setText(mMessageList.get(position).getTime());
         if (TextUtils.isEmpty(mMessageList.get(position).getUser().getPropicloc())) {
-            holder.profilePicture.setImageResource(R.drawable.ic_placeholder);
+            Picasso.with(mContext)
+                    .load(R.drawable.ic_placeholder)
+                    .transform(new CircleTransform())
+                    .into(holder.profilePicture);
         } else {
             Picasso.with(mContext)
                     .load(mMessageList.get(position).getUser().getPropicloc())

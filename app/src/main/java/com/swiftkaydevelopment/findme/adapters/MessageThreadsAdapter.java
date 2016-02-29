@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
-import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
+import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
 
@@ -29,6 +29,7 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
     public interface ThreadSelectedListener{
         void onThreadSelected(ThreadInfo threadInfo);
         void onThreadLongClicked(ThreadInfo threadInfo);
+        void onThreadUserSelected(User user);
     }
     private static final String     TAG = "MessageThreadsAdapter";
 
@@ -99,8 +100,9 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
             holder.ivpropic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mThreadList.get(position).readStatus = ThreadInfo.READ;
-                    mContext.startActivity(ProfileActivity.createIntent(mContext, mThreadList.get(position).threadUser));
+                    if (mListener != null) {
+                        mListener.onThreadUserSelected(mThreadList.get(position).threadUser);
+                    }
                 }
             });
 
@@ -109,6 +111,8 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
                 public void onClick(View v) {
                     if (mListener != null) {
                         Log.i(TAG, "message clicked");
+                        mThreadList.get(position).readStatus = ThreadInfo.READ;
+                        notifyItemChanged(position);
                         mListener.onThreadSelected(mThreadList.get(position));
                     }
                 }

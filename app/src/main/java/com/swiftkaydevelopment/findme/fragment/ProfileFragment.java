@@ -30,10 +30,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.MessagesActivity;
 import com.swiftkaydevelopment.findme.activity.UpdateStatus;
@@ -46,18 +44,18 @@ import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.services.UploadService;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ProfileFragment extends BaseFragment implements
         View.OnClickListener, PostManager.PostsListener,
-        PostAdapter.PostAdapterListener{
+        PostAdapter.PostAdapterListener, Toolbar.OnMenuItemClickListener {
+
     public static final String TAG = "ProfileFragment";
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_POSTS = "ARG_POSTS";
 
     private User                user;
+
     private RecyclerView        mRecyclerView;
-    private ImageView mProfilePicture;
 
     private FloatingActionButton mFabBase;
     private FloatingActionButton mFabLeft;
@@ -67,6 +65,13 @@ public class ProfileFragment extends BaseFragment implements
     private PostAdapter mPostAdapter;
     private ArrayList<Post> mPostList = new ArrayList<>();
 
+    /**
+     * Creates a new Instance of the ProfileFragment
+     *
+     * @param user User who's profile is being viewed
+     * @param uid User's id
+     * @return new instance of ProfileFragment
+     */
     public static ProfileFragment newInstance(User user, String uid) {
         ProfileFragment frag = new ProfileFragment();
         Bundle b = new Bundle();
@@ -80,18 +85,16 @@ public class ProfileFragment extends BaseFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (savedInstanceState != null) {
-            user = (User) savedInstanceState.getSerializable(ARG_USER);
-            mPostList = (ArrayList) savedInstanceState.getSerializable(ARG_POSTS);
-            uid = savedInstanceState.getString(ARG_UID);
-        } else {
+
+        if (savedInstanceState == null) {
+
             if (getArguments() != null) {
                 user = (User) getArguments().getSerializable(ARG_USER);
                 uid = getArguments().getString(ARG_UID);
             }
-            PostManager.getInstance().fetchUserPosts(user, "0", uid);
+
             if (!user.getOuid().equals(uid)) {
-                UserManager.getInstance(uid, getActivity()).addProfileView(uid, user);
+                UserManager.getInstance(uid).addProfileView(uid, user);
             }
         }
     }
@@ -100,6 +103,65 @@ public class ProfileFragment extends BaseFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.profile_fragment, container, false);
+
+        mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewProfile);
+
+        return layout;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            user = (User) savedInstanceState.getSerializable(ARG_USER);
+            mPostList = (ArrayList) savedInstanceState.getSerializable(ARG_POSTS);
+            uid = savedInstanceState.getString(ARG_UID);
+        } else {
+            PostManager.getInstance().fetchUserPosts(user, "0", uid);
+        }
+
+        setUpToolbar(view);
+        setUpFabs(view);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if (mPostAdapter == null) {
+            mPostAdapter = new PostAdapter(getActivity(), mPostList, user, true, user.getOuid().equals(uid));
+        }
+
+        mRecyclerView.setAdapter(mPostAdapter);
+
+        if (user.isFriend()) {
+            mFabBase.setImageResource(R.mipmap.ic_message_black_24dp);
+            mFabBase.setColorFilter(Color.WHITE);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(ARG_POSTS, mPostList);
+        outState.putSerializable(ARG_USER, user);
+        outState.putString(ARG_UID, uid);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.profileReportProfile) {
+            Toast.makeText(getActivity(), "Profile Reported", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.profileMenuPictures) {
+            getActivity().startActivity(ViewPhotos.createIntent(getActivity(), user));
+        }
+        return true;
+    }
+
+    /**
+     * Initializes the Toolbar for the profile layout
+     *
+     * @param layout root layout view
+     */
+    private void setUpToolbar(View layout) {
         Toolbar toolbar = (Toolbar) layout.findViewById(R.id.profileToolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         toolbar.setTitle(user.getName());
@@ -110,18 +172,17 @@ public class ProfileFragment extends BaseFragment implements
                 getActivity().onBackPressed();
             }
         });
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.profileReportProfile) {
-                    Toast.makeText(getActivity(), "Profile Reported", Toast.LENGTH_SHORT).show();
-                } else if (item.getItemId() == R.id.profileMenuPictures) {
-                    getActivity().startActivity(ViewPhotos.createIntent(getActivity(), user));
-                }
-                return true;
-            }
-        });
 
+        toolbar.setOnMenuItemClickListener(this);
+    }
+
+    /**
+     * Initializes the Floating Action Buttons for
+     * the Profile layout
+     *
+     * @param layout root layout view
+     */
+    private void setUpFabs(View layout) {
         mFabBase = (FloatingActionButton) layout.findViewById(R.id.profileFabBase);
         mFabLeft = (FloatingActionButton) layout.findViewById(R.id.profileFabLeft);
         mFabCenter = (FloatingActionButton) layout.findViewById(R.id.profileFabCenter);
@@ -131,55 +192,6 @@ public class ProfileFragment extends BaseFragment implements
         mFabLeft.setOnClickListener(this);
         mFabCenter.setOnClickListener(this);
         mFabUpper.setOnClickListener(this);
-        mProfilePicture = (ImageView) layout.findViewById(R.id.profileProfilePicture);
-
-        mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerViewProfile);
-
-        return layout;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        if (user == null) {
-            throw new IllegalStateException("user is null");
-        }
-
-        if (user.getPropicloc().equals("")) {
-            mProfilePicture.setImageResource(R.drawable.ic_placeholder);
-        } else {
-            Picasso.with(getActivity())
-                    .load(user.getPropicloc())
-                    .into(mProfilePicture);
-        }
-
-        mProfilePicture.setOnClickListener(this);
-        if (mPostAdapter != null) {
-            log("adapter is not null");
-            mRecyclerView.setAdapter(mPostAdapter);
-        } else {
-            log("adapter is null");
-            log("size " + Integer.toString(mPostList.size()));
-            mPostAdapter = new PostAdapter(getActivity(), mPostList, user, true, user.getOuid().equals(uid));
-            mRecyclerView.setAdapter(mPostAdapter);
-        }
-
-        if (user.isFriend()) {
-            mFabBase.setImageResource(R.mipmap.ic_message_black_24dp);
-            mFabBase.setColorFilter(Color.WHITE);
-        }
-
-        initializeProfileInformation();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(ARG_POSTS, mPostList);
-        outState.putSerializable(ARG_USER, user);
-        outState.putString(ARG_UID, uid);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -194,34 +206,32 @@ public class ProfileFragment extends BaseFragment implements
         super.onResume();
         PostManager.getInstance().addPostListener(this);
         if (user.getOuid().equals(uid)) {
-            user = UserManager.getInstance(uid, getActivity()).me();
+            user = UserManager.getInstance(uid).me();
         }
         mPostAdapter.setPostAdapterListener(this);
-    }
-
-    private void initializeProfileInformation() {
-
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry entry : user.getSearchingFor().entrySet()) {
-            if (entry.getValue().equals("yes")) {
-                sb.append(entry.getKey() + " ");
-            }
-        }
     }
 
     /**
      * Expands the fabs for the users own profile
      */
     private void expandOwnProfileFabs() {
-        mFabLeft.setImageResource(R.drawable.ic_action_edit_dark);
+        mFabLeft.setImageResource(R.mipmap.ic_pencil_white_24dp);
         mFabUpper.setImageResource(R.mipmap.ic_photo_camera_white_24dp);
         mFabUpper.setVisibility(mFabUpper.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        if (mFabCenter.getVisibility() == View.VISIBLE) {
+            mFabCenter.setVisibility(View.GONE);
+        } else {
+            mFabCenter.setVisibility(View.VISIBLE);
+            mFabCenter.setImageResource(R.mipmap.ic_account_card_details_white_24dp);
+            mFabCenter.setColorFilter(Color.WHITE);
+        }
         setVisibility();
 
     }
 
     /**
      * Expands the fabs for a different users profile
+     *
      */
     private void expandOtherProfileFabs() {
         if (user.isFriend()) {
@@ -267,7 +277,7 @@ public class ProfileFragment extends BaseFragment implements
      * Starts User to match user
      */
     private void matchUser() {
-        UserManager.getInstance(uid, getActivity()).sendMatchRequest(uid, user);
+        UserManager.getInstance(uid).sendMatchRequest(uid, user);
     }
 
     private void editProfile() {
@@ -294,6 +304,9 @@ public class ProfileFragment extends BaseFragment implements
     }
 
     @Override
+    public void onSinglePostRetrieved(Post post) {}
+
+    @Override
     public void onCommentsClicked(Post post) {
     }
 
@@ -312,11 +325,21 @@ public class ProfileFragment extends BaseFragment implements
     }
 
     @Override
+    public void onProfilePictureClicked() {
+//        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, null, (user.getOuid().equals(uid)));
+//        getActivity().getSupportFragmentManager().beginTransaction()
+//                .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
+//                .addToBackStack(null)
+//                .commit();
+    }
+
+    @Override
     public void onClick(View v) {
         boolean isSameProfile = false;
         if (user.getOuid().equals(uid)) {
             isSameProfile = true;
         }
+
         if (v.getId() == R.id.profileFabBase) {
             rotate(v);
             if (isSameProfile) {
@@ -332,17 +355,13 @@ public class ProfileFragment extends BaseFragment implements
             }
         } else if (v.getId() == R.id.profileFabUpper) {
             if (!isSameProfile) {
-                UserManager.getInstance(uid, getActivity()).sendFriendRequest(uid, user);
+                UserManager.getInstance(uid).sendFriendRequest(uid, user);
                 Toast.makeText(getActivity(), "Friend Request sent", Toast.LENGTH_SHORT).show();
             } else {
                 getActivity().startActivity(UploadService.createIntent(getActivity()));
             }
-        } else if (v.getId() == R.id.profileProfilePicture) {
-            FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, null, (user.getOuid().equals(uid)));
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
-                    .addToBackStack(null)
-                    .commit();
+        } else if (v.getId() == mFabCenter.getId()) {
+            editProfile();
         }
     }
 }

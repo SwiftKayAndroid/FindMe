@@ -20,12 +20,8 @@ package com.swiftkaydevelopment.findme.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.swiftkaydevelopment.findme.activity.FindMe;
 import com.swiftkaydevelopment.findme.data.datainterfaces.DatabaseObject;
 import com.swiftkaydevelopment.findme.data.datainterfaces.JsonCreatable;
-import com.swiftkaydevelopment.findme.managers.AccountManager;
-import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.views.tagview.Tag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +45,6 @@ public class Post implements Serializable, JsonCreatable<Post>, DatabaseObject<P
     private int mNumComments;
     private boolean mLiked;
     private ArrayList<Comment> comments;
-    private ArrayList<Tag> mTags;
 
     /**
      * Creates a new Post object
@@ -143,22 +138,6 @@ public class Post implements Serializable, JsonCreatable<Post>, DatabaseObject<P
      */
     public String getPostingUsersId(){
         return mPostingUsersId;
-    }
-
-    /**
-     * gets the list of tags for this post
-     * @return arraylist of tags
-     */
-    public ArrayList<Tag> getTags() {
-        return mTags;
-    }
-
-    /**
-     * sets the tags for this post
-     * @param mTags arraylist of tags
-     */
-    public void setTags(ArrayList<Tag> mTags) {
-        this.mTags = mTags;
     }
 
     /**

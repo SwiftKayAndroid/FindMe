@@ -36,6 +36,7 @@ public class PostManager {
     public interface PostsListener{
         void onPostsRetrieved(ArrayList<Post> posts);
         void onProfilePostsRetrieved(ArrayList<Post> posts);
+        void onSinglePostRetrieved(Post post);
     }
 
     public static final String TAG = "FindMe-PostManager";
@@ -89,6 +90,16 @@ public class PostManager {
 
         new FetchPostsTask(uid, lastpost).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
         return mPosts;
+    }
+
+    /**
+     * Fetches a single post from the database
+     *
+     * @param postid Post id of the post to fetch
+     * @param uid User's id
+     */
+    public void getSinglePost(String postid, String uid) {
+        new FetchPostTask(postid, uid).execute();
     }
 
     /**
@@ -251,14 +262,12 @@ public class PostManager {
      * This class is used to fetch a single post
      *
      */
-    private static class FetchPostTask extends AsyncTask<Void,Void,Post> {
+    private class FetchPostTask extends AsyncTask<Void, Void, Post> {
         String postid;
-        Post post;
         String uid;
 
-        public FetchPostTask(String postid, Post post, String uid){
+        public FetchPostTask(String postid, String uid){
             this.postid = postid;
-            this.post = post;
             this.uid = uid;
         }
 
@@ -274,12 +283,20 @@ public class PostManager {
 
             try {
                 JSONObject jsonObject = new JSONObject(connectionManager.sendHttpRequest());
-                post = Post.createPostFromJson(jsonObject);
+                return Post.createPostFromJson(jsonObject);
 
             } catch(JSONException e) {
                 e.printStackTrace();
+                return null;
             }
-            return post;
+        }
+
+        @Override
+        protected void onPostExecute(Post post) {
+            super.onPostExecute(post);
+            for (PostsListener l : mListeners) {
+                l.onSinglePostRetrieved(post);
+            }
         }
     }
 

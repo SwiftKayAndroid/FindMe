@@ -60,10 +60,4 @@ public class ViewPhotos extends BaseActivity {
         }
 
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
 }

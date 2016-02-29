@@ -5,14 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.User;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
@@ -64,7 +62,7 @@ public class FindPeopleAdapter extends RecyclerView.Adapter<FindPeopleAdapter.Co
     }
 
     @Override
-    public void onBindViewHolder(ConnectViewHolder holder, int position) {
+    public void onBindViewHolder(ConnectViewHolder holder, final int position) {
         holder.tvDesc.setText(users.get(position).getGender().toString().substring(0, 1) + "/" +
                 users.get(position).getAge() + "/" + users.get(position).getOrientation().toString());
 
@@ -85,6 +83,15 @@ public class FindPeopleAdapter extends RecyclerView.Adapter<FindPeopleAdapter.Co
                 mListener.onLastItem(users.get(users.size() - 1));
             }
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onUserSelected(users.get(position));
+                }
+            }
+        });
     }
 
     @Override

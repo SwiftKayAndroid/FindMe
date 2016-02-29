@@ -186,7 +186,7 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
                 startActivity(MatchActivity.createIntent(this));
                 break;
             case PHOTOS:
-                startActivity(ViewPhotos.createIntent(this, UserManager.getInstance(uid, this).me()));
+                startActivity(ViewPhotos.createIntent(this, UserManager.getInstance(uid).me()));
                 break;
             default:
                 break;

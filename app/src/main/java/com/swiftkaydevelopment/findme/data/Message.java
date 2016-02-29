@@ -1,14 +1,18 @@
 package com.swiftkaydevelopment.findme.data;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.MessagesListActivity;
 import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
 import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.managers.MessagesManager;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -144,12 +148,24 @@ public class Message implements Serializable, Notifiable {
         //todo: the user needs to be passed in with the json data
         setUser(User.createUser().fetchUser(data.getString("senderid"), AccountManager.getInstance(context).getUserId()));
         //todo: this is where eventbus will be called.
-        MessagesManager.getInstance("", context).messageNotificationReceived(this);
+        MessagesManager.getInstance("").messageNotificationReceived(this);
 
         PushData pushData = new PushData();
         pushData.title = user.getFirstname();
         pushData.message = mMessage;
         pushData.resId = R.mipmap.ic_message_black_24dp;
+        if (TextUtils.isEmpty(getUser().getPropicloc())) {
+            pushData.icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_placeholder);
+        } else {
+            try {
+                pushData.icon = Picasso.with(context)
+                        .load(user.getPropicloc())
+                        .get();
+            } catch (IOException e) {
+                e.printStackTrace();
+                pushData.icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_placeholder);
+            }
+        }
         pushData.notificationId = getNotificationId();
         pushData.intent = PushData.createPendingIntent(MessagesListActivity.createIntent(context), context);
         return pushData;

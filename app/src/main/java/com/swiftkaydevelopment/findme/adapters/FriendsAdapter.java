@@ -9,11 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
-import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
@@ -98,7 +97,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.ivDenyFriendRequest) {
-                UserManager.getInstance(uid, mContext).unfriend(uid, users.get(getLayoutPosition()));
+                UserManager.getInstance(uid).unfriend(uid, users.get(getLayoutPosition()));
                 removeUser(users.get(getLayoutPosition()));
             } else if (v.getId() == R.id.ivfriendslist) {
                 mContext.startActivity(ProfileActivity.createIntent(mContext, users.get(getLayoutPosition())));

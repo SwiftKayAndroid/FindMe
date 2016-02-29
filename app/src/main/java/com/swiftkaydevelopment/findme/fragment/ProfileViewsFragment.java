@@ -60,7 +60,7 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            UserManager.getInstance(uid, getActivity()).getProfileViews(uid, "0");
+            UserManager.getInstance(uid).getProfileViews(uid, "0");
         }
     }
 
@@ -99,7 +99,7 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
     @Override
     public void onResume() {
         super.onResume();
-        UserManager.getInstance(uid, getActivity()).addListener(this);
+        UserManager.getInstance(uid).addListener(this);
         if (mAdapter != null) {
             mAdapter.setProfileViewsAdapterListener(this);
         }
@@ -108,7 +108,7 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
     @Override
     public void onPause() {
         super.onPause();
-        UserManager.getInstance(uid, getActivity()).removeListener(this);
+        UserManager.getInstance(uid).removeListener(this);
         if (mAdapter != null) {
             mAdapter.setProfileViewsAdapterListener(null);
         }

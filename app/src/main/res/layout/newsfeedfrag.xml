@@ -52,7 +52,7 @@
         android:id="@+id/fabpencil"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_action_edit_dark"
+        android:src="@mipmap/ic_pencil_white_24dp"
         android:layout_alignParentRight="true"
         app:backgroundTint="@color/base_green"
         android:layout_alignParentEnd="true"

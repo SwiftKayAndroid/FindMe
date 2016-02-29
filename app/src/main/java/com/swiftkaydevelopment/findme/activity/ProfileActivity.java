@@ -57,6 +57,7 @@ public class ProfileActivity extends BaseActivity {
         } else {
             mUser = (User) getIntent().getExtras().getSerializable(ARG_USER);
         }
+
         ProfileFragment profileFragment = (ProfileFragment) getSupportFragmentManager().findFragmentByTag(ProfileFragment.TAG);
         if (profileFragment == null) {
             profileFragment = ProfileFragment.newInstance(mUser, uid);

@@ -27,9 +27,9 @@ import android.text.TextUtils;
 import com.swiftkaydevelopment.findme.data.Comment;
 import com.swiftkaydevelopment.findme.data.FriendRequest;
 import com.swiftkaydevelopment.findme.data.Message;
-import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
 import com.swiftkaydevelopment.findme.data.PushData;
 import com.swiftkaydevelopment.findme.data.StatusLike;
+import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
 
 public class PushNotificationManager {
     private static final String TAG = "PushNotificationManager";
@@ -109,6 +109,7 @@ public class PushNotificationManager {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(data.resId)
+                .setLargeIcon(data.icon)
                 .setContentTitle(data.title)
                 .setContentText(data.message)
                 .setAutoCancel(true)

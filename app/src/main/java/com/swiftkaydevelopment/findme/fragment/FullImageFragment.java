@@ -118,7 +118,7 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
                         AccountManager.getInstance(getActivity()).changeProfilePicture(uid, post.getPostImage());
                         PersistenceManager.getInstance(getActivity()).updatePropicloc(post.getPostImage());
                         Toast.makeText(getActivity(), "Profile picture updated", Toast.LENGTH_LONG).show();
-                        UserManager.getInstance(uid, getActivity()).invalidateMe();
+                        UserManager.getInstance(uid).invalidateMe();
                     }
                     return true;
                 }

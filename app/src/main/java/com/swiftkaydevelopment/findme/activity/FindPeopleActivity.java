@@ -68,7 +68,7 @@ public class FindPeopleActivity extends BaseActivity {
         if (findPeopleFrag == null) {
             mFindPeopleFragment = FindPeopleFrag.newInstance(uid);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.activityContainer, mFindPeopleFragment, "tag")
+                    .replace(R.id.activityContainer, mFindPeopleFragment, FindPeopleFrag.TAG)
                     .addToBackStack(null)
                     .commit();
         }

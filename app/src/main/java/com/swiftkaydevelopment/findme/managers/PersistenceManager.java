@@ -64,7 +64,7 @@ public class PersistenceManager {
     }
 
     private void invalidateMe() {
-        UserManager.getInstance(null, mContext).invalidateMe();
+        UserManager.getInstance(null).invalidateMe();
     }
 
 }

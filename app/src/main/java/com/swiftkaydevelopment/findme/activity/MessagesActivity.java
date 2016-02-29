@@ -105,7 +105,7 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
                         public void onClick(DialogInterface dialog, int which) {
                             ThreadInfo t = ThreadInfo.instance(uid);
                             t.threadId = mMessagesFrag.getThreadId();
-                            MessagesManager.getInstance(uid, MessagesActivity.this).deleteThread(t);
+                            MessagesManager.getInstance(uid).deleteThread(t);
                         }
                     });
                     builder.show();
@@ -124,13 +124,13 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        MessagesManager.getInstance(uid, this).addMessagesListener(this);
+        MessagesManager.getInstance(uid).addMessagesListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        MessagesManager.getInstance(uid, this).removeMessagesListener(this);
+        MessagesManager.getInstance(uid).removeMessagesListener(this);
     }
 
     @Override
@@ -172,18 +172,5 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
         if (mMessagesFrag != null) {
             mMessagesFrag.notifyMessageDeleted(message);
         }
-    }
-
-    @Override
-    public void onMessageReceived(final Message message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
-                if (mMessagesFrag != null) {
-                    mMessagesFrag.notifyNewMessage(message);
-                }
-            }
-        });
     }
 }

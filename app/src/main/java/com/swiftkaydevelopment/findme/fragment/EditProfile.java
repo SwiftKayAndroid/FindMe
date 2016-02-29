@@ -128,7 +128,7 @@ public class EditProfile extends BaseFragment{
 
         mToolbar = (Toolbar) layout.findViewById(R.id.editProfileToolbar);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
-        mToolbar.inflateMenu(R.menu.newsfeed_settings_menu);
+//        mToolbar.inflateMenu(R.menu.newsfeed_settings_menu);
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -251,6 +251,6 @@ public class EditProfile extends BaseFragment{
         user.hasKids = haskids;
         user.wantsKids = wantskids;
 
-        UserManager.getInstance(uid, getActivity()).updateProfile(about, orientation, status, haskids, wantskids, weed, profession, school);
+        UserManager.getInstance(uid).updateProfile(about, orientation, status, haskids, wantskids, weed, profession, school);
     }
 }

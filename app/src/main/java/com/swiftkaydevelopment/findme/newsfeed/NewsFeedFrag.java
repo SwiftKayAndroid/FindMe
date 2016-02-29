@@ -30,14 +30,6 @@ import java.util.ArrayList;
 public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener,
         PostManager.PostsListener, PostAdapter.PostAdapterListener {
 
-    /**
-     * ISSUES:
-     *
-     *      Show progress dialog while newsfeed posts are loading
-     *      Persist to db
-     *
-     */
-
     public static final String TAG = "NewsFeedFrag";
     public static final String ARG_POSTS_LIST = "ARG_POSTS_LIST";
 
@@ -71,8 +63,6 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
             }
-            PostManager.getInstance().fetchPosts(uid, "0");
-            loadingMore = true;
         }
     }
 
@@ -108,8 +98,17 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         Log.i(TAG, "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
 
+        if (savedInstanceState != null) {
+            mPostsList = (ArrayList) savedInstanceState.getSerializable(ARG_POSTS_LIST);
+            mProgressBar.setVisibility(View.GONE);
+        } else {
+            mProgressBar.setVisibility(View.VISIBLE);
+            loadingMore = true;
+            PostManager.getInstance().fetchPosts(uid, "0");
+        }
+
         if (mPostAdapter == null) {
-            mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid, getActivity()).me(), false, false);
+            mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid).me(), false, false);
             mRecyclerView.setAdapter(mPostAdapter);
             mPostAdapter.setPostAdapterListener(this);
         }
@@ -209,7 +208,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             swipeLayout.setRefreshing(false);
         } else {
             if (mPostAdapter == null) {
-                mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid, getActivity()).me(), false, false);
+                mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid).me(), false, false);
                 mRecyclerView.setAdapter(mPostAdapter);
                 mPostAdapter.setPostAdapterListener(this);
             } else {
@@ -248,7 +247,13 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
+    public void onProfilePictureClicked() {}
+
+    @Override
     public void onProfilePostsRetrieved(ArrayList<Post> posts) {}
+
+    @Override
+    public void onSinglePostRetrieved(Post post) {}
 
     @Override
     public void onClick(View v) {
