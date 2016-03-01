@@ -211,6 +211,7 @@ public class ProfileFragment extends BaseFragment implements
             user = UserManager.getInstance(uid).me();
         }
         mPostAdapter.setPostAdapterListener(this);
+        mPostAdapter.notifyDataSetChanged();
     }
 
     /**

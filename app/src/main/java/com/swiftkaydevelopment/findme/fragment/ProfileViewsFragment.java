@@ -126,24 +126,13 @@ public class ProfileViewsFragment extends BaseFragment implements ProfileViewsAd
     }
 
     @Override
-    public void onFriendRequestsRetrieved(ArrayList<User> users) {
-
-    }
+    public void onFriendRequestsRetrieved(ArrayList<User> users) {}
 
     @Override
-    public void onFriendsRetrieved(ArrayList<User> users) {
-
-    }
+    public void onFriendsRetrieved(ArrayList<User> users) {}
 
     @Override
-    public void onMatchesRetrieved(ArrayList<User> users) {
-
-    }
-
-    @Override
-    public void onPeopleFound(ArrayList<User> users) {
-
-    }
+    public void onMatchesRetrieved(ArrayList<User> users) {}
 
     @Override
     public void onProfileViewsFetched(ArrayList<User> users) {

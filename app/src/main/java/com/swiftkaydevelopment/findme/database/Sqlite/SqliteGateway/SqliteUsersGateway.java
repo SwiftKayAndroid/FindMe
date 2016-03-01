@@ -28,6 +28,10 @@ import com.swiftkaydevelopment.findme.database.DatabaseContract;
 import com.swiftkaydevelopment.findme.database.Sqlite.modules.SQLiteModule;
 import com.swiftkaydevelopment.findme.database.gatewayInterfaces.UsersGateway;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created by Kevin Haines on 2/29/16.
  * Class Overview:
@@ -62,7 +66,26 @@ public class SqliteUsersGateway extends BaseSQLiteGateway implements UsersGatewa
 
         Cursor c = db.query(DatabaseContract.UserEntry.TABLE_NAME, null, DatabaseContract.UserEntry.COLUMN_NAME_UID + " = ?",
                 new String[]{uid}, null, null, null);
-        return cursorToUser(c);
+        if (c.moveToFirst()) {
+            return cursorToUser(c);
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<User> findAll() {
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<User> users = new ArrayList<>();
+
+        Cursor c = db.query(DatabaseContract.UserEntry.TABLE_NAME, null, null,
+                null, null, null, null);
+        if (c.moveToFirst()) {
+            do {
+                users.add(cursorToUser(c));
+            } while (c.moveToNext());
+        }
+
+        return users;
     }
 
     /**
@@ -99,7 +122,7 @@ public class SqliteUsersGateway extends BaseSQLiteGateway implements UsersGatewa
      */
     private User cursorToUser(Cursor c) {
         try {
-            if (c != null && c.moveToFirst()) {
+            if (c != null) {
                 User user = User.createUser();
 
                 user.setFirstname(c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_FIRST)));

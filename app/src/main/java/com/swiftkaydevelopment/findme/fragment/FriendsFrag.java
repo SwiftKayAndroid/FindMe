@@ -107,9 +107,7 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
     }
 
     @Override
-    public void onFriendRequestsRetrieved(ArrayList<User> users) {
-
-    }
+    public void onFriendRequestsRetrieved(ArrayList<User> users) {}
 
     @Override
     public void onFriendsRetrieved(ArrayList<User> users) {
@@ -123,17 +121,8 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
     }
 
     @Override
-    public void onMatchesRetrieved(ArrayList<User> users) {
-
-    }
+    public void onMatchesRetrieved(ArrayList<User> users) {}
 
     @Override
-    public void onPeopleFound(ArrayList<User> users) {
-
-    }
-
-    @Override
-    public void onProfileViewsFetched(ArrayList<User> users) {
-
-    }
+    public void onProfileViewsFetched(ArrayList<User> users) {}
 }

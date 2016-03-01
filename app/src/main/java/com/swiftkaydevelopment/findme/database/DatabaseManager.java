@@ -24,6 +24,8 @@ import com.swiftkaydevelopment.findme.database.Sqlite.SqliteModulesManager;
 import com.swiftkaydevelopment.findme.database.Sqlite.modules.ModuleManager;
 import com.swiftkaydevelopment.findme.database.modules.UsersModule;
 
+import java.util.ArrayList;
+
 /**
  * Created by Kevin Haines on 2/29/16.
  * Class Overview:
@@ -73,5 +75,10 @@ public class DatabaseManager implements UsersModule, ModuleEventListener {
     @Override
     public User getUser(String uid) {
         return mUsersModule.getUser(uid);
+    }
+
+    @Override
+    public ArrayList<User> getUsers() {
+        return mUsersModule.getUsers();
     }
 }

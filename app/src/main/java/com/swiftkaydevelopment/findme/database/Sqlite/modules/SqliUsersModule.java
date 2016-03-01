@@ -26,6 +26,9 @@ import com.swiftkaydevelopment.findme.database.Sqlite.SqliteGateway.SqliteUsersG
 import com.swiftkaydevelopment.findme.database.gatewayInterfaces.UsersGateway;
 import com.swiftkaydevelopment.findme.database.modules.UsersModule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Kevin Haines on 2/29/16.
  * Class Overview:
@@ -78,5 +81,10 @@ public class SqliUsersModule implements SQLiteModule, UsersModule {
     @Override
     public User getUser(String uid) {
         return mUsersGateway.find(uid);
+    }
+
+    @Override
+    public ArrayList<User> getUsers() {
+        return mUsersGateway.findAll();
     }
 }

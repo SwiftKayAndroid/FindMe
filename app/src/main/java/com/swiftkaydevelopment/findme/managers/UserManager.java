@@ -1,9 +1,11 @@
 package com.swiftkaydevelopment.findme.managers;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.events.ConnectionsFoundEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -13,6 +15,8 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -142,13 +146,14 @@ public class UserManager {
         new UnfriendTask(uid, otherUser).execute();
     }
 
-    public void findPeople(String uid, String lastpost) {
+    public ArrayList<User> findPeople(String uid, String lastpost, Context context) {
         new FindPeopleTask(uid, lastpost).execute();
+        return DatabaseManager.instance(context).getUsers();
     }
 
     public void updateProfile(String about, String orientation, String status,
-                              String haskids, String wantskids, String weed, String profession, String school) {
-        new UpdateProfileTask(about, orientation, status, haskids, wantskids, weed, profession, school, mUid).execute();
+                              String haskids, String wantskids, String weed, String profession, String school, Map<String, String> lookingForMap) {
+        new UpdateProfileTask(about, orientation, status, haskids, wantskids, weed, profession, school, lookingForMap, mUid).execute();
     }
 
     /**
@@ -170,10 +175,11 @@ public class UserManager {
         String weed;
         String profession;
         String school;
+        Map<String, String> lookingForMap;
 
         public UpdateProfileTask(String about, String orientation, String status,
                                  String haskids, String wantskids, String weed, String profession,
-                                 String school, String uid) {
+                                 String school, Map<String, String> lookingForMap, String uid) {
             this.about = about;
             this.orientation = orientation;
             this.uid = uid;
@@ -183,6 +189,7 @@ public class UserManager {
             this.weed = weed;
             this.profession = profession;
             this.school = school;
+            this.lookingForMap = lookingForMap;
         }
 
         @Override
@@ -200,6 +207,10 @@ public class UserManager {
             connectionManager.addParam("profession", profession);
             connectionManager.addParam("school", school);
 
+            for (Map.Entry<String, String> entry : lookingForMap.entrySet()) {
+                connectionManager.addParam(entry.getKey().toLowerCase(), entry.getValue());
+            }
+            //todo: server still needs to be able to update the looking for stuff
             connectionManager.sendHttpRequest();
 
             return null;

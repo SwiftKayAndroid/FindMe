@@ -19,7 +19,7 @@ package com.swiftkaydevelopment.findme.database.gatewayInterfaces;
 
 import com.swiftkaydevelopment.findme.data.User;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Kevin Haines on 2/29/16.
@@ -32,4 +32,6 @@ public interface UsersGateway {
     boolean update(User user);
 
     User find(String uid);
+
+    ArrayList<User> findAll();
 }

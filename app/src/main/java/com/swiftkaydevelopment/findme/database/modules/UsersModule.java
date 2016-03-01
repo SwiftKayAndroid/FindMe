@@ -19,6 +19,8 @@ package com.swiftkaydevelopment.findme.database.modules;
 
 import com.swiftkaydevelopment.findme.data.User;
 
+import java.util.ArrayList;
+
 /**
  * Created by Kevin Haines on 2/29/16.
  * Class Overview:
@@ -30,4 +32,6 @@ public interface UsersModule {
     boolean updateUser(User user);
 
     User getUser(String uid);
+
+    ArrayList<User> getUsers();
 }

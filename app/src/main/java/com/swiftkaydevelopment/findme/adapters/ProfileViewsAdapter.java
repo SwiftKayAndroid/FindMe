@@ -44,8 +44,8 @@ public class ProfileViewsAdapter extends RecyclerView.Adapter<ProfileViewsAdapte
     private ArrayList<User> mUsers;
     private Context context;
 
-    public ProfileViewsAdapter(Context context, ArrayList<User> mUsers) {
-        this.mUsers = mUsers;
+    public ProfileViewsAdapter(Context context, ArrayList<User> users) {
+        this.mUsers = users;
         this.context = context;
     }
 
@@ -93,7 +93,7 @@ public class ProfileViewsAdapter extends RecyclerView.Adapter<ProfileViewsAdapte
     }
 
     public void addFirstUsers(ArrayList<User> users) {
-        this.mUsers = users;
+        this.mUsers.addAll(users);
         notifyDataSetChanged();
     }
 

@@ -12,6 +12,7 @@ import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.FindPeopleAdapter;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.events.ConnectionsFoundEvent;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 
@@ -81,7 +82,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
             users = (ArrayList) savedInstanceState.getSerializable(ARG_USERS);
         } else {
             mProgressBar.setVisibility(View.VISIBLE);
-            UserManager.getInstance(uid).findPeople(uid, "0");
+            users = UserManager.getInstance(uid).findPeople(uid, "0", getActivity());
         }
 
         if (mAdapter == null) {
@@ -142,6 +143,10 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
         if (mAdapter != null && event.users != null) {
             mAdapter.addUsers(event.users);
         }
+
+        for (User user : event.users) {
+            DatabaseManager.instance(getActivity()).createUser(user);
+        }
     }
 
     @Override
@@ -149,7 +154,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
         if (!mLoadingMore) {
             mLoadingMore = true;
             mLoadingMorePb.setVisibility(View.VISIBLE);
-            UserManager.getInstance(uid).findPeople(uid, lastUser.getOuid());
+            UserManager.getInstance(uid).findPeople(uid, lastUser.getOuid(), getActivity());
         }
     }
 

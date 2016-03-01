@@ -29,8 +29,6 @@ import com.swiftkaydevelopment.findme.fragment.ProfileViewsFragment;
 public class ProfileViewsActivity extends BaseActivity{
     private static final String TAG = "ProfileViewsActivity";
 
-    private static String mUid;
-
     public static Intent createIntent(Context context) {
         Intent i = new Intent(context, ProfileViewsActivity.class);
         return i;

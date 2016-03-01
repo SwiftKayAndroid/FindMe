@@ -98,7 +98,7 @@ public class User implements Serializable {
     private String mName;
     private String mFirstname;
     private String mLastname;
-    private Map<String, String> mSearchingForMap;
+    public Map<String, String> mSearchingForMap;
     private int mAge;
     private boolean mIsFriend;
     private boolean mIsBlocked;

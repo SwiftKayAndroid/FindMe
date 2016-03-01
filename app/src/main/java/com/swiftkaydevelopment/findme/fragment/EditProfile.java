@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -32,6 +33,9 @@ import android.widget.Toast;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditProfile extends BaseFragment{
     public static final String TAG = "EditProfile";
@@ -66,6 +70,8 @@ public class EditProfile extends BaseFragment{
     private RadioButton rbWeedOften;
     private RadioButton rbWeedNever;
     private RadioButton rbWeedPreferNoSay;
+
+    private CheckBox cbSex, cbFriends, cbFwb, cbIdk, cbSomethingSerious, cbChat;
 
     EditText etProfession;
     private EditText etSchool;
@@ -122,6 +128,13 @@ public class EditProfile extends BaseFragment{
         rbWeedNever = (RadioButton) layout.findViewById(R.id.rbEditProfileWeedNever);
         rbWeedOften = (RadioButton) layout.findViewById(R.id.rbEditProfileWeedOften);
         rbWeedPreferNoSay = (RadioButton) layout.findViewById(R.id.rbEditProfileWeedPreferNoSay);
+
+        cbSex = (CheckBox) layout.findViewById(R.id.cbSex);
+        cbFriends = (CheckBox) layout.findViewById(R.id.cbFriends);
+        cbFwb = (CheckBox) layout.findViewById(R.id.cbFWB);
+        cbSomethingSerious = (CheckBox) layout.findViewById(R.id.cbSomethingSerious);
+        cbIdk = (CheckBox) layout.findViewById(R.id.cbIdk);
+        cbChat = (CheckBox) layout.findViewById(R.id.cbChat);
 
         etProfession = (EditText) layout.findViewById(R.id.editProfileProfession);
         etSchool = (EditText) layout.findViewById(R.id.editProfileSchool);
@@ -206,6 +219,29 @@ public class EditProfile extends BaseFragment{
         } else {
             rbWeedPreferNoSay.setChecked(true);
         }
+
+        for (Map.Entry entry : user.getSearchingFor().entrySet()) {
+            if (entry.getValue().equals("yes")) {
+                if (entry.getKey().equals("Sex")) {
+                    cbSex.setChecked(true);
+                }
+                if (entry.getKey().equals("FWB")) {
+                    cbFwb.setChecked(true);
+                }
+                if (entry.getKey().equals("Friends")) {
+                    cbFriends.setChecked(true);
+                }
+                if (entry.getKey().equals("Something Serious")) {
+                    cbSomethingSerious.setChecked(true);
+                }
+                if (entry.getKey().equals("idk")) {
+                    cbIdk.setChecked(true);
+                }
+                if (entry.getKey().equals("Chat")) {
+                    cbChat.setChecked(true);
+                }
+            }
+        }
     }
 
     @Override
@@ -236,6 +272,44 @@ public class EditProfile extends BaseFragment{
             status = "Taken";
         }
 
+        Map<String, String> lookingForMap = new HashMap<>();
+
+        if (cbSex.isChecked()) {
+            lookingForMap.put("Sex", "yes");
+        } else {
+            lookingForMap.put("Sex", "no");
+        }
+
+        if (cbFriends.isChecked()) {
+            lookingForMap.put("Friends", "yes");
+        } else {
+            lookingForMap.put("Friends", "no");
+        }
+
+        if (cbFwb.isChecked()) {
+            lookingForMap.put("FWB", "yes");
+        } else {
+            lookingForMap.put("FWB", "no");
+        }
+
+        if (cbSomethingSerious.isChecked()) {
+            lookingForMap.put("Something Serious", "yes");
+        } else {
+            lookingForMap.put("Something Serious", "no");
+        }
+
+        if (cbIdk.isChecked()) {
+            lookingForMap.put("idk", "yes");
+        } else {
+            lookingForMap.put("idk", "no");
+        }
+
+        if (cbChat.isChecked()) {
+            lookingForMap.put("Chat", "yes");
+        } else {
+            lookingForMap.put("Chat", "no");
+        }
+
         String haskids = ((RadioButton) getView().findViewById(rgHasKids.getCheckedRadioButtonId())).getText().toString();
         String wantskids = ((RadioButton) getView().findViewById(rgWantsKids.getCheckedRadioButtonId())).getText().toString();
         String weed = ((RadioButton) getView().findViewById(rgWeed.getCheckedRadioButtonId())).getText().toString();
@@ -250,7 +324,8 @@ public class EditProfile extends BaseFragment{
         user.weed = weed;
         user.hasKids = haskids;
         user.wantsKids = wantskids;
+        user.mSearchingForMap = lookingForMap;
 
-        UserManager.getInstance(uid).updateProfile(about, orientation, status, haskids, wantskids, weed, profession, school);
+        UserManager.getInstance(uid).updateProfile(about, orientation, status, haskids, wantskids, weed, profession, school, lookingForMap);
     }
 }
