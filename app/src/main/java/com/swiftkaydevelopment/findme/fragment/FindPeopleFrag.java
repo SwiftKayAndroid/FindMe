@@ -81,8 +81,12 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
             mProgressBar.setVisibility(View.GONE);
             users = (ArrayList) savedInstanceState.getSerializable(ARG_USERS);
         } else {
-            mProgressBar.setVisibility(View.VISIBLE);
-            users = UserManager.getInstance(uid).findPeople(uid, "0", getActivity());
+            users = UserManager.getInstance(uid).findPeopleSync(uid, "0", getActivity());
+            if (users.isEmpty()) {
+                mProgressBar.setVisibility(View.VISIBLE);
+            } else {
+                mProgressBar.setVisibility(View.GONE);
+            }
         }
 
         if (mAdapter == null) {
@@ -137,16 +141,16 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(ConnectionsFoundEvent event) {
         EventBus.getDefault().removeStickyEvent(event);
-        mLoadingMore = false;
-        mLoadingMorePb.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.GONE);
-        if (mAdapter != null && event.users != null) {
-            mAdapter.addUsers(event.users);
-        }
 
         for (User user : event.users) {
             DatabaseManager.instance(getActivity()).createUser(user);
         }
+
+        mLoadingMore = false;
+        mLoadingMorePb.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        mAdapter.clear();
+        mAdapter.addUsers(UserManager.getInstance(uid).findPeople(uid, "0", getActivity()));
     }
 
     @Override

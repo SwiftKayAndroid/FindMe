@@ -146,9 +146,39 @@ public class UserManager {
         new UnfriendTask(uid, otherUser).execute();
     }
 
-    public ArrayList<User> findPeople(String uid, String lastpost, Context context) {
+    /**
+     * First gets the stored list of users from the db then goes
+     * and fetches more from the server.
+     *
+     * @param uid User's account id
+     * @param lastpost last post
+     * @param context Current context
+     * @return List of users
+     */
+    public ArrayList<User> findPeopleSync(String uid, String lastpost, Context context) {
+        ArrayList<User> users = DatabaseManager.instance(context).getUsers();
+        if (!users.isEmpty()) {
+            lastpost = users.get(users.size() - 1).getOuid();
+        }
         new FindPeopleTask(uid, lastpost).execute();
-        return DatabaseManager.instance(context).getUsers();
+        return users;
+    }
+
+    /**
+     * Pulls the list of users from the database
+     *
+     * @param uid User's id
+     * @param lastpost lastpost
+     * @param context Current context
+     * @return List of users
+     */
+    public ArrayList<User> findPeople(String uid, String lastpost, Context context) {
+        ArrayList<User> users = DatabaseManager.instance(context).getUsers();
+        if (users.isEmpty()) {
+            new FindPeopleTask(uid, lastpost).execute();
+        }
+
+        return users;
     }
 
     public void updateProfile(String about, String orientation, String status,

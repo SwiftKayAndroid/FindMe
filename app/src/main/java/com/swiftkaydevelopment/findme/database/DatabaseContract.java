@@ -57,7 +57,14 @@ public class DatabaseContract {
         public static final String COLUMN_NAME_PROFESSION = "profession";
         public static final String COLUMN_NAME_SCHOOL = "school";
         public static final String COLUMN_NAME_WEED = "weed";
-        public static final String COLUMN_NAME_LOCATION = "location";
+        public static final String COLUMN_NAME_CITY = "city";
+        public static final String COLUMN_NAME_DISTANCE = "distance";
+        public static final String COLUMN_NAME_LF_SEX = "lf_sex";
+        public static final String COLUMN_NAME_LF_FRIENDS = "lf_friends";
+        public static final String COLUMN_NAME_LF_FWB = "lf_fwb";
+        public static final String COLUMN_NAME_LF_IDK = "lf_idk";
+        public static final String COLUMN_NAME_LF_CHAT = "lf_chat";
+        public static final String COLUMN_NAME_LF_SERIOUS = "lf_serious";
 
         public static final String CREATE_TABLE = DatabaseContract.CREATE_TABLE +
                 TABLE_NAME + " (" +
@@ -75,7 +82,8 @@ public class DatabaseContract {
                 COLUMN_NAME_PROFESSION + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_SCHOOL + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_WEED + TEXT_TYPE + COMMA_SEP +
-                COLUMN_NAME_LOCATION + TEXT_TYPE +
+                COLUMN_NAME_CITY + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_DISTANCE + TEXT_TYPE +
                 " )";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

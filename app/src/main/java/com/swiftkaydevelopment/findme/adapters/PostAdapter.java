@@ -202,9 +202,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.age.setText(Integer.toString(user.getAge()));
 
             StringBuilder sb = new StringBuilder();
-            for (Map.Entry entry : user.getSearchingFor().entrySet()) {
-                if (entry.getValue().equals("yes")) {
-                    sb.append(entry.getKey() + " ");
+            if (user.getSearchingFor() != null) {
+                for (Map.Entry entry : user.getSearchingFor().entrySet()) {
+                    if (entry.getValue().equals("yes")) {
+                        sb.append(entry.getKey() + " ");
+                    }
                 }
             }
             holder.lookingfor.setText(sb.toString());

@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.swiftkaydevelopment.findme.data.Location;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.database.BaseSQLiteGateway;
 import com.swiftkaydevelopment.findme.database.DatabaseContract;
@@ -111,6 +112,8 @@ public class SqliteUsersGateway extends BaseSQLiteGateway implements UsersGatewa
         values.put(DatabaseContract.UserEntry.COLUMN_NAME_WEED, user.weed);
         values.put(DatabaseContract.UserEntry.COLUMN_NAME_SCHOOL, user.school);
         values.put(DatabaseContract.UserEntry.COLUMN_NAME_RELATIONSHIP, user.mRelationshipStatus);
+        values.put(DatabaseContract.UserEntry.COLUMN_NAME_CITY, user.getLocation().getCity());
+        values.put(DatabaseContract.UserEntry.COLUMN_NAME_DISTANCE, user.getLocation().getDistance());
         return values;
     }
 
@@ -127,8 +130,23 @@ public class SqliteUsersGateway extends BaseSQLiteGateway implements UsersGatewa
 
                 user.setFirstname(c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_FIRST)));
                 user.setLastname(c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_LAST)));
+                user.setAboutMe(c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_ABOUT)));
+                user.setAge(c.getInt(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_AGE)));
+                user.setGender(User.setGenderFromString(c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_GENDER))));
+                user.setOuid(c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_UID)));
+                user.hasKids = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_HASKIDS));
+                user.wantsKids = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_WANTSKIDS));
+                user.profession = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_PROFESSION));
+                user.setOrientation(User.setOrientationFromString(c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_ORIENTATION))));
+                user.setPropicloc(c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_PROPICLOC)));
+                user.weed = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_WEED));
+                user.school = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_SCHOOL));
+                user.mRelationshipStatus = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_RELATIONSHIP));
+                String distance = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_DISTANCE));
+                float dis = Float.parseFloat(distance);
+                String city = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_CITY));
+                user.setLocation(new Location(dis, city, null));
 
-                Log.e("usermodule", "firstname" + user.getFirstname());
                 return user;
             }
         } catch (Exception e) {

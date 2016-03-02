@@ -48,6 +48,14 @@ public class FindPeopleAdapter extends RecyclerView.Adapter<FindPeopleAdapter.Co
     }
 
     /**
+     * Empties the adapter
+     *
+     */
+    public void clear() {
+        users.clear();
+    }
+
+    /**
      * Sets the ConnectAdapterListener
      *
      * @param listener Listener to set
