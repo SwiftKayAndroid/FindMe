@@ -20,32 +20,30 @@ package com.swiftkaydevelopment.findme.database.Sqlite.modules;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.swiftkaydevelopment.findme.data.User;
-import com.swiftkaydevelopment.findme.database.DatabaseContract;
+import com.swiftkaydevelopment.findme.data.Message;
+import com.swiftkaydevelopment.findme.database.Sqlite.SqliteGateway.SqliteMessageGateway;
 import com.swiftkaydevelopment.findme.database.Sqlite.SqliteGateway.SqliteUsersGateway;
-import com.swiftkaydevelopment.findme.database.gatewayInterfaces.UsersGateway;
-import com.swiftkaydevelopment.findme.database.modules.UsersModule;
+import com.swiftkaydevelopment.findme.database.gatewayInterfaces.MessageGateway;
+import com.swiftkaydevelopment.findme.database.modules.MessagesModule;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by Kevin Haines on 2/29/16.
+ * Created by Kevin Haines on 3/3/16.
  * Class Overview:
  */
-public class SqliUsersModule implements SQLiteModule, UsersModule {
+public class SqliteMessagesModule implements SQLiteModule, MessagesModule {
     private final SQLiteOpenHelper mSQLiteOpenHelper;
+    private MessageGateway mMessageGateway;
 
-    private UsersGateway mUsersGateway;
-
-    public SqliUsersModule(SQLiteOpenHelper sQLiteOpenHelper) {
+    public SqliteMessagesModule(SQLiteOpenHelper sQLiteOpenHelper) {
         this.mSQLiteOpenHelper = sQLiteOpenHelper;
-        this.mUsersGateway = new SqliteUsersGateway(this);
+        this.mMessageGateway = new SqliteMessageGateway(this);
     }
 
     @Override
     public void create(SQLiteDatabase db) {
-        db.execSQL(DatabaseContract.UserEntry.CREATE_TABLE);
+
     }
 
     @Override
@@ -60,36 +58,36 @@ public class SqliUsersModule implements SQLiteModule, UsersModule {
 
     @Override
     public SQLiteDatabase getWritableDatabase() {
-        return mSQLiteOpenHelper.getWritableDatabase();
+        return null;
     }
 
     @Override
     public SQLiteDatabase getReadableDatabase() {
-        return mSQLiteOpenHelper.getReadableDatabase();
+        return null;
     }
 
     @Override
-    public boolean createUser(User user) {
-        return mUsersGateway.insert(user);
+    public boolean createMessage(Message message) {
+        return false;
     }
 
     @Override
-    public boolean updateUser(User user) {
-        return mUsersGateway.update(user);
+    public boolean updateMessage(Message message) {
+        return false;
     }
 
     @Override
-    public User getUser(String uid) {
-        return mUsersGateway.find(uid);
+    public boolean deleteMessage(Message message) {
+        return false;
     }
 
     @Override
-    public ArrayList<User> getUsers() {
-        return mUsersGateway.findAll();
+    public Message getMessage(String messageId) {
+        return null;
     }
 
     @Override
-    public void clearUsers() {
-        mUsersGateway.deleteAll();
+    public ArrayList<Message> getMessages(String uid, String ouid) {
+        return null;
     }
 }

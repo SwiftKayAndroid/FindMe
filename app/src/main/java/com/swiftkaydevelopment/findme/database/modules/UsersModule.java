@@ -34,4 +34,6 @@ public interface UsersModule {
     User getUser(String uid);
 
     ArrayList<User> getUsers();
+
+    void clearUsers();
 }

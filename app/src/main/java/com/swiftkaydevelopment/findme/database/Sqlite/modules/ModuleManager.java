@@ -17,6 +17,7 @@
 
 package com.swiftkaydevelopment.findme.database.Sqlite.modules;
 
+import com.swiftkaydevelopment.findme.database.modules.MessagesModule;
 import com.swiftkaydevelopment.findme.database.modules.UsersModule;
 
 /**
@@ -26,4 +27,6 @@ import com.swiftkaydevelopment.findme.database.modules.UsersModule;
 public interface ModuleManager  {
     void initialize();
     UsersModule getUsersModule();
+
+    MessagesModule getMessagesModule();
 }

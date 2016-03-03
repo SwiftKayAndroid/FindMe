@@ -181,6 +181,10 @@ public class UserManager {
         return users;
     }
 
+    public void clearUsers(Context context) {
+        DatabaseManager.instance(context).clearUsers();
+    }
+
     public void updateProfile(String about, String orientation, String status,
                               String haskids, String wantskids, String weed, String profession, String school, Map<String, String> lookingForMap) {
         new UpdateProfileTask(about, orientation, status, haskids, wantskids, weed, profession, school, lookingForMap, mUid).execute();

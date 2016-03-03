@@ -19,9 +19,11 @@ package com.swiftkaydevelopment.findme.database;
 
 import android.content.Context;
 
+import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.database.Sqlite.SqliteModulesManager;
 import com.swiftkaydevelopment.findme.database.Sqlite.modules.ModuleManager;
+import com.swiftkaydevelopment.findme.database.modules.MessagesModule;
 import com.swiftkaydevelopment.findme.database.modules.UsersModule;
 
 import java.util.ArrayList;
@@ -30,11 +32,12 @@ import java.util.ArrayList;
  * Created by Kevin Haines on 2/29/16.
  * Class Overview:
  */
-public class DatabaseManager implements UsersModule, ModuleEventListener {
+public class DatabaseManager implements UsersModule, MessagesModule, ModuleEventListener {
 
     private static DatabaseManager sInstance = null;
     private static ModuleManager sModuleManager = null;
     private UsersModule mUsersModule;
+    private MessagesModule mMessageModule;
 
     /**
      * Gets the singleton instance of the DatabaseManager
@@ -60,6 +63,7 @@ public class DatabaseManager implements UsersModule, ModuleEventListener {
     @Override
     public void onInit() {
         mUsersModule = sModuleManager.getUsersModule();
+        mMessageModule = sModuleManager.getMessagesModule();
     }
 
     @Override
@@ -80,5 +84,35 @@ public class DatabaseManager implements UsersModule, ModuleEventListener {
     @Override
     public ArrayList<User> getUsers() {
         return mUsersModule.getUsers();
+    }
+
+    @Override
+    public void clearUsers() {
+        mUsersModule.clearUsers();
+    }
+
+    @Override
+    public boolean createMessage(Message message) {
+        return mMessageModule.createMessage(message);
+    }
+
+    @Override
+    public boolean updateMessage(Message message) {
+        return mMessageModule.updateMessage(message);
+    }
+
+    @Override
+    public boolean deleteMessage(Message message) {
+        return mMessageModule.deleteMessage(message);
+    }
+
+    @Override
+    public Message getMessage(String messageId) {
+        return mMessageModule.getMessage(messageId);
+    }
+
+    @Override
+    public ArrayList<Message> getMessages(String uid, String ouid) {
+        return mMessageModule.getMessages(uid, ouid);
     }
 }

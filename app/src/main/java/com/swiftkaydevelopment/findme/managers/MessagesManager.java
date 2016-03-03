@@ -23,6 +23,7 @@ import android.os.AsyncTask;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.events.MessageReceivedEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -100,8 +101,29 @@ public class MessagesManager {
         new FetchMessagesTask(lastMessage, threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-    public void getMoreMessages(String lastMessage, User user, Context context){
+    /**
+     * First gets the messages for the conversation from the database then
+     * kicks off an AsyncTask to fetch messages from the server in case we don't have
+     * them.
+     *
+     * Scheme needs to work as follows:
+     *
+     * 1. return any existing messages we currently have available in the db
+     * 2. We need to get the firstKnowMessage from that list
+     * 3. Ping the server to see if we have any more recent messages than that.
+     * 4. If we do post a sticky event for that and add them to the db
+     *
+     * Pagination will need to be performed in a different method
+     *
+     * @param lastMessage the last message the user has
+     * @param user The other user in the conversation
+     * @param context Calling Context
+     * @return ArrayList of messages if we have any in the db
+     */
+    public ArrayList<Message> getMoreMessagesSync(String lastMessage, User user, Context context){
+        ArrayList<Message> messages = DatabaseManager.instance(context).getMessages(mUid, user.getOuid());
         new FetchMessagesTask(lastMessage, user).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        return messages;
     }
 
     public void deleteAllThreads(String uid) {
@@ -189,31 +211,7 @@ public class MessagesManager {
                 int length = jsonArray.length();
                 for(int i = 0; i < length; i++) {
                     JSONObject child = jsonArray.getJSONObject(i);
-                    Message m = Message.instance();
-                    m.setTime(child.getString("time"));
-
-                    if (child.getString("deleted_status").equals("deleted")) {
-                        m.setDeletedStatus(1);
-                    } else {
-                        m.setDeletedStatus(0);
-                    }
-                    m.setMessage(child.getString("message"));
-                    m.setMessageId(child.getString("id"));
-                    m.setOuid(child.getString("ouid"));
-                    m.setSenderId(child.getString("senderid"));
-                    if (child.getString("readstat").equals("read")) {
-                        m.setReadStatus(1);
-                    } else {
-                        m.setReadStatus(0);
-                    }
-                    if (child.getString("seenstat").equals("seen")) {
-                        m.setSeenStatus(1);
-                    } else {
-                        m.setSeenStatus(0);
-                    }
-                    m.setTag(child.getString("tag"));
-                    m.setThreadId(child.getString("threadid"));
-                    m.setUser(User.createUserFromJson(child.getJSONObject("user")));
+                    Message m = Message.createMessageFromJson(child);
                     mList.add(m);
                 }
             } catch(JSONException e) {

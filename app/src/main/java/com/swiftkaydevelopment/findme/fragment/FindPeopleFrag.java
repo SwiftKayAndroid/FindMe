@@ -1,6 +1,7 @@
 package com.swiftkaydevelopment.findme.fragment;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 /**
  * Created by Kevin Haines on 2/25/2015.
  */
-public class FindPeopleFrag extends BaseFragment implements UserManager.UserManagerListener, FindPeopleAdapter.ConnectAdapterListener{
+public class FindPeopleFrag extends BaseFragment implements UserManager.UserManagerListener, FindPeopleAdapter.ConnectAdapterListener, SwipeRefreshLayout.OnRefreshListener{
     public static final String TAG = "FindPeopleFrag";
     private static final String ARG_USERS = "ARG_USERS";
 
@@ -38,6 +39,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     private RecyclerView mRecyclerView;
     private ProgressBar mLoadingMorePb;
     private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mRefreshLayout;
 
     public static FindPeopleFrag newInstance(String id){
         FindPeopleFrag frag = new FindPeopleFrag();
@@ -68,6 +70,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerView);
         mLoadingMorePb = (ProgressBar) layout.findViewById(R.id.loadingMorePb);
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        mRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.refreshLayout);
 
         return layout;
     }
@@ -99,6 +102,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
                 getActivity().getResources().getInteger(R.integer.grid_layout_columns_connect),
                 StaggeredGridLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(mAdapter);
+        mRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
@@ -127,6 +131,12 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     }
 
     @Override
+    public void onRefresh() {
+        UserManager.getInstance(uid).clearUsers(getActivity());
+        UserManager.getInstance(uid).findPeopleSync(uid, "0", getActivity());
+    }
+
+    @Override
     public void onFriendRequestsRetrieved(ArrayList<User> users) {}
 
     @Override
@@ -149,6 +159,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
         mLoadingMore = false;
         mLoadingMorePb.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
+        mRefreshLayout.setRefreshing(false);
         mAdapter.clear();
         mAdapter.addUsers(UserManager.getInstance(uid).findPeople(uid, "0", getActivity()));
     }

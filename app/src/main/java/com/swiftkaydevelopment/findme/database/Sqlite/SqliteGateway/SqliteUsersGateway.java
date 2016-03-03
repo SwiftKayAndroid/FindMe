@@ -20,7 +20,6 @@ package com.swiftkaydevelopment.findme.database.Sqlite.SqliteGateway;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.swiftkaydevelopment.findme.data.Location;
 import com.swiftkaydevelopment.findme.data.User;
@@ -30,8 +29,6 @@ import com.swiftkaydevelopment.findme.database.Sqlite.modules.SQLiteModule;
 import com.swiftkaydevelopment.findme.database.gatewayInterfaces.UsersGateway;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Kevin Haines on 2/29/16.
@@ -154,5 +151,11 @@ public class SqliteUsersGateway extends BaseSQLiteGateway implements UsersGatewa
         }
 
         return null;
+    }
+
+    @Override
+    public void deleteAll() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(DatabaseContract.UserEntry.CLEAR_TABLE);
     }
 }

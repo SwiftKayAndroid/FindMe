@@ -179,7 +179,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             tvTime = (TextView) itemView.findViewById(R.id.messageItemTime);
             tvMessage = (TextView) itemView.findViewById(R.id.messageItemMessageText);
             tvSeen = (TextView) itemView.findViewById(R.id.messageItemUserSeenStatus);
-            itemView.setTag(this);
         }
     }
 }

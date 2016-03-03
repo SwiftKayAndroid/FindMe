@@ -34,4 +34,6 @@ public interface UsersGateway {
     User find(String uid);
 
     ArrayList<User> findAll();
+
+    void deleteAll();
 }

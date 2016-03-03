@@ -25,6 +25,8 @@ import com.swiftkaydevelopment.findme.database.DatabaseContract;
 import com.swiftkaydevelopment.findme.database.ModuleEventListener;
 import com.swiftkaydevelopment.findme.database.Sqlite.modules.ModuleManager;
 import com.swiftkaydevelopment.findme.database.Sqlite.modules.SqliUsersModule;
+import com.swiftkaydevelopment.findme.database.Sqlite.modules.SqliteMessagesModule;
+import com.swiftkaydevelopment.findme.database.modules.MessagesModule;
 import com.swiftkaydevelopment.findme.database.modules.UsersModule;
 
 /**
@@ -34,6 +36,7 @@ import com.swiftkaydevelopment.findme.database.modules.UsersModule;
 public class SqliteModulesManager extends SQLiteOpenHelper implements ModuleManager {
 
     private SqliUsersModule mUsersModule;
+    private SqliteMessagesModule mMessagesModule;
     private ModuleEventListener mModuleEventListener;
 
     public SqliteModulesManager(ModuleEventListener listener, Context context) {
@@ -44,22 +47,30 @@ public class SqliteModulesManager extends SQLiteOpenHelper implements ModuleMana
     @Override
     public void onCreate(SQLiteDatabase db) {
         mUsersModule.create(db);
+        mMessagesModule.create(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         mUsersModule.upgrade(db, newVersion);
+        mMessagesModule.upgrade(db, newVersion);
     }
 
     @Override
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
         mUsersModule = new SqliUsersModule(this);
+        mMessagesModule = new SqliteMessagesModule(this);
     }
 
     @Override
     public UsersModule getUsersModule() {
         return mUsersModule;
+    }
+
+    @Override
+    public MessagesModule getMessagesModule() {
+        return mMessagesModule;
     }
 
     @Override

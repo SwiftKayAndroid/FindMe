@@ -12,6 +12,9 @@ import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
 import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.managers.MessagesManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -46,6 +49,45 @@ public class Message implements Serializable, Notifiable {
     private String mTag;
     private String mSenderId;
     private String mMessageImageLocation;
+
+    /**
+     * Creates a message form a jsonobject
+     *
+     * @param object Json object containing message data
+     * @return message from the jsonobjetct
+     */
+    public static Message createMessageFromJson(JSONObject object) {
+        Message m = Message.instance();
+        try {
+            m.setTime(object.getString("time"));
+
+            if (object.getString("deleted_status").equals("deleted")) {
+                m.setDeletedStatus(1);
+            } else {
+                m.setDeletedStatus(0);
+            }
+            m.setMessage(object.getString("message"));
+            m.setMessageId(object.getString("id"));
+            m.setOuid(object.getString("ouid"));
+            m.setSenderId(object.getString("senderid"));
+            if (object.getString("readstat").equals("read")) {
+                m.setReadStatus(1);
+            } else {
+                m.setReadStatus(0);
+            }
+            if (object.getString("seenstat").equals("seen")) {
+                m.setSeenStatus(1);
+            } else {
+                m.setSeenStatus(0);
+            }
+            m.setTag(object.getString("tag"));
+            m.setThreadId(object.getString("threadid"));
+            m.setUser(User.createUserFromJson(object.getJSONObject("user")));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return m;
+    }
 
     public static Message instance() {
         return new Message();

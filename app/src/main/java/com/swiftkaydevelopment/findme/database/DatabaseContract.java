@@ -42,6 +42,7 @@ public class DatabaseContract {
     private static final String SET                 = " SET ";
 
     public static abstract class UserEntry {
+
         public static final String TABLE_NAME = "users";
         public static final String COLUMN_NAME_UID = "uid";
         public static final String COLUMN_NAME_FIRST = "firstname";
@@ -83,9 +84,47 @@ public class DatabaseContract {
                 COLUMN_NAME_SCHOOL + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_WEED + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_CITY + TEXT_TYPE + COMMA_SEP +
-                COLUMN_NAME_DISTANCE + TEXT_TYPE +
+                COLUMN_NAME_DISTANCE + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_LF_SEX + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_LF_FRIENDS + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_LF_FWB + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_LF_IDK + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_LF_CHAT + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_LF_SERIOUS + TEXT_TYPE +
                 " )";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+
+        public static final String CLEAR_TABLE = "DELETE FROM " + TABLE_NAME;
+    }
+
+    public static abstract class MessageEntry  {
+
+        public static final String TABLE_NAME = "messages";
+        public static final String COLUMN_NAME_MESSAGE_ID = "message_id";
+        public static final String COLUMN_NAME_MESSAGE = "message";
+        public static final String COLUMN_NAME_OUID = "ouid";
+        public static final String COLUMN_NAME_THREAD_ID = "thread_id";
+        public static final String COLUMN_NAME_SEEN_STATUS = "seen_stat";
+        public static final String COLUMN_NAME_DELETED_STATUS = "deleted_stat";
+        public static final String COLUMN_NAME_TAG = "tag";
+        public static final String COLUMN_NAME_SENDER_ID = "sender_id";
+        public static final String COLUMN_NAME_IMAGE_LOC = "image_loc";
+
+        public static final String CREATE_TABLE = DatabaseContract.CREATE_TABLE +
+                TABLE_NAME + " (" +
+                COLUMN_NAME_MESSAGE_ID + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_MESSAGE + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_OUID + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_THREAD_ID + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_SEEN_STATUS + INTEGER_TYPE + COMMA_SEP +
+                COLUMN_NAME_DELETED_STATUS + INTEGER_TYPE + COMMA_SEP +
+                COLUMN_NAME_TAG + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_SENDER_ID + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_IMAGE_LOC + TEXT_TYPE +
+                " )";
+
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        public static final String CLEAR_TABLE = "DELETE FROM " + TABLE_NAME;
     }
 }

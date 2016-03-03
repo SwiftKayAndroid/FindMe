@@ -47,9 +47,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Seen"
         android:id="@+id/messageItemUserSeenStatus"
+        android:textColor="@color/primary_dark"
         android:layout_below="@+id/messageItemProfilePicture"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textColor="@color/base_green"
-        android:layout_marginRight="16dp" />
+        android:layout_alignRight="@+id/messageItemProfilePicture"
+        android:layout_alignEnd="@+id/messageItemProfilePicture"/>
 </RelativeLayout>
