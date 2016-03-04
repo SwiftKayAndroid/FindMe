@@ -39,8 +39,9 @@ import com.swiftkaydevelopment.findme.managers.CommentsManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class CommentsDialog extends AppCompatDialogFragment {
+public class CommentsDialog extends AppCompatDialogFragment implements CommentsManager.CommentsManagerListener {
     public static final String TAG = "CommentsDialog";
     private static final String ARG_POSTID = "ARG_POSTID";
     private static final String ARG_COMMENTS = "ARG_COMMENTS";
@@ -79,7 +80,7 @@ public class CommentsDialog extends AppCompatDialogFragment {
                 mUid = getArguments().getString(ARG_UID);
             }
             if (mPostid != null && !(mPostid.isEmpty())) {
-                mComments = CommentsManager.getInstance(mUid, getActivity()).fetchComments(mPostid);
+                CommentsManager.getInstance(mUid, getActivity()).fetchComments(mPostid);
             }
         }
     }
@@ -147,5 +148,23 @@ public class CommentsDialog extends AppCompatDialogFragment {
 
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         return dialog;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        CommentsManager.getInstance(mUid, getActivity()).addListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        CommentsManager.getInstance(mUid, getActivity()).removeListener(this);
+
+    }
+
+    @Override
+    public void onCommentsLoaded(List<Comment> comments) {
+        mAdapter.addComments(comments);
     }
 }

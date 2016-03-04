@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.CommentAdapter;
@@ -36,12 +37,13 @@ import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.managers.CommentsManager;
 import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
+import com.swiftkaydevelopment.findme.views.CircleTransform;
 import com.swiftkaydevelopment.findme.views.ExpandableLinearLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class SinglePostFragment extends BaseFragment implements PostManager.PostsListener {
+public class SinglePostFragment extends BaseFragment implements PostManager.PostsListener, CommentsManager.CommentsManagerListener {
     public static final String TAG = "SinglePostFragment";
 
     private static final String ARG_COMMENTS = "ARG_COMMENTS";
@@ -55,7 +57,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
     ImageView ivProfilePicture, ivPostImage, ivPostLike, ivPostToggle;
     ExpandableLinearLayout extrasContainer;
 
-    private ArrayList<Comment> mComments;
+    private ArrayList<Comment> mComments = new ArrayList<>();
     private ImageView ivPostComment;
     private ImageView emptyView;
     private EditText etComment;
@@ -125,8 +127,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
             initializePost();
         } else {
             PostManager.getInstance().getSinglePost(mPostid, uid);
-            //todo: remove this .get() async call in favor of a listener
-            mComments = CommentsManager.getInstance(uid, getActivity()).fetchComments(mPostid);
+            CommentsManager.getInstance(uid, getActivity()).fetchComments(mPostid);
         }
     }
 
@@ -143,12 +144,15 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
     public void onResume() {
         super.onResume();
         PostManager.getInstance().addPostListener(this);
+        CommentsManager.getInstance(uid, getActivity()).addListener(this);
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
         PostManager.getInstance().removeListener(this);
+        CommentsManager.getInstance(uid, getActivity()).removeListener(this);
     }
 
     /**
@@ -185,11 +189,17 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
         tvLocation.setText(Integer.toString(distance) + append);
         tvName.setText(mPost.getUser().getName());
         tvTime.setText(mPost.getTime());
-        ImageLoader imageLoader = new ImageLoader(getActivity());
+
         if (mPost.getUser().getPropicloc().equals("")) {
-            ivProfilePicture.setImageResource(R.drawable.ic_placeholder);
+            Glide.with(getActivity())
+                    .load(R.drawable.ic_placeholder)
+                    .transform(new CircleTransform(getActivity()))
+                    .into(ivProfilePicture);
         } else {
-            imageLoader.DisplayImage(mPost.getUser().getPropicloc(), ivProfilePicture, false);
+            Glide.with(getActivity())
+                    .load(mPost.getUser().getPropicloc())
+                    .transform(new CircleTransform(getActivity()))
+                    .into(ivProfilePicture);
         }
         ivProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +219,11 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
             Log.e(TAG, "showing post image");
             ivPostImage.setVisibility(View.VISIBLE);
             ivPostImage.setImageResource(R.drawable.ic_placeholder);
-            imageLoader.DisplayImage(mPost.getPostImage(), ivPostImage, true);
+
+            Glide.with(getActivity())
+                    .load(mPost.getPostImage())
+                    .into(ivPostImage);
+
             ivPostImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -260,6 +274,14 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
                 }
             }
         });
+    }
+
+    @Override
+    public void onCommentsLoaded(List<Comment> comments) {
+        mAdapter.addComments(comments);
+        if (mAdapter.getCount() > 0) {
+            emptyView.setVisibility(View.GONE);
+        }
     }
 
     @Override

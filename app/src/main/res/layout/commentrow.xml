@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlnewsfeed"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    android:background="#ffffff"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/ivcommentpropic"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:layout_marginLeft="16dp"
         android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/tvcommentusername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kevin Haines"
+        tools:text="Kevin Haines"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivcommentpropic"
         android:layout_toEndOf="@+id/ivcommentpropic"
-        android:textColor="@color/dark_gray" />
+        android:textColor="@color/dark_gray"
+        android:layout_marginLeft="10dp" />
 
     <TextView
         android:id="@+id/tvcomment"
@@ -31,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tvcommentusername"
         android:layout_below="@+id/tvcommentusername"
-        android:text="Comment" />
+        tools:text="Comment" />
 
     <TextView
         android:layout_width="wrap_content"

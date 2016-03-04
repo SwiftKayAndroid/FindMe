@@ -17,14 +17,22 @@
 
 package com.swiftkaydevelopment.findme.views;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.squareup.picasso.Transformation;
 
-public class CircleTransform implements Transformation {
+public class CircleTransform extends BitmapTransformation implements Transformation {
+
+    public CircleTransform(Context context) {
+        super(context);
+    }
+
     @Override
     public Bitmap transform(Bitmap source) {
         int size = Math.min(source.getWidth(), source.getHeight());
@@ -37,7 +45,7 @@ public class CircleTransform implements Transformation {
             source.recycle();
         }
 
-        Bitmap bitmap = Bitmap.createBitmap(size, size, source.getConfig());
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
@@ -45,11 +53,23 @@ public class CircleTransform implements Transformation {
         paint.setShader(shader);
         paint.setAntiAlias(true);
 
-        float r = size/2f;
+        float r = size / 2f;
         canvas.drawCircle(r, r, r, paint);
 
         squaredBitmap.recycle();
+
         return bitmap;
+    }
+
+
+    @Override
+    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+        return transform(toTransform);
+    }
+
+    @Override
+    public String getId() {
+        return "Glide_circle_bitmap";
     }
 
     @Override

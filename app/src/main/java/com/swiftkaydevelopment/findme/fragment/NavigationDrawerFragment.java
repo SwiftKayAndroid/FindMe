@@ -23,7 +23,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
+import com.swiftkaydevelopment.findme.BuildConfig;
 import com.swiftkaydevelopment.findme.NavDrawerItem;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.FriendsActivity;
@@ -309,14 +311,27 @@ public class NavigationDrawerFragment extends Fragment {
         tvname.setText(prefs.getString("firstname", null) + " " + prefs.getString("lastname", null));
         String imgloc = prefs.getString("propicloc", "");
         if (!TextUtils.isEmpty(imgloc)) {
-            Picasso.with(getActivity())
-                    .load(imgloc)
-                    .transform(new CircleTransform())
-                    .into(ivusersphoto);
+            if (BuildConfig.GLIDE) {
+                Glide.with(getActivity())
+                        .load(imgloc)
+                        .transform(new CircleTransform(getActivity()))
+                        .into(ivusersphoto);
+            } else {
+                Picasso.with(getActivity())
+                        .load(imgloc)
+                        .transform(new CircleTransform(getActivity()))
+                        .into(ivusersphoto);
+            }
         } else {
+            if (BuildConfig.GLIDE) {
+                Glide.with(getActivity())
+                        .load(R.drawable.ic_placeholder)
+                        .transform(new CircleTransform(getActivity()))
+                        .into(ivusersphoto);
+            }
             Picasso.with(getActivity())
                     .load(R.drawable.ic_placeholder)
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform(getActivity()))
                     .into(ivusersphoto);
         }
 

@@ -102,6 +102,15 @@ public class MessagesManager {
     }
 
     /**
+     * Notifies the server that you saw a message as it came in under a push notification
+     *
+     * @param message Message that was seen
+     */
+    public void notifyMessageSeen(Message message) {
+        new NotifyMessageSeenTask(message).execute();
+    }
+
+    /**
      * First gets the messages for the conversation from the database then
      * kicks off an AsyncTask to fetch messages from the server in case we don't have
      * them.
@@ -166,12 +175,30 @@ public class MessagesManager {
         new MarkThreadAsDeletedTask(threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-    public void markThreadAsSeen(String uid, String threadid) {
-        new MarkThreadAsSeenTask(uid, threadid).execute();
+    public void markThreadAsSeen(String uid, String ouid) {
+        new MarkThreadAsSeenTask(uid, ouid).execute();
     }
 
     public void messageNotificationReceived(Message msg) {
         EventBus.getDefault().postSticky(new MessageReceivedEvent(msg));
+    }
+
+    private class NotifyMessageSeenTask extends AsyncTask<Void, Void, Void> {
+        private Message message;
+
+        public NotifyMessageSeenTask(Message message) {
+            this.message = message;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.addParam("id", message.getMessageId());
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.sendHttpRequest();
+            return null;
+        }
     }
 
     private class FetchMessagesTask extends AsyncTask<Void, Void, ArrayList<Message>>{
@@ -545,12 +572,15 @@ public class MessagesManager {
     }
 
     private class MarkThreadAsSeenTask extends AsyncTask<Void, Void, Void> {
+        //todo: the server is expect uid ouid not threadid to come up
+        //thread id would just mark the user's own thread as read
+        //not the other user's (which is the only one we care about lol
         String uid;
-        String threadid;
+        String ouid;
 
-        public MarkThreadAsSeenTask(String uid, String threadid) {
+        public MarkThreadAsSeenTask(String uid, String ouid) {
             this.uid = uid;
-            this.threadid = threadid;
+            this.ouid = ouid;
         }
 
         @Override
@@ -558,7 +588,7 @@ public class MessagesManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", uid);
-            connectionManager.addParam("threadid", threadid);
+            connectionManager.addParam("ouid", ouid);
             connectionManager.setUri("seenmessage.php");
             connectionManager.sendHttpRequest();
             return null;

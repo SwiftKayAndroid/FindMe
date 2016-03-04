@@ -71,12 +71,12 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
             if(!thread.threadUser.getPropicloc().equals("")){
                 Picasso.with(mContext)
                         .load(thread.threadUser.getPropicloc())
-                        .transform(new CircleTransform())
+                        .transform(new CircleTransform(mContext))
                         .into(holder.ivpropic);
             } else {
                 Picasso.with(mContext)
                         .load(R.drawable.ic_placeholder)
-                        .transform(new CircleTransform())
+                        .transform(new CircleTransform(mContext))
                         .into(holder.ivpropic);
             }
 

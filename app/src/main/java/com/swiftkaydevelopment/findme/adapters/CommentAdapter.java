@@ -26,12 +26,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.swiftkaydevelopment.findme.data.Comment;
-import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.data.Comment;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
 
@@ -49,6 +49,16 @@ public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
 
     public void addComment(Comment comment) {
         mCommentList.add(comment);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Add a list of comments to the current comments
+     *
+     * @param comments Comments to add
+     */
+    public void addComments(List<Comment> comments) {
+        mCommentList.addAll(comments);
         notifyDataSetChanged();
     }
 
@@ -89,7 +99,7 @@ public class CommentAdapter extends BaseAdapter implements View.OnClickListener{
             } else {
                 Picasso.with(mContext)
                         .load(mCommentList.get(position).getUser().getPropicloc())
-                        .transform(new CircleTransform())
+                        .transform(new CircleTransform(mContext))
                         .resize(100, 100)
                         .into(holder.ivCommentProfilePicture);
             }

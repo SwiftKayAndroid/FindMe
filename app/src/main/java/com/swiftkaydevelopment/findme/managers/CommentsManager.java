@@ -28,13 +28,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CommentsManager {
+
+    public interface CommentsManagerListener {
+        void onCommentsLoaded(List<Comment> comments);
+    }
     private static final String TAG = "FindMe-CommentsManager";
 
     private String mUid;
     private String mPostId;
     private static CommentsManager manager = null;
+    private CopyOnWriteArrayList<CommentsManagerListener> mListeners = new CopyOnWriteArrayList<>();
     private static Context mContext;
 
     public static CommentsManager getInstance(String uid, Context context){
@@ -46,18 +53,27 @@ public class CommentsManager {
         return manager;
     }
 
-    public ArrayList<Comment> fetchComments(String postid){
-        ArrayList<Comment> cList = new ArrayList<>();
+    /**
+     * Adds a Listener to the list of listeners
+     *
+     * @param listener Listener to add
+     */
+    public void addListener(CommentsManagerListener listener) {
+        mListeners.addIfAbsent(listener);
+    }
+
+    /**
+     * Removes a Listner from the list of listeners
+     *
+     * @param listener Listener to remove
+     */
+    public void removeListener(CommentsManagerListener listener) {
+        mListeners.remove(listener);
+    }
+
+    public void fetchComments(String postid){
         mPostId = postid;
-        try {
-            cList = new FetchCommentsTask(postid).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null).get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        for (Comment comment : cList) {
-            comment.setUser(User.createUser().fetchUser(comment.getCommentUserId(), AccountManager.getInstance(mContext).getUserId()));
-        }
-        return cList;
+        new FetchCommentsTask(postid).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     public void postComment(String postid, String comment) {
@@ -88,7 +104,7 @@ public class CommentsManager {
         }
     }
 
-    private class FetchCommentsTask extends AsyncTask<Void,Void,ArrayList<Comment>>{
+    private class FetchCommentsTask extends AsyncTask<Void, Void, ArrayList<Comment>>{
         String postid;
 
         public FetchCommentsTask(String postid){
@@ -113,6 +129,7 @@ public class CommentsManager {
                     c.setComment(child.getString("comment"));
                     c.setTime(child.getString("time"));
                     c.setCommentUserId(child.getString("commentusersid"));
+                    c.setUser(User.createUser().fetchUser(c.getCommentUserId(), mUid));
                     c.setPostId(mPostId);
                     cList.add(c);
                 }
@@ -121,6 +138,15 @@ public class CommentsManager {
             }
 
             return cList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Comment> comments) {
+            super.onPostExecute(comments);
+
+            for (CommentsManagerListener l : mListeners) {
+                l.onCommentsLoaded(comments);
+            }
         }
     }
 }

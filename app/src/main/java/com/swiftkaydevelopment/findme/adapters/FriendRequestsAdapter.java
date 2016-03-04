@@ -61,7 +61,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
         } else {
             Picasso.with(mContext)
                     .load(users.get(position).getPropicloc())
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform(mContext))
                     .into(holder.iv);
         }
         holder.tvName.setText(users.get(position).getFirstname() + " " + users.get(position).getLastname());

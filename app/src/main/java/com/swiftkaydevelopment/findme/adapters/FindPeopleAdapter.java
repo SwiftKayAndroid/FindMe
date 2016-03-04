@@ -77,12 +77,12 @@ public class FindPeopleAdapter extends RecyclerView.Adapter<FindPeopleAdapter.Co
         if (users.get(position).getPropicloc().equals("")) {
             Picasso.with(mContext)
                     .load(R.drawable.ic_placeholder)
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform(mContext))
                     .into(holder.propic);
         } else {
             Picasso.with(mContext)
                     .load(users.get(position).getPropicloc())
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform(mContext))
                     .into(holder.propic);
         }
 

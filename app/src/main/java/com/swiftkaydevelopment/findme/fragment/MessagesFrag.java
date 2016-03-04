@@ -254,6 +254,9 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         EventBus.getDefault().removeStickyEvent(event);
         if (event.message.getUser().getOuid().equals(user.getOuid())) {
             mMessageAdapter.addMessage(event.message);
+            //todo: need to find a way to mark the message as seen when it comes in on
+            //a push notification
+            MessagesManager.getInstance(uid).markThreadAsSeen(uid, user.getOuid());
         }
     }
 

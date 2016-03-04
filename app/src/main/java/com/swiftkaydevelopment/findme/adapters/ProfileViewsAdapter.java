@@ -65,12 +65,12 @@ public class ProfileViewsAdapter extends RecyclerView.Adapter<ProfileViewsAdapte
         if (!user.getPropicloc().equals("")) {
             Picasso.with(context)
                     .load(user.getPropicloc())
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform(context))
                     .into(holder.profilePicture);
         } else {
             Picasso.with(context)
                     .load(R.drawable.ic_placeholder)
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform(context))
                     .into(holder.profilePicture);
         }
 

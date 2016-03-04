@@ -69,12 +69,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         if (TextUtils.isEmpty(mMessageList.get(position).getUser().getPropicloc())) {
             Picasso.with(mContext)
                     .load(R.drawable.ic_placeholder)
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform(mContext))
                     .into(holder.profilePicture);
         } else {
             Picasso.with(mContext)
                     .load(mMessageList.get(position).getUser().getPropicloc())
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform(mContext))
                     .into(holder.profilePicture);
         }
 

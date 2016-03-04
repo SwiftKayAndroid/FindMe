@@ -146,7 +146,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.tvTime.setText(post.getTime());
             Picasso.with(mContext)
                     .load(!TextUtils.isEmpty(post.getUser().getPropicloc()) ? post.getUser().getPropicloc() : "empty")
-                    .transform(new CircleTransform())
+                    .transform(new CircleTransform(mContext))
                     .resize(100, 100)
                     .error(R.drawable.ic_placeholder)
                     .into(holder.ivProfilePicture);

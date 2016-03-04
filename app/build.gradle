@@ -25,6 +25,8 @@ android {
         targetSdkVersion 23
         versionCode 9
         versionName "1.5.3"
+
+        buildConfigField "boolean", "GLIDE", "false"
     }
 
     packagingOptions{
@@ -55,4 +57,5 @@ dependencies {
         transitive = true;
     }
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }
