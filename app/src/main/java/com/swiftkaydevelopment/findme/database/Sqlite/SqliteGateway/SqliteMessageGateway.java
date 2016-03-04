@@ -17,8 +17,13 @@
 
 package com.swiftkaydevelopment.findme.database.Sqlite.SqliteGateway;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.database.BaseSQLiteGateway;
+import com.swiftkaydevelopment.findme.database.DatabaseContract;
 import com.swiftkaydevelopment.findme.database.Sqlite.modules.SQLiteModule;
 import com.swiftkaydevelopment.findme.database.gatewayInterfaces.MessageGateway;
 
@@ -36,7 +41,15 @@ public class SqliteMessageGateway extends BaseSQLiteGateway implements MessageGa
 
     @Override
     public boolean insert(Message message) {
-        return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = messageToContentValues(message);
+
+        Message msg = find(message.getMessageId());
+        if (msg != null) {
+           return update(message);
+        } else {
+            return db.insert(DatabaseContract.MessageEntry.TABLE_NAME, null, values) != -1;
+        }
     }
 
     @Override
@@ -51,11 +64,71 @@ public class SqliteMessageGateway extends BaseSQLiteGateway implements MessageGa
 
     @Override
     public Message find(String messageId) {
-        return null;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.query(DatabaseContract.MessageEntry.TABLE_NAME, null,
+                DatabaseContract.MessageEntry.COLUMN_NAME_MESSAGE_ID + " = ?",
+                new String[]{messageId}, null, null, null);
+        Message message = null;
+            if (c != null && c.moveToFirst()) {
+                message = cursorToMessage(c);
+            }
+
+        if (c != null) {
+            c.close();
+        }
+        return message;
     }
 
     @Override
     public ArrayList<Message> findAll(String uid, String ouid) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.query(DatabaseContract.MessageEntry.TABLE_NAME, null,
+                DatabaseContract.MessageEntry.COLUMN_NAME_OUID + " = ?",
+                new String[]{ouid}, null, null, null);
         return null;
+    }
+
+    /**
+     * Turns a message into ContentValues
+     *
+     * @param message Message to convert
+     * @return Content values from message
+     */
+    private ContentValues messageToContentValues(Message message) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_MESSAGE_ID, message.getMessageId());
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_MESSAGE, message.getMessage());
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_DELETED_STATUS, message.getDeletedStatus());
+        //todo:
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_IMAGE_LOC, "");
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_OUID, message.getOuid());
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_SEEN_STATUS, message.getSeenStatus());
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_SENDER_ID, message.getSenderId());
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_TAG, message.getTag());
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_THREAD_ID, message.getThreadId());
+        values.put(DatabaseContract.MessageEntry.COLUMN_NAME_TIME, message.getTime());
+
+        return values;
+    }
+
+    /**
+     * Turns a cursor into a message
+     *
+     * @param c Cursor to convert
+     * @return message from cursor
+     */
+    private Message cursorToMessage(Cursor c) {
+        Message message = Message.instance();
+        message.setMessageId(c.getString(c.getColumnIndexOrThrow(DatabaseContract.MessageEntry.COLUMN_NAME_MESSAGE_ID)));
+        message.setMessage(c.getString(c.getColumnIndexOrThrow(DatabaseContract.MessageEntry.COLUMN_NAME_MESSAGE)));
+        message.setDeletedStatus(c.getInt(c.getColumnIndexOrThrow(DatabaseContract.MessageEntry.COLUMN_NAME_DELETED_STATUS)));
+        message.setOuid(c.getString(c.getColumnIndexOrThrow(DatabaseContract.MessageEntry.COLUMN_NAME_OUID)));
+        message.setSeenStatus(c.getInt(c.getColumnIndexOrThrow(DatabaseContract.MessageEntry.COLUMN_NAME_SEEN_STATUS)));
+        message.setSenderId(c.getString(c.getColumnIndexOrThrow(DatabaseContract.MessageEntry.COLUMN_NAME_SENDER_ID)));
+        message.setTag(c.getString(c.getColumnIndexOrThrow(DatabaseContract.MessageEntry.COLUMN_NAME_TAG)));
+        message.setThreadId(c.getString(c.getColumnIndexOrThrow(DatabaseContract.MessageEntry.COLUMN_NAME_THREAD_ID)));
+        message.setTime(c.getString(c.getColumnIndexOrThrow(DatabaseContract.MessageEntry.COLUMN_NAME_TIME)));
+        return message;
     }
 }

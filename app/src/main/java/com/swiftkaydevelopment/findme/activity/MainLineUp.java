@@ -7,37 +7,47 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.squareup.picasso.Picasso;
+import com.swiftkaydevelopment.findme.BuildConfig;
 import com.swiftkaydevelopment.findme.R;
-import com.swiftkaydevelopment.findme.fragment.NavigationDrawerFragment;
 import com.swiftkaydevelopment.findme.gcm.QuickstartPreferences;
 import com.swiftkaydevelopment.findme.gcm.RegistrationIntentService;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.newsfeed.NewsFeedFrag;
-
+import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 /**
  * Created by Kevin Haines on 2/5/2015.
  */
-public class MainLineUp extends BaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-
-    private static final int NEWSFEED = 1;
-    private static final int FINDPEOPLE = 2;
-    private static final int PROFILEVIEWS = 3;
-    private static final int MATCHES = 1000;
-    private static final int PHOTOS = 4;
+public class MainLineUp extends BaseActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private NavigationView          mNavigationView;
+    private ActionBarDrawerToggle   drawerToggle;
+    private DrawerLayout            drawerLayout;
 
     /**
      * Creates a new Intent to start this activity
@@ -62,12 +72,18 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
     @Override
     protected void createActivity(Bundle b) {
         mToolbar = (Toolbar) findViewById(R.id.toolbarNavigation);
+        //todo: get new assets and remove ic menu from drawable
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
         setSupportActionBar(mToolbar);
 
         initializeDrawer();
-
-        displayView(NEWSFEED);
 
         registerGCMReceiver();
         SharedPreferences sharedPreferences =
@@ -78,6 +94,15 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
             // Start IntentService to register this application with GCM.
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -140,34 +165,51 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
      *
      */
     public void initializeDrawer(){
-        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        navigationDrawerFragment.setUid(uid);
-        // Set up the drawer.
-        navigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
-    }
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavigationView = (NavigationView) findViewById(R.id.nvMainNavigation);
+        View headerView = mNavigationView.inflateHeaderView(R.layout.drawerheader);
 
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        displayView(position);
-    }
+        setUpHeader(headerView);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.navigation_menu, menu);
-        return true;
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                selectMenuItem(menuItem);
+                drawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
+        drawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close) {
+
+            @Override
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        drawerLayout.setDrawerListener(drawerToggle);
+
+        selectMenuItem(mNavigationView.getMenu().findItem(R.id.menuNewsfeed));
     }
 
     /**
-     * Displays the appropriate fragment based on navigation drawer selection
+     * Handles navigation view item selection
      *
-     * @param position postion selected
+     * @param menuItem the menu to select
      */
-    private void displayView(int position) {
-        switch (position) {
-            case NEWSFEED:
+    private void selectMenuItem(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menuNewsfeed:
                 if (getSupportFragmentManager().findFragmentByTag(NewsFeedFrag.TAG) == null) {
                     NewsFeedFrag newsFeedFrag = NewsFeedFrag.getInstance(uid);
                     getSupportFragmentManager().beginTransaction()
@@ -176,20 +218,127 @@ public class MainLineUp extends BaseActivity implements NavigationDrawerFragment
                             .commit();
                 }
                 break;
-            case FINDPEOPLE:
+            case R.id.menuConnect:
                 startActivity(FindPeopleActivity.createIntent(MainLineUp.this));
                 break;
-            case PROFILEVIEWS:
+            case R.id.menuProfileViews:
                 startActivity(ProfileViewsActivity.createIntent(this));
                 break;
-            case MATCHES:
-                startActivity(MatchActivity.createIntent(this));
+            case R.id.menuMatches:
+             startActivity(MatchActivity.createIntent(this));
                 break;
-            case PHOTOS:
+            case R.id.menuPhotos:
                 startActivity(ViewPhotos.createIntent(this, UserManager.getInstance(uid).me()));
-                break;
-            default:
+            break;
+            case R.id.menuSettings:
+//                launchPrefs();
                 break;
         }
+    }
+
+    /**
+     * Sets up the navigation drawer header view
+     *
+     * @param header Header View
+     */
+    private void setUpHeader(View header) {
+        ImageView headermessage = (ImageView) header.findViewById(R.id.ivdrawerheadermessages);
+        ImageView headernotes = (ImageView) header.findViewById(R.id.ivdrawerheadernotes);
+        ImageView headerfriends = (ImageView) header.findViewById(R.id.ivdrawerheadfriends);
+//        ImageView headermatch = (ImageView) header.findViewById(R.id.ivdrawerheadermatch);
+        TextView tvname = (TextView) header.findViewById(R.id.tvmatchmymatches);
+        ImageView ivusersphoto = (ImageView) header.findViewById(R.id.ivdrawerusersphoto);
+        RelativeLayout headerlay = (RelativeLayout) header.findViewById(R.id.rldrawerheader);
+        LinearLayout headermenu = (LinearLayout) header.findViewById(R.id.fggf);
+
+        tvname.setText(prefs.getString("firstname", null) + " " + prefs.getString("lastname", null));
+        String imgloc = prefs.getString("propicloc", "");
+        if (!TextUtils.isEmpty(imgloc)) {
+            if (BuildConfig.GLIDE) {
+                Glide.with(this)
+                        .load(imgloc)
+                        .transform(new CircleTransform(this))
+                        .into(ivusersphoto);
+            } else {
+                Picasso.with(this)
+                        .load(imgloc)
+                        .transform(new CircleTransform(this))
+                        .into(ivusersphoto);
+            }
+        } else {
+            if (BuildConfig.GLIDE) {
+                Glide.with(this)
+                        .load(R.drawable.ic_placeholder)
+                        .transform(new CircleTransform(this))
+                        .into(ivusersphoto);
+            }
+            Picasso.with(this)
+                    .load(R.drawable.ic_placeholder)
+                    .transform(new CircleTransform(this))
+                    .into(ivusersphoto);
+        }
+
+
+//        headermatch.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent match = new Intent("com.swiftkaytech.findme.MATCH");
+//                startActivity(match);
+//            }
+//        });
+
+        tvname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(ProfileActivity.createIntent(MainLineUp.this, UserManager.getInstance(uid).me()));
+            }
+        });
+
+        ivusersphoto.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivity(ProfileActivity.createIntent(MainLineUp.this, UserManager.getInstance(uid).me()));
+            }
+        });
+
+        headermessage.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivity(MessagesListActivity.createIntent(MainLineUp.this));
+            }
+        });
+
+        headernotes.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivity(NotificationActivity.createIntent(MainLineUp.this));
+            }
+        });
+
+        headerfriends.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivity(FriendsActivity.createIntent(MainLineUp.this));
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigation_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            drawerLayout.openDrawer(GravityCompat.START);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -27,6 +27,7 @@ import com.swiftkaydevelopment.findme.database.modules.MessagesModule;
 import com.swiftkaydevelopment.findme.database.modules.UsersModule;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Kevin Haines on 2/29/16.
@@ -108,11 +109,31 @@ public class DatabaseManager implements UsersModule, MessagesModule, ModuleEvent
 
     @Override
     public Message getMessage(String messageId) {
-        return mMessageModule.getMessage(messageId);
+        Message message = mMessageModule.getMessage(messageId);
+        User user = mUsersModule.getUser(message.getOuid());
+        if (user == null) {
+            return null;
+        } else {
+            message.setUser(user);
+        }
+        return message;
     }
 
     @Override
     public ArrayList<Message> getMessages(String uid, String ouid) {
-        return mMessageModule.getMessages(uid, ouid);
+        ArrayList<Message> messages = mMessageModule.getMessages(uid, ouid);
+        Iterator<Message> iterator = messages.iterator();
+
+        while (iterator.hasNext()) {
+            Message message = iterator.next();
+            User user = mUsersModule.getUser(message.getOuid());
+            if (user != null) {
+                message.setUser(user);
+            } else {
+                iterator.remove();
+            }
+        }
+
+        return messages;
     }
 }

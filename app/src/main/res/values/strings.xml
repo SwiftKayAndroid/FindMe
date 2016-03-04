@@ -17,18 +17,8 @@
         sending the fetched token to the server or subscribing to the PubSub topic. Please try
         running the sample again.</string>
 
-    <array name="nav_drawer_icons">
-        <item>@mipmap/ic_home_black_24dp</item>
-        <item>@mipmap/ic_people_black_24dp</item>
-        <item>@mipmap/ic_remove_red_eye_black_24dp</item>
-        <item>@mipmap/ic_heart_black_24dp</item>
-        <item>@mipmap/ic_image_multiple_white_24dp</item>
-
-        <item>@mipmap/ic_settings_white_24dp</item>
-    </array>
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
-        <item>Home</item>
         <item>Connect</item>
         <item>Profile Views</item>
         <item>Matches</item>

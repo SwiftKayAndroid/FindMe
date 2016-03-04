@@ -35,7 +35,7 @@ import com.swiftkaydevelopment.findme.managers.MessagesManager;
 
 import java.util.ArrayList;
 
-public class MessagesActivity extends BaseActivity implements MessagesManager.MessagesListener{
+public class MessagesActivity extends BaseActivity {
     private static final String TAG = "MessagesActivity";
     private static final String ARG_USER = "ARG_USER";
 
@@ -124,13 +124,11 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        MessagesManager.getInstance(uid).addMessagesListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        MessagesManager.getInstance(uid).removeMessagesListener(this);
     }
 
     @Override
@@ -138,39 +136,5 @@ public class MessagesActivity extends BaseActivity implements MessagesManager.Me
         outState.putSerializable(ARG_USER, user);
         outState.putString(ARG_UID, uid);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onRetrieveMoreMessages(ArrayList<Message> moreMessages) {
-        if (moreMessages != null) {
-            mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
-            if (mMessagesFrag != null) {
-                mMessagesFrag.updateMessages(moreMessages);
-            }
-        }
-    }
-
-    @Override
-    public void onMessageDeleted(Message message) {
-        mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
-        if (mMessagesFrag != null) {
-            mMessagesFrag.notifyMessageDeleted(message);
-        }
-    }
-
-    @Override
-    public void onMessageSentComplete(Message message) {
-        mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
-        if (mMessagesFrag != null) {
-            mMessagesFrag.notifyNewMessage(message);
-        }
-    }
-
-    @Override
-    public void onMessageUnsent(Message message) {
-        mMessagesFrag = (MessagesFrag) getSupportFragmentManager().findFragmentByTag(MessagesFrag.TAG);
-        if (mMessagesFrag != null) {
-            mMessagesFrag.notifyMessageDeleted(message);
-        }
     }
 }

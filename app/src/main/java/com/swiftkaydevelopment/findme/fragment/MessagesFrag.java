@@ -28,6 +28,7 @@ import com.swiftkaydevelopment.findme.adapters.MessagesAdapter;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.events.MessageReceivedEvent;
 import com.swiftkaydevelopment.findme.managers.MessagesManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 /**
  * Created by Kevin Haines on 3/11/2015.
  */
-public class MessagesFrag extends BaseFragment implements View.OnClickListener, MessagesAdapter.MessagesAdapterListener, TextWatcher {
+public class MessagesFrag extends BaseFragment implements View.OnClickListener, MessagesManager.MessagesListener, MessagesAdapter.MessagesAdapterListener, TextWatcher {
     public static final String  TAG = "MessagesFrag";
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_MESSAGES = "ARG_MESSAGES";
@@ -143,6 +144,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         if (mMessageAdapter != null) {
             mMessageAdapter.setMessagesAdapterListener(this);
         }
+        MessagesManager.getInstance(uid).addMessagesListener(this);
         EventBus.getDefault().register(this);
     }
 
@@ -152,31 +154,13 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         if (mMessageAdapter != null) {
             mMessageAdapter.setMessagesAdapterListener(null);
         }
+        MessagesManager.getInstance(uid).removeMessagesListener(this);
         EventBus.getDefault().unregister(this);
     }
 
     /**
-     * Called when messages are fetched/refreshed
-     * @param messages Arraylist of Messages
-     */
-    public void updateMessages(ArrayList<Message> messages) {
-        mProgressBar.setVisibility(View.GONE);
-        mMessageAdapter.addAllMessages(messages);
-        mMessageAdapter.setMessagesAdapterListener(this);
-        int size = mRecyclerView.getLayoutManager().getItemCount() - 1;
-        if (size > 0) {
-            mRecyclerView.smoothScrollToPosition(size);
-        }
-
-        if (messages.size() < 1) {
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
-        }
-    }
-
-    /**
      * Called when message is sent
+     *
      * @param message message that was sent
      */
     public void notifyNewMessage(Message message) {
@@ -210,10 +194,6 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         }
     }
 
-    public void notifyMessageDeleted(Message message) {
-        mMessageAdapter.removeMessage(message);
-    }
-
     public String getThreadId() {
         if (mMessageAdapter != null && mMessageAdapter.getMessages().size() > 0) {
             return mMessageAdapter.getMessages().get(0).getThreadId();
@@ -224,13 +204,12 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onMessageLongClick(View itemView, final Message message) {
         PopupMenu popup = new PopupMenu(getActivity(), itemView);
-        //Inflating the Popup using xml file
+
         popup.getMenuInflater().inflate(R.menu.message_pop_up_menu, popup.getMenu());
         if (!message.getUser().getOuid().equals(uid)) {
             popup.getMenu().findItem(R.id.messagesPopUpMenuUnsend).setVisible(false);
         }
 
-        //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.messagePopUpMenuDelete) {
@@ -241,7 +220,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
                 return true;
             }
         });
-        popup.show();//showing popup menu
+        popup.show();
     }
 
     @Override
@@ -254,8 +233,6 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         EventBus.getDefault().removeStickyEvent(event);
         if (event.message.getUser().getOuid().equals(user.getOuid())) {
             mMessageAdapter.addMessage(event.message);
-            //todo: need to find a way to mark the message as seen when it comes in on
-            //a push notification
             MessagesManager.getInstance(uid).markThreadAsSeen(uid, user.getOuid());
         }
     }
@@ -279,6 +256,41 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     @Override
     public void afterTextChanged(Editable s) {
 
+    }
+
+    @Override
+    public void onRetrieveMoreMessages(ArrayList<Message> messages) {
+        for (Message message : messages) {
+            DatabaseManager.instance(getActivity()).createMessage(message);
+        }
+        mProgressBar.setVisibility(View.GONE);
+        mMessageAdapter.addAllMessages(messages);
+        mMessageAdapter.setMessagesAdapterListener(this);
+        int size = mRecyclerView.getLayoutManager().getItemCount() - 1;
+        if (size > 0) {
+            mRecyclerView.smoothScrollToPosition(size);
+        }
+
+        if (messages.size() < 1) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onMessageDeleted(Message message) {
+        mMessageAdapter.removeMessage(message);
+    }
+
+    @Override
+    public void onMessageSentComplete(Message message) {
+        notifyNewMessage(message);
+    }
+
+    @Override
+    public void onMessageUnsent(Message message) {
+        mMessageAdapter.removeMessage(message);
     }
 
     @Override

@@ -110,6 +110,7 @@ public class DatabaseContract {
         public static final String COLUMN_NAME_TAG = "tag";
         public static final String COLUMN_NAME_SENDER_ID = "sender_id";
         public static final String COLUMN_NAME_IMAGE_LOC = "image_loc";
+        public static final String COLUMN_NAME_TIME = "time";
 
         public static final String CREATE_TABLE = DatabaseContract.CREATE_TABLE +
                 TABLE_NAME + " (" +
@@ -121,6 +122,7 @@ public class DatabaseContract {
                 COLUMN_NAME_DELETED_STATUS + INTEGER_TYPE + COMMA_SEP +
                 COLUMN_NAME_TAG + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_SENDER_ID + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_TIME + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_IMAGE_LOC + TEXT_TYPE +
                 " )";
 

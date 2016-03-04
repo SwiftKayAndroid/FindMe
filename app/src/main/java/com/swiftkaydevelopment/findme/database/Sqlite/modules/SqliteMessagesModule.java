@@ -21,6 +21,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.swiftkaydevelopment.findme.data.Message;
+import com.swiftkaydevelopment.findme.database.DatabaseContract;
 import com.swiftkaydevelopment.findme.database.Sqlite.SqliteGateway.SqliteMessageGateway;
 import com.swiftkaydevelopment.findme.database.Sqlite.SqliteGateway.SqliteUsersGateway;
 import com.swiftkaydevelopment.findme.database.gatewayInterfaces.MessageGateway;
@@ -43,7 +44,7 @@ public class SqliteMessagesModule implements SQLiteModule, MessagesModule {
 
     @Override
     public void create(SQLiteDatabase db) {
-
+        db.execSQL(DatabaseContract.MessageEntry.CREATE_TABLE);
     }
 
     @Override
@@ -58,36 +59,36 @@ public class SqliteMessagesModule implements SQLiteModule, MessagesModule {
 
     @Override
     public SQLiteDatabase getWritableDatabase() {
-        return null;
+        return mSQLiteOpenHelper.getWritableDatabase();
     }
 
     @Override
     public SQLiteDatabase getReadableDatabase() {
-        return null;
+        return mSQLiteOpenHelper.getReadableDatabase();
     }
 
     @Override
     public boolean createMessage(Message message) {
-        return false;
+        return mMessageGateway.insert(message);
     }
 
     @Override
     public boolean updateMessage(Message message) {
-        return false;
+        return mMessageGateway.update(message);
     }
 
     @Override
     public boolean deleteMessage(Message message) {
-        return false;
+        return mMessageGateway.delete(message);
     }
 
     @Override
     public Message getMessage(String messageId) {
-        return null;
+        return mMessageGateway.find(messageId);
     }
 
     @Override
     public ArrayList<Message> getMessages(String uid, String ouid) {
-        return null;
+        return mMessageGateway.findAll(uid, ouid);
     }
 }
