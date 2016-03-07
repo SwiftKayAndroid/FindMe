@@ -37,7 +37,7 @@
         android:layout_gravity="start"
         app:menu="@menu/navigation_drawer_menu"
         app:itemIconTint="@color/primary_dark"
-        app:itemTextColor="@color/black"
+        app:itemTextColor="@color/primary_dark"
         android:fitsSystemWindows="true">
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

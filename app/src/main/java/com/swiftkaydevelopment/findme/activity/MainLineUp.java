@@ -73,7 +73,7 @@ public class MainLineUp extends BaseActivity {
     protected void createActivity(Bundle b) {
         mToolbar = (Toolbar) findViewById(R.id.toolbarNavigation);
         //todo: get new assets and remove ic menu from drawable
-        mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        mToolbar.setNavigationIcon(R.mipmap.ic_menu_white_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +176,7 @@ public class MainLineUp extends BaseActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 selectMenuItem(menuItem);
                 drawerLayout.closeDrawers();
-                return true;
+                return false;
             }
         });
 
@@ -277,15 +277,6 @@ public class MainLineUp extends BaseActivity {
                     .transform(new CircleTransform(this))
                     .into(ivusersphoto);
         }
-
-
-//        headermatch.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent match = new Intent("com.swiftkaytech.findme.MATCH");
-//                startActivity(match);
-//            }
-//        });
 
         tvname.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -122,18 +122,20 @@ public class DatabaseManager implements UsersModule, MessagesModule, ModuleEvent
     @Override
     public ArrayList<Message> getMessages(String uid, String ouid) {
         ArrayList<Message> messages = mMessageModule.getMessages(uid, ouid);
-        Iterator<Message> iterator = messages.iterator();
+        if (messages != null && messages.iterator() != null) {
+            Iterator<Message> iterator = messages.iterator();
 
-        while (iterator.hasNext()) {
-            Message message = iterator.next();
-            User user = mUsersModule.getUser(message.getOuid());
-            if (user != null) {
-                message.setUser(user);
-            } else {
-                iterator.remove();
+            while (iterator.hasNext()) {
+                Message message = iterator.next();
+                User user = mUsersModule.getUser(message.getOuid());
+                if (user != null) {
+                    message.setUser(user);
+                } else {
+                    iterator.remove();
+                }
             }
         }
 
-        return messages;
+        return messages != null ? messages : new ArrayList<Message>();
     }
 }
