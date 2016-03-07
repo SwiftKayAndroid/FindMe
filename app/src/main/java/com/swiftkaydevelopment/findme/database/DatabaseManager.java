@@ -94,6 +94,7 @@ public class DatabaseManager implements UsersModule, MessagesModule, ModuleEvent
 
     @Override
     public boolean createMessage(Message message) {
+        mUsersModule.createUser(message.getUser());
         return mMessageModule.createMessage(message);
     }
 
