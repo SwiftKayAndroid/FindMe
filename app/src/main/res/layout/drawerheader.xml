@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/header_background">
+    android:background="@color/primary_dark">
 
-    <com.swiftkaytech.findme.views.CircleImageView
+    <ImageView
         android:id="@+id/ivdrawerusersphoto"
         android:layout_width="75dp"
         android:layout_height="75dp"
@@ -41,6 +41,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:src="@mipmap/ic_message_black_24dp"
+            android:tint="@color/white"
             android:padding="7dp" />
 
         <ImageView
@@ -49,9 +50,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:src="@mipmap/ic_photo_camera_white_24dp"
+            android:src="@mipmap/ic_notifications_black_24dp"
             android:padding="7dp"
-            android:tint="@color/black" />
+            android:tint="@color/white" />
 
         <ImageView
             android:id="@+id/ivdrawerheadfriends"
@@ -59,14 +60,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@mipmap/ic_people_black_24dp"
-            android:padding="7dp" />
-
-        <ImageView
-            android:id="@+id/ivdrawerheadermatch"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@mipmap/ic_heart_black_24dp"
+            android:tint="@color/white"
             android:padding="7dp" />
 
     </LinearLayout>

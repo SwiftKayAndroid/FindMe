@@ -2,21 +2,24 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:actionMenuTextColor">@color/base_green</item>
+        <item name="android:actionMenuTextAppearance">@color/base_green</item>
+        <item name="android:popupTheme">@style/AppTheme.PopupOverlay</item>
+        <item name="android:colorPrimary">@color/base_green</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+
     </style>
 
-    <color name="gray">#e0e0e0</color>
-    <color name="darkred">#b80000</color>
-    <color name="darkredsemitransparent">#60b80000</color>
-    <color name="holoblue">#603874d6</color>
-    <color name="solidblue">#3874D6</color>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textColor">@color/primary_dark</item>
+    </style>
 
-    <color name="red">#f90606</color>
-    <color name="lightred">#f91919</color>
-    <color name ="medlightpurple">#ff00ff</color>
-    <color name = "superlightpurple">#ff6eff</color>
-    <color name="card_bg">#EBEBEB</color>
-    <color name="card_outline">#D0D0CE</color>
+
+
+
+    <!--ALL STYLE BELOW THIS NEED TO BE REVIEWED FOR USE AND UPDATED-->
+
     <style name="time_label">
         <item name="android:textSize">@dimen/time_label_size</item>
         <item name="android:textColor">@color/numbers_text_color</item>
@@ -37,26 +40,9 @@
         <item name="max_visible">4</item>
     </style>
 
-
     <style name="pop_animation">
         <item name="android:windowEnterAnimation">@animator/pop_show</item>
         <item name="android:windowExitAnimation">@animator/pop_hide</item>
-    </style>
-
-    <!-- the theme applied to the application or activity -->
-    <style name="AppTheme.Light"
-        parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
-
-        <!-- Support library compatibility -->
-        <item name="actionBarStyle">@style/MyActionBar</item>
-    </style>
-
-    <!-- ActionBar styles -->
-    <style name="MyActionBar"
-        parent="@style/SwipeFlingStyle">
-        <item name="android:background">@color/holoblue</item>
-        <item name="background">@color/holoblue</item>
     </style>
 
     <style name="FindMeToolBar" parent="AppTheme">

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ivMatchImage"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp" />
+
+    <TextView
+        android:id="@+id/tvMatchName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="notification title"
+        android:layout_alignTop="@+id/ivProfileViewimage"
+        android:layout_toRightOf="@+id/ivProfileViewimage"
+        android:layout_toEndOf="@+id/ivProfileViewimage"
+        android:textStyle="bold"
+        android:layout_marginLeft="16dp" />
+
+    <TextView
+        android:id="@+id/tvMatchDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="description"
+        android:layout_below="@+id/tvProfileViewName"
+        android:layout_toRightOf="@+id/ivProfileViewimage"
+        android:layout_toEndOf="@+id/ivProfileViewimage"
+        android:layout_marginLeft="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="time"
+        android:id="@+id/tvProfileViewTime"
+        android:layout_alignTop="@+id/tvProfileViewName"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="5dp"
+        android:visibility="gone" />
+</RelativeLayout>

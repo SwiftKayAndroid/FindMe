@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="fill_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerInParent="true">
-    <com.swiftkaytech.findme.views.CircleImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:id="@+id/ivpicsgrid"
+    <ImageView
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:id="@+id/ivFindPeopleGridItemProfilePicture"
         android:src="@drawable/ic_placeholder"
-        android:layout_centerInParent="true" />
+        android:padding="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -21,14 +22,15 @@
         android:id="@+id/tvfindpeople"
         android:background="@drawable/findpeopletextviewbackground"
         android:textColor="#ffffff"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="8dp"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:paddingBottom="3dp"
-        android:paddingTop="3dp" />
-    </RelativeLayout>
+        android:paddingTop="3dp"
+        android:layout_alignLeft="@+id/ivFindPeopleGridItemProfilePicture"
+        android:layout_alignStart="@+id/ivFindPeopleGridItemProfilePicture"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/ivFindPeopleGridItemProfilePicture"
+        android:layout_alignRight="@+id/ivFindPeopleGridItemProfilePicture" />
 </RelativeLayout>

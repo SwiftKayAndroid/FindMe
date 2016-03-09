@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/menuNavGroupMain"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/menuNewsfeed"
+            android:title="Newsfeed"
+            android:icon="@mipmap/ic_home_black_24dp" />
+        <item
+            android:id="@+id/menuConnect"
+            android:title="Connect"
+            android:icon="@mipmap/ic_people_black_24dp"/>
+    </group>
+    <group
+        android:id="@+id/menuNavGroupSecondary"
+        android:checkableBehavior="single">
+            <item
+                android:id="@+id/menuProfileViews"
+                android:title="Profile views"
+                android:icon="@mipmap/ic_remove_red_eye_black_24dp"/>
+            <item
+                android:id="@+id/menuMatches"
+                android:title="Matches"
+                android:visible="false"
+                android:icon="@mipmap/ic_heart_black_24dp"/>
+            <item
+                android:id="@+id/menuPhotos"
+                android:title="Photos"
+                android:icon="@mipmap/ic_image_multiple_white_24dp"/>
+            <item
+                android:id="@+id/menuSettings"
+                android:title="Settings"
+                android:visible="false"
+                android:icon="@mipmap/ic_settings_white_24dp"/>
+
+    </group>
+
+    <item android:title="Sub items">
+        <menu>
+            <item
+
+                android:title="Sub item 1" />
+            <item
+                
+                android:title="Sub item 2" />
+        </menu>
+    </item>
+</menu>

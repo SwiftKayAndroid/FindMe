@@ -10,21 +10,20 @@
     <string name="sloganstring">The safest way \n to meet new people!</string>
     <string name="ipaddress">http://www.swiftkay.com/findme/</string>
 
-    <array name="nav_drawer_icons">
-        <item>@mipmap/ic_home_black_24dp</item>
-        <item>@mipmap/ic_people_black_24dp</item>
-        <item>@mipmap/ic_collections_black_24dp</item>
-        <item>@mipmap/ic_heart_black_24dp</item>
-        <item>@mipmap/ic_remove_red_eye_black_24dp</item>
-        <item>@mipmap/ic_settings_black_24dp</item>
-    </array>
+        <string name="gcm_send_message">Token retrieved and sent to server! You can now use gcmsender to
+        send downstream messages to this app.</string>
+    <string name="registering_message">Generating InstanceID token...</string>
+    <string name="token_error_message">An error occurred while either fetching the InstanceID token,
+        sending the fetched token to the server or subscribing to the PubSub topic. Please try
+        running the sample again.</string>
+
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
-        <item>Home</item>
-        <item>Find People</item>
-        <item>Photos</item>
-        <item>My Matches</item>
+        <item>Connect</item>
         <item>Profile Views</item>
+        <item>Matches</item>
+        <item>Photos</item>
+
         <item>Settings</item>
     </string-array>
 
@@ -80,6 +79,9 @@
 
     <!-- DO NOT TRANSLATE -->
     <string name="day_of_week_label_typeface">sans-serif</string>
+
+    <string name="words_or_phrases">Add words or phrases that you don\'t want to see below and you can filter posts, messages, comments and
+    more that contain these words or phrases</string>
 
 
 </resources>

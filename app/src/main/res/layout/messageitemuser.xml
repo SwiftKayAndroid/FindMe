@@ -1,38 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="8dp">
 
     <TextView
+        android:id="@+id/messageItemMessageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/tvmessageuser"
+        tools:text="A whole lot of bullshit in one single long ass text just to test how it looks"
         android:background="@drawable/messagebackgrounduser"
         android:padding="15dp"
-        android:gravity="center"
         android:textColor="#ffffff"
-        android:layout_below="@+id/tvmessageusertime"
-        android:layout_toLeftOf="@+id/ivmessageitemuser"
-        android:layout_toStartOf="@+id/ivmessageitemuser" />
+        android:layout_below="@+id/messageItemTime"
+        android:layout_toLeftOf="@+id/messageItemProfilePicture"
+        android:layout_toStartOf="@+id/messageItemProfilePicture"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="16dp" />
+
+    <TextView
+        android:id="@+id/messageItemTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:layout_alignRight="@+id/messageItemProfilePicture"
+        android:layout_alignEnd="@+id/messageItemProfilePicture" />
+
+    <ImageView
+        android:id="@+id/messageItemProfilePicture"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/messageItemTime"
+        android:src="@drawable/ic_placeholder"
+        android:scaleType="centerCrop"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/tvmessageusertime"
-
-        android:layout_alignRight="@+id/ivmessageitemuser"
-        android:layout_alignEnd="@+id/ivmessageitemuser" />
-
-    <com.swiftkaytech.findme.views.CircleImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/ivmessageitemuser"
-        android:layout_below="@+id/tvmessageusertime"
-        android:src="@drawable/ic_placeholder"
-        android:scaleType="centerCrop"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:text="Seen"
+        android:id="@+id/messageItemUserSeenStatus"
+        android:textColor="@color/primary_dark"
+        android:layout_below="@+id/messageItemProfilePicture"
+        android:layout_alignRight="@+id/messageItemProfilePicture"
+        android:layout_alignEnd="@+id/messageItemProfilePicture"/>
 </RelativeLayout>

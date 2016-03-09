@@ -2,7 +2,11 @@
 <resources>
 
     <!--APP WIDE SHAREABLE COLORS-->
-    <color name="base_green">#9ac73c</color>
+    <color name="base_green">#304FFE</color>
+    <!--<color name="primary_dark">#7CB342</color>-->
+    <color name="primary_dark">#0D47A1</color>
+    <!--<color name="base_green">#8BC34A</color>-->
+    <color name="accentColor">#03A9F4</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
 
@@ -12,6 +16,7 @@
     <color name="done_text_color_normal">#000000</color>
     <color name="done_text_color_disabled">#cccccc</color>
     <color name="numbers_text_color">#8c8c8c</color>
+    <color name="disabled_gray">#6d7692</color>
 
     <color name="transparent_black">#7f000000</color>
     <color name="blue">#33b5e5</color>
@@ -35,7 +40,18 @@
     <color name="done_text_color_dark_disabled">#888888</color>
     <color name="done_disabled_dark">#bfbfbf</color>
 
+    <color name="gray">#e0e0e0</color>
+    <color name="darkred">#b80000</color>
+    <color name="darkredsemitransparent">#60b80000</color>
+    <color name="holoblue">#603874d6</color>
+    <color name="solidblue">#3874D6</color>
 
+    <color name="red">#f90606</color>
+    <color name="lightred">#f91919</color>
+    <color name ="medlightpurple">#ff00ff</color>
+    <color name = "superlightpurple">#ff6eff</color>
+    <color name="card_bg">#EBEBEB</color>
+    <color name="card_outline">#D0D0CE</color>
 
     <color name="light_blue">#CEF6F5</color>
     <color name="bottle_green">#086A87</color>
