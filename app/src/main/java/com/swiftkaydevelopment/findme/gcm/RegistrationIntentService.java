@@ -109,5 +109,4 @@ public class RegistrationIntentService extends IntentService {
         }
     }
     // [END subscribe_topics]
-
 }

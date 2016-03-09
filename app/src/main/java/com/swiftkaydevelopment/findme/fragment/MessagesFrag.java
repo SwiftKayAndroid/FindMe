@@ -118,6 +118,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
                 MessagesManager.getInstance(uid).getMoreMessages("0", mThreadInfo, getActivity());
             } else {
                 mMessagesList = MessagesManager.getInstance(uid).getMoreMessagesSync("0", user, getActivity());
+                Log.e(TAG, "messages size: " + mMessagesList.size());
             }
         }
 
