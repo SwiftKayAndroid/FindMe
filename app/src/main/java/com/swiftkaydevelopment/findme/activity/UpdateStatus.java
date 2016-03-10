@@ -104,4 +104,3 @@ public class UpdateStatus extends BaseActivity {
         return true;
     }
 }
-

@@ -39,7 +39,6 @@ import com.swiftkaydevelopment.findme.views.ExpandableLinearLayout;
 import com.swiftkaydevelopment.findme.views.tagview.TagView;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements View.OnClickListener {
 
@@ -202,14 +201,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.age.setText(Integer.toString(user.getAge()));
 
             StringBuilder sb = new StringBuilder();
-            if (user.getSearchingFor() != null) {
-                for (Map.Entry entry : user.getSearchingFor().entrySet()) {
-                    if (entry.getValue().equals("yes")) {
-                        sb.append(entry.getKey() + " ");
-                    }
-                }
-            }
-            holder.lookingfor.setText(sb.toString());
+
+            holder.lookingfor.setText(user.getLookingForString());
             holder.status.setText(user.mRelationshipStatus);
 
             holder.hasKids.setText(user.hasKids);

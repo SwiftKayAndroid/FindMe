@@ -5,11 +5,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.crashlytics.android.Crashlytics;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.data.AppConstants;
 import com.swiftkaydevelopment.findme.tasks.AuthenticateUser;
 
 import io.fabric.sdk.android.Fabric;
@@ -25,16 +27,16 @@ public class MainActivity extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean saved = prefs.getBoolean("loginsaved", false);
+        boolean saved = prefs.getBoolean(AppConstants.PreferenceConstants.PREF_LOGIN_SAVED, false);
 
         if (saved) {
-            String credemail = prefs.getString("email", null);
-            String credpassword = prefs.getString("password", null);
+            String credemail = prefs.getString(AppConstants.PreferenceConstants.PREF_EMAIL, null);
+            String credpassword = prefs.getString(AppConstants.PreferenceConstants.PREF_PASSWORD, null);
 
-            if (credemail == null || credpassword == null) {
+            if (TextUtils.isEmpty(credemail) || TextUtils.isEmpty(credpassword)) {
                 SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = mPreferences.edit();
-                editor.putBoolean("loginsaved", false);
+                editor.putBoolean(AppConstants.PreferenceConstants.PREF_LOGIN_SAVED, false);
                 editor.apply();
 
                 setGUI();

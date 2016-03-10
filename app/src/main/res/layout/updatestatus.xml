@@ -22,7 +22,7 @@
         android:layout_height="fill_parent"
         android:hint="Type Status Here...."
         android:gravity="left|top"
-        android:inputType="textCapSentences"
+        android:inputType="textCapSentences|textMultiLine"
         android:padding="10dp"
         android:background="@null"
         android:layout_below="@+id/updateStatusToolbar" />

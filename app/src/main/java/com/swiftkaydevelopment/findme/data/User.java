@@ -28,7 +28,6 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -65,17 +64,12 @@ public class User implements Serializable {
         }, GAY {
             @Override
             public String toString() {
-                return "Interested in same sex";
-            }
-        }, LESBIAN {
-            @Override
-            public String toString() {
-                return "Interested in women";
+                return "Gay";
             }
         }, BISEXUAL {
             @Override
             public String toString() {
-                return "Interested in both";
+                return "Bisexual";
             }
         }, OTHER {
             @Override
@@ -84,10 +78,10 @@ public class User implements Serializable {
             }
         }
     }
-    public enum OnlineStatus{
+    public enum OnlineStatus {
         ONLINE, OFFLINE, HIDDEN, UNKNOWN
     }
-    public enum InterestedIn{
+    public enum InterestedIn {
         MEN, WOMEN, BOTH
     }
 
@@ -98,7 +92,7 @@ public class User implements Serializable {
     private String mName;
     private String mFirstname;
     private String mLastname;
-    public Map<String, String> mSearchingForMap;
+    public int mLookingFor;
     private int mAge;
     private boolean mIsFriend;
     private boolean mIsBlocked;
@@ -157,23 +151,15 @@ public class User implements Serializable {
         }
     }
 
-    public Map<String, String> getSearchingFor() {
-        return mSearchingForMap;
+    public int getSearchingFor() {
+        return mLookingFor;
     }
 
     private void createExtendedInfo(JSONObject object) {
 
-        Map<String, String> map = new HashMap<>();
         try {
-            //Create Looking for map
-            map.put("Sex", object.getString("sex"));
-            map.put("Friends", object.getString("friends"));
-            map.put("FWB", object.getString("fwb"));
-            map.put("Something Serious", object.getString("something_serious"));
-            map.put("idk", object.getString("idk"));
-            map.put("Chat", object.getString("chat"));
-
             //relationship status
+            mLookingFor = object.getInt("looking_for");
             mRelationshipStatus = object.getString("relationshipstatus");
             hasKids = object.getString("haskids");
             wantsKids = object.getString("wantskids");
@@ -184,7 +170,6 @@ public class User implements Serializable {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mSearchingForMap = map;
     }
 
     public User fetchUser(String ouid, String uid){
@@ -335,8 +320,6 @@ public class User implements Serializable {
             return Orientation.STRAIGHT;
         } else if (orientation.equalsIgnoreCase("Gay")) {
             return Orientation.GAY;
-        } else if (orientation.equalsIgnoreCase("Lesbian")) {
-            return Orientation.LESBIAN;
         } else if (orientation.equalsIgnoreCase("Bisexual")) {
             return Orientation.BISEXUAL;
         } else {
@@ -415,8 +398,8 @@ public class User implements Serializable {
 
     public String getLookingForString() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry entry : getSearchingFor().entrySet()) {
-            if (entry.getValue().equals("yes")) {
+        for (Map.Entry<String, Integer> entry : DataParser.LookingForParser.getMap().entrySet()) {
+            if (DataParser.contains(mLookingFor, entry.getValue())) {
                 sb.append(entry.getKey() + " ");
             }
         }

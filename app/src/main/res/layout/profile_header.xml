@@ -87,7 +87,8 @@
                         android:textStyle="bold"
                         android:text="Age:"
                         android:layout_marginTop="15dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:minWidth="80dp" />
 
                     <TextView
                         android:id="@+id/profileHeaderAge"
@@ -117,7 +118,8 @@
                         android:textStyle="bold"
                         android:text="Gender:"
                         android:layout_marginTop="15dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:minWidth="80dp" />
 
                     <TextView
                         android:id="@+id/profileHeaderGender"
@@ -147,7 +149,8 @@
                         android:textStyle="bold"
                         android:text="Location:"
                         android:layout_marginTop="15dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:minWidth="80dp" />
 
                     <TextView
                         android:id="@+id/profileHeaderLocation"
@@ -178,7 +181,8 @@
                         android:textStyle="bold"
                         android:text="Orientation:"
                         android:layout_marginTop="15dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:minWidth="80dp" />
 
                     <TextView
                         android:id="@+id/profileHeaderOrientation"
@@ -248,7 +252,8 @@
                         android:textStyle="bold"
                         android:text="Looking For:"
                         android:layout_marginTop="15dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:minWidth="80dp" />
 
                     <TextView
                         android:id="@+id/profileHeaderLookingFor"
@@ -279,7 +284,8 @@
                         android:textStyle="bold"
                         android:text="Has Kids:"
                         android:layout_marginTop="15dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:minWidth="80dp" />
 
                     <TextView
                         android:id="@+id/profileHeaderHasKids"
@@ -309,7 +315,8 @@
                         android:textStyle="bold"
                         android:text="Wants Kids:"
                         android:layout_marginTop="15dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:minWidth="80dp" />
 
                     <TextView
                         android:id="@+id/profileHeaderWantsKids"
@@ -339,7 +346,8 @@
                         android:textStyle="bold"
                         android:text="Profession:"
                         android:layout_marginTop="15dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:minWidth="80dp" />
 
                     <TextView
                         android:id="@+id/profileHeaderProfession"

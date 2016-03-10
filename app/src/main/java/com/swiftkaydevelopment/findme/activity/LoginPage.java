@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.data.AppConstants;
 import com.swiftkaydevelopment.findme.managers.AccountManager;
 import com.swiftkaydevelopment.findme.managers.ConnectionManager;
 import com.swiftkaydevelopment.findme.tasks.AuthenticateUser;
@@ -33,7 +36,15 @@ public class LoginPage extends Activity implements AuthenticateUser.Authenticati
             }
             break;
             case AuthenticateUser.RESULT_SUCCESSFUL: {
-                startActivity(MainLineUp.createIntent(this));
+                if (cb.isChecked()) {
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(AppConstants.PreferenceConstants.PREF_LOGIN_SAVED, true).apply();
+                } else {
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(AppConstants.PreferenceConstants.PREF_LOGIN_SAVED, false).apply();
+                }
+
+                Intent i = MainLineUp.createIntent(this);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
                 finish();
             }
             break;
@@ -93,19 +104,19 @@ public class LoginPage extends Activity implements AuthenticateUser.Authenticati
                 String e = etemail.getText().toString();//email
                 String p = etpassword.getText().toString();//password
 
-                if(e.equals("") || p.equals("")){
+                if (TextUtils.isEmpty(e) || TextUtils.isEmpty(p)) {
                     Toast.makeText(LoginPage.this, "Please make sure all fields are filled in.", Toast.LENGTH_LONG).show();
 
-                }else{
+                } else{
 
                     SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(LoginPage.this);
 
                     SharedPreferences.Editor editor = mPreferences.edit();
-                    if(checked){
-                        editor.putBoolean("loginsaved", true);
+                    if (checked) {
+                        editor.putBoolean(AppConstants.PreferenceConstants.PREF_LOGIN_SAVED, true);
                         editor.apply();
-                    }else{
-                        editor.putBoolean("loginsaved", false);
+                    } else {
+                        editor.putBoolean(AppConstants.PreferenceConstants.PREF_LOGIN_SAVED, false);
                         editor.apply();
                     }
                     AuthenticateUser au = AuthenticateUser.getInstance(LoginPage.this);
@@ -119,7 +130,6 @@ public class LoginPage extends Activity implements AuthenticateUser.Authenticati
 
             @Override
             public void onClick(View v) {
-
                 checked = ((CheckBox)v).isChecked();
             }
         });

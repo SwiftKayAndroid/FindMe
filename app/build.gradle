@@ -21,10 +21,10 @@ android {
 
     defaultConfig {
         applicationId "com.swiftkaydevelopment.findme"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 23
-        versionCode 9
-        versionName "1.5.3"
+        versionCode 10
+        versionName "1.5.4"
 
         buildConfigField "boolean", "GLIDE", "false"
     }

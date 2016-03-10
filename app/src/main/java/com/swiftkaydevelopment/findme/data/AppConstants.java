@@ -25,4 +25,10 @@ public class AppConstants {
 
     public static final int BASE_PAGE_SIZE = 25;
     public static final String FIRST_PAGE = "0";
+
+    public abstract class PreferenceConstants {
+        public static final String PREF_EMAIL = "email";
+        public static final String PREF_PASSWORD = "password";
+        public static final String PREF_LOGIN_SAVED = "login_saved";
+    }
 }

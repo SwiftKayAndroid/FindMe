@@ -25,6 +25,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.swiftkaydevelopment.findme.data.Comment;
+import com.swiftkaydevelopment.findme.data.Friend;
 import com.swiftkaydevelopment.findme.data.FriendRequest;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.PushData;
@@ -38,7 +39,7 @@ public class PushNotificationManager {
     private static final String TYPE_FRIEND_REQUEST = "friend_request";
     private static final String TYPE_LIKE = "like";
     private static final String TYPE_COMMENT = "comment";
-
+    private static final String TYPE_FRIEND = "friend";
 
     private static PushNotificationManager sInstance = null;
     private Context mContext;
@@ -94,6 +95,8 @@ public class PushNotificationManager {
             return new StatusLike();
         } else if (type.equals(TYPE_COMMENT)) {
             return new Comment();
+        } else if (type.equals(TYPE_FRIEND)) {
+            return new Friend();
         }
 
         return null;

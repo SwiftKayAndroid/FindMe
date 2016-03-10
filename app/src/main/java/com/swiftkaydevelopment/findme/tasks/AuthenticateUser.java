@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
+import com.swiftkaydevelopment.findme.data.AppConstants;
 import com.swiftkaydevelopment.findme.managers.ConnectionManager;
 
 import org.json.JSONException;
@@ -121,10 +123,12 @@ public class AuthenticateUser {
                     SharedPreferences.Editor editor = mPreferences.edit();
                     editor.putString("uid", obj.getJSONObject("info").getString("uid"));
                     editor.apply();
-                    editor.putString("email", email);
-                    editor.apply();
-                    editor.putString("password", password);
-                    editor.apply();
+                    if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
+                        editor.putString(AppConstants.PreferenceConstants.PREF_EMAIL, email);
+                        editor.apply();
+                        editor.putString(AppConstants.PreferenceConstants.PREF_PASSWORD, password);
+                        editor.apply();
+                    }
                     editor.putString("zip", obj.getJSONObject("info").getString("zip"));
                     editor.apply();
                     editor.putString("firstname", obj.getJSONObject("info").getString("firstname"));

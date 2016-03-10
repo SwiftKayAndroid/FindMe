@@ -30,11 +30,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.data.DataParser;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.R;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class EditProfile extends BaseFragment{
@@ -220,27 +220,25 @@ public class EditProfile extends BaseFragment{
             rbWeedPreferNoSay.setChecked(true);
         }
 
-        for (Map.Entry entry : user.getSearchingFor().entrySet()) {
-            if (entry.getValue().equals("yes")) {
-                if (entry.getKey().equals("Sex")) {
-                    cbSex.setChecked(true);
+        for (Map.Entry<String, Integer> entry : DataParser.LookingForParser.getMap().entrySet()) {
+                if (entry.getKey().equals(DataParser.LookingForParser.SEX)) {
+                    cbSex.setChecked(DataParser.contains(user.mLookingFor, DataParser.LookingForParser.SEX_VAL));
                 }
-                if (entry.getKey().equals("FWB")) {
-                    cbFwb.setChecked(true);
+                if (entry.getKey().equals(DataParser.LookingForParser.FWB)) {
+                    cbFwb.setChecked(DataParser.contains(user.mLookingFor, DataParser.LookingForParser.FWB_VAL));
                 }
-                if (entry.getKey().equals("Friends")) {
-                    cbFriends.setChecked(true);
+                if (entry.getKey().equals(DataParser.LookingForParser.FRIENDS)) {
+                    cbFriends.setChecked(DataParser.contains(user.mLookingFor, DataParser.LookingForParser.FRIENDS_VAL));
                 }
-                if (entry.getKey().equals("Something Serious")) {
-                    cbSomethingSerious.setChecked(true);
+                if (entry.getKey().equals(DataParser.LookingForParser.SOMETHING_SERIOUS)) {
+                    cbSomethingSerious.setChecked(DataParser.contains(user.mLookingFor, DataParser.LookingForParser.SOMETHING_SERIOUS_VAL));
                 }
-                if (entry.getKey().equals("idk")) {
-                    cbIdk.setChecked(true);
+                if (entry.getKey().equals(DataParser.LookingForParser.IDK)) {
+                    cbIdk.setChecked(DataParser.contains(user.mLookingFor, DataParser.LookingForParser.IDK_VAL));
                 }
-                if (entry.getKey().equals("Chat")) {
-                    cbChat.setChecked(true);
+                if (entry.getKey().equals(DataParser.LookingForParser.CHAT)) {
+                    cbChat.setChecked(DataParser.contains(user.mLookingFor, DataParser.LookingForParser.CHAT_VAL));
                 }
-            }
         }
     }
 
@@ -272,42 +270,29 @@ public class EditProfile extends BaseFragment{
             status = "Taken";
         }
 
-        Map<String, String> lookingForMap = new HashMap<>();
-
+        int lookingfor = 1;
         if (cbSex.isChecked()) {
-            lookingForMap.put("Sex", "yes");
-        } else {
-            lookingForMap.put("Sex", "no");
+            lookingfor = DataParser.addValue(lookingfor, DataParser.LookingForParser.SEX_VAL);
         }
 
         if (cbFriends.isChecked()) {
-            lookingForMap.put("Friends", "yes");
-        } else {
-            lookingForMap.put("Friends", "no");
+            lookingfor = DataParser.addValue(lookingfor, DataParser.LookingForParser.FRIENDS_VAL);
         }
 
         if (cbFwb.isChecked()) {
-            lookingForMap.put("FWB", "yes");
-        } else {
-            lookingForMap.put("FWB", "no");
+            lookingfor = DataParser.addValue(lookingfor, DataParser.LookingForParser.FWB_VAL);
         }
 
         if (cbSomethingSerious.isChecked()) {
-            lookingForMap.put("Something Serious", "yes");
-        } else {
-            lookingForMap.put("Something Serious", "no");
+            lookingfor = DataParser.addValue(lookingfor, DataParser.LookingForParser.SOMETHING_SERIOUS_VAL);
         }
 
         if (cbIdk.isChecked()) {
-            lookingForMap.put("idk", "yes");
-        } else {
-            lookingForMap.put("idk", "no");
+            lookingfor = DataParser.addValue(lookingfor, DataParser.LookingForParser.IDK_VAL);
         }
 
         if (cbChat.isChecked()) {
-            lookingForMap.put("Chat", "yes");
-        } else {
-            lookingForMap.put("Chat", "no");
+            lookingfor = DataParser.addValue(lookingfor, DataParser.LookingForParser.CHAT_VAL);
         }
 
         String haskids = ((RadioButton) getView().findViewById(rgHasKids.getCheckedRadioButtonId())).getText().toString();
@@ -324,8 +309,8 @@ public class EditProfile extends BaseFragment{
         user.weed = weed;
         user.hasKids = haskids;
         user.wantsKids = wantskids;
-        user.mSearchingForMap = lookingForMap;
+        user.mLookingFor = lookingfor;
 
-        UserManager.getInstance(uid).updateProfile(about, orientation, status, haskids, wantskids, weed, profession, school, lookingForMap);
+        UserManager.getInstance(uid).updateProfile(user, uid);
     }
 }

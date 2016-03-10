@@ -15,8 +15,6 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -185,9 +183,8 @@ public class UserManager {
         DatabaseManager.instance(context).clearUsers();
     }
 
-    public void updateProfile(String about, String orientation, String status,
-                              String haskids, String wantskids, String weed, String profession, String school, Map<String, String> lookingForMap) {
-        new UpdateProfileTask(about, orientation, status, haskids, wantskids, weed, profession, school, lookingForMap, mUid).execute();
+    public void updateProfile(User user, String uid) {
+        new UpdateProfileTask(user, uid).execute();
     }
 
     /**
@@ -200,30 +197,12 @@ public class UserManager {
     }
 
     private class UpdateProfileTask extends AsyncTask<Void, Void, Void> {
-        String about;
-        String orientation;
+        User user;
         String uid;
-        String status;
-        String haskids;
-        String wantskids;
-        String weed;
-        String profession;
-        String school;
-        Map<String, String> lookingForMap;
 
-        public UpdateProfileTask(String about, String orientation, String status,
-                                 String haskids, String wantskids, String weed, String profession,
-                                 String school, Map<String, String> lookingForMap, String uid) {
-            this.about = about;
-            this.orientation = orientation;
+        public UpdateProfileTask(User user, String uid) {
             this.uid = uid;
-            this.status = status;
-            this.haskids = haskids;
-            this.wantskids = wantskids;
-            this.weed = weed;
-            this.profession = profession;
-            this.school = school;
-            this.lookingForMap = lookingForMap;
+            this.user = user;
         }
 
         @Override
@@ -232,19 +211,15 @@ public class UserManager {
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.setUri("updateprofile.php");
             connectionManager.addParam("uid", uid);
-            connectionManager.addParam("aboutme", about);
-            connectionManager.addParam("orientation", orientation);
-            connectionManager.addParam("status", status);
-            connectionManager.addParam("haskids", haskids);
-            connectionManager.addParam("wantskids", wantskids);
-            connectionManager.addParam("weed", weed);
-            connectionManager.addParam("profession", profession);
-            connectionManager.addParam("school", school);
-
-            for (Map.Entry<String, String> entry : lookingForMap.entrySet()) {
-                connectionManager.addParam(entry.getKey().toLowerCase(), entry.getValue());
-            }
-            //todo: server still needs to be able to update the looking for stuff
+            connectionManager.addParam("aboutme", user.getAboutMe());
+            connectionManager.addParam("orientation", user.getOrientation().toString());
+            connectionManager.addParam("status", user.mRelationshipStatus);
+            connectionManager.addParam("haskids", user.hasKids);
+            connectionManager.addParam("wantskids", user.wantsKids);
+            connectionManager.addParam("weed", user.weed);
+            connectionManager.addParam("profession", user.profession);
+            connectionManager.addParam("school", user.school);
+            connectionManager.addParam("looking_for", Integer.toString(user.mLookingFor));
             connectionManager.sendHttpRequest();
 
             return null;
