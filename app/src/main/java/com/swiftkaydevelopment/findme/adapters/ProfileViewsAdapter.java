@@ -75,7 +75,7 @@ public class ProfileViewsAdapter extends RecyclerView.Adapter<ProfileViewsAdapte
         }
 
         holder.name.setText(user.getFirstname() + " " + user.getLastname());
-        holder.desc.setText(user.getAge() + "/" + user.getLocation().getCity() + "/" + user.getGender().toString());
+        holder.desc.setText(user.getAge() + "/" + user.city + "/" + user.getGender().toString());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

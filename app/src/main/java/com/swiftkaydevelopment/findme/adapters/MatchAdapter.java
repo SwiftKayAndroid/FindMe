@@ -69,7 +69,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
     public void onBindViewHolder(MatchViewHolder holder, int position) {
         final User user = matches.get(position);
         holder.name.setText(user.getName());
-        holder.desc.setText(user.getAge() + " " + user.getGender().toString() + " " + user.getLocation().getCity());
+        holder.desc.setText(user.getAge() + " " + user.getGender().toString() + " " + user.city);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

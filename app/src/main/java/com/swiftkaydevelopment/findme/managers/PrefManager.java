@@ -15,21 +15,25 @@
  *
  */
 
-package com.swiftkaydevelopment.findme.data;
+package com.swiftkaydevelopment.findme.managers;
 
-/**
- * Created by Kevin Haines on 2/29/16.
- * Class Overview:
- */
-public class AppConstants {
+import android.content.Context;
+import android.preference.PreferenceManager;
 
-    public static final int BASE_PAGE_SIZE = 25;
-    public static final String FIRST_PAGE = "0";
+import com.swiftkaydevelopment.findme.data.AppConstants;
 
-    public abstract class PreferenceConstants {
-        public static final String PREF_EMAIL = "email";
-        public static final String PREF_PASSWORD = "password";
-        public static final String PREF_LOGIN_SAVED = "login_saved";
-        public static final String PREF_ZIP = "zip";
+public class PrefManager {
+    public static final String TAG = "PrefManager";
+
+
+    /**
+     * Gets the zipcode preference for the user
+     *
+     * @param context Calling context
+     * @return zip code
+     */
+    public static String getZip(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(AppConstants.PreferenceConstants.PREF_ZIP, "");
     }
+
 }

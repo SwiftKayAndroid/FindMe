@@ -15,6 +15,7 @@ import com.swiftkaydevelopment.findme.adapters.FindPeopleAdapter;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.events.ConnectionsFoundEvent;
+import com.swiftkaydevelopment.findme.managers.PrefManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -84,7 +85,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
             mProgressBar.setVisibility(View.GONE);
             users = (ArrayList) savedInstanceState.getSerializable(ARG_USERS);
         } else {
-            users = UserManager.getInstance(uid).findPeopleSync(uid, "0", getActivity());
+            users = UserManager.getInstance(uid).findPeopleSync(uid, "0", PrefManager.getZip(getActivity()), getActivity());
             if (users.isEmpty()) {
                 mProgressBar.setVisibility(View.VISIBLE);
             } else {
@@ -133,7 +134,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     @Override
     public void onRefresh() {
         UserManager.getInstance(uid).clearUsers(getActivity());
-        UserManager.getInstance(uid).findPeopleSync(uid, "0", getActivity());
+        UserManager.getInstance(uid).findPeopleSync(uid, "0", PrefManager.getZip(getActivity()), getActivity());
     }
 
     @Override

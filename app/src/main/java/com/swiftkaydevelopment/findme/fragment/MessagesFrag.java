@@ -260,11 +260,11 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
 
     @Override
     public void onRetrieveMoreMessages(ArrayList<Message> messages) {
+        mProgressBar.setVisibility(View.GONE);
         if (messages != null && !messages.isEmpty() && messages.get(0).getOuid().equals(user.getOuid())) {
             for (Message message : messages) {
                 DatabaseManager.instance(getActivity()).createMessage(message);
             }
-            mProgressBar.setVisibility(View.GONE);
             mMessageAdapter.addAllMessages(messages);
             mMessageAdapter.setMessagesAdapterListener(this);
             int size = mRecyclerView.getLayoutManager().getItemCount() - 1;

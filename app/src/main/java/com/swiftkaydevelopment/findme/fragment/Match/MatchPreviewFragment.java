@@ -167,7 +167,7 @@ public class MatchPreviewFragment extends BaseFragment implements View.OnClickLi
             orientation.setText(currentUser.getOrientation().toString());
             age.setText(Integer.toString(currentUser.getAge()));
             gender.setText(currentUser.getGender().toString());
-            location.setText(currentUser.getLocation().getCity());
+            location.setText(currentUser.city);
             status.setText(currentUser.mRelationshipStatus);
             lookingfor.setText(currentUser.getLookingForString());
             hasKids.setText(currentUser.hasKids);

@@ -133,7 +133,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
 
             holder.tvPost.setText(post.getPostText());
-            int distance = (int) post.getUser().getLocation().getDistance();
+            int distance = (int) Float.parseFloat(post.getUser().distance);
             String append = "";
             if (distance == 1) {
                 append = " mile away";
@@ -196,7 +196,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         } else {
             holder.orientation.setText(user.getOrientation().toString());
             holder.aboutMe.setText(user.getAboutMe());
-            holder.location.setText(user.getLocation().getCity());
+            holder.location.setText(user.city);
             holder.gender.setText(user.getGender().toString());
             holder.age.setText(Integer.toString(user.getAge()));
 

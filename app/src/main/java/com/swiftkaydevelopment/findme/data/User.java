@@ -78,6 +78,7 @@ public class User implements Serializable {
             }
         }
     }
+
     public enum OnlineStatus {
         ONLINE, OFFLINE, HIDDEN, UNKNOWN
     }
@@ -97,13 +98,13 @@ public class User implements Serializable {
     private boolean mIsFriend;
     private boolean mIsBlocked;
     private boolean mIsMatch;
-    private Location mLocation;
     private Orientation mOrientation;
     private OnlineStatus mOnlineStatus;
     public String mRelationshipStatus;
     private String mAboutMe;
     private InterestedIn mInterestIn;
-
+    public String city;
+    public String distance;
     public String hasKids;
     public String wantsKids;
     public String profession;
@@ -125,50 +126,35 @@ public class User implements Serializable {
      * Creates a new User from json object
      *
      * @param object JsonObject containing user information
-     *
      * @return new User
      */
     public static User createUserFromJson(JSONObject object) {
         try {
             User user = createUser();
             user.mOuid = object.getString("uid");
-            user.mPropicloc = object.getString("propicloc");
-            user.mFirstname = object.getString("firstname");
-            user.mLastname = object.getString("lastname");
-            user.mLocation = setLocationFromArray(object.getJSONObject("location"));
-            user.mGender = setGenderFromString(object.getString("gender"));
-            user.mInterestIn = setInterestedInFromString(object.getString("looking_for_gender"));
-            user.mOrientation = setOrientationFromString(object.getString("orientation"));
-            user.mIsFriend = object.getBoolean("isfriend");
-            user.createExtendedInfo(object.getJSONObject("extended"));
-            user.mIsMatch = object.getBoolean("ismatch");
-            user.mAboutMe = object.getString("aboutme");
+            user.mPropicloc = object.getString("pic");
+            user.setFirstname(object.getString("fn"));
+            user.mLastname = object.getString("ln");
+            user.city = object.getString("cy");
+            user.distance = object.getString("dist");
+            user.mGender = setGenderFromString(object.getString("ge"));
+            user.mInterestIn = setInterestedInFromString(object.getString("lfg"));
+            user.mOrientation = setOrientationFromString(object.getString("ori"));
+            user.mIsFriend = object.getBoolean("frnd");
+            user.mIsMatch = object.getBoolean("mch");
+            user.mAboutMe = object.getString("am");
             user.mAge = Integer.parseInt(object.getString("age"));
+            user.mLookingFor = object.getInt("lf");
+            user.mRelationshipStatus = object.getString("rs");
+            user.hasKids = object.getString("hk");
+            user.wantsKids = object.getString("wk");
+            user.profession = object.getString("pro");
+            user.school = object.getString("sc");
+            user.weed = object.getString("we");
             return user;
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    public int getSearchingFor() {
-        return mLookingFor;
-    }
-
-    private void createExtendedInfo(JSONObject object) {
-
-        try {
-            //relationship status
-            mLookingFor = object.getInt("looking_for");
-            mRelationshipStatus = object.getString("relationshipstatus");
-            hasKids = object.getString("haskids");
-            wantsKids = object.getString("wantskids");
-            profession = object.getString("profession");
-            school = object.getString("school");
-            weed = object.getString("weed");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
@@ -354,15 +340,6 @@ public class User implements Serializable {
         }
     }
 
-    public static Location setLocationFromArray(JSONObject array) throws JSONException{
-        //todo: this is going to be changed to geocoding
-        String city = array.getString("city");
-        String distance = array.getString("distance");
-        Country country = new Country("United States");
-        Location loc = new Location(Float.valueOf(distance), city, country);
-        return loc;
-    }
-
     /**
      * fetches the users mFirstname
      * @return String of users mFirstname
@@ -460,22 +437,6 @@ public class User implements Serializable {
      */
     public void setOrientation(Orientation orientation) {
         this.mOrientation = orientation;
-    }
-
-    /**
-     *
-     * @return Location object referencing users mLocation
-     */
-    public Location getLocation() {
-        return mLocation;
-    }
-
-    /**
-     *
-     * @param location Location object referencing users mLocation
-     */
-    public void setLocation(Location location) {
-        this.mLocation = location;
     }
 
     /**
@@ -627,18 +588,6 @@ public class User implements Serializable {
      */
     public void setOuid(String uid) {
         this.mOuid = uid;
-    }
-
-    /**
-     *returns a string representation of the User
-     * @return string representation of User object
-     */
-    public String toString(){
-        return "User-Name: " + mName + "Firstname: " + mFirstname + "Lastname: " + mLastname +
-                "Gender: " + mGender + "mUid: "+ mUid + " mPropicloc: " + mPropicloc + " mAge: " + Integer.toString(mAge) +
-                "mIsFriend: " + String.valueOf(mIsFriend) + " mIsBlocked: " + String.valueOf(mIsBlocked) + " mIsMatch: " +
-                String.valueOf(mIsMatch) + " Location: " + mLocation.toString() + " mOrientation: " + mOrientation +
-                " mOnlineStatus: " + mOnlineStatus + " mInterestIn: " + mInterestIn;
     }
 
     /**

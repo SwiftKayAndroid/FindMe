@@ -129,17 +129,17 @@ public class AuthenticateUser {
                         editor.putString(AppConstants.PreferenceConstants.PREF_PASSWORD, password);
                         editor.apply();
                     }
-                    editor.putString("zip", obj.getJSONObject("info").getString("zip"));
+                    editor.putString(AppConstants.PreferenceConstants.PREF_ZIP, obj.getJSONObject("info").getString("zip"));
                     editor.apply();
-                    editor.putString("firstname", obj.getJSONObject("info").getString("firstname"));
+                    editor.putString("firstname", obj.getJSONObject("info").getString("fn"));
                     editor.apply();
-                    editor.putString("lastname", obj.getJSONObject("info").getString("lastname"));
+                    editor.putString("lastname", obj.getJSONObject("info").getString("ln"));
                     editor.apply();
-                    editor.putString("gender", obj.getJSONObject("info").getString("gender"));
+                    editor.putString("gender", obj.getJSONObject("info").getString("ge"));
                     editor.apply();
-                    editor.putString("looking_for_gender", obj.getJSONObject("info").getString("looking_for_gender"));
+                    editor.putString("looking_for_gender", obj.getJSONObject("info").getString("lfg"));
                     editor.apply();
-                    editor.putString("propicloc", obj.getJSONObject("info").getString("propicloc"));
+                    editor.putString("propicloc", obj.getJSONObject("info").getString("pic"));
                     editor.apply();
 
                     for (AuthenticationCompleteListener l : mListeners) {

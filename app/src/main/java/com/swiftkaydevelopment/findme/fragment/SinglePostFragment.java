@@ -179,7 +179,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
         }
 
         tvPost.setText(mPost.getPostText());
-        int distance = (int) mPost.getUser().getLocation().getDistance();
+        int distance = Integer.parseInt(mPost.getUser().distance);
         String append = "";
         if (distance == 1) {
             append = " mile away";

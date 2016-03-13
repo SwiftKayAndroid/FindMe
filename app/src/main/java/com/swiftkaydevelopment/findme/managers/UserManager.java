@@ -153,12 +153,12 @@ public class UserManager {
      * @param context Current context
      * @return List of users
      */
-    public ArrayList<User> findPeopleSync(String uid, String lastpost, Context context) {
+    public ArrayList<User> findPeopleSync(String uid, String lastpost, String zip, Context context) {
         ArrayList<User> users = DatabaseManager.instance(context).getUsers();
         if (!users.isEmpty()) {
             lastpost = users.get(users.size() - 1).getOuid();
         }
-        new FindPeopleTask(uid, lastpost).execute();
+        new FindPeopleTask(uid, lastpost, zip).execute();
         return users;
     }
 
@@ -172,10 +172,6 @@ public class UserManager {
      */
     public ArrayList<User> findPeople(String uid, String lastpost, Context context) {
         ArrayList<User> users = DatabaseManager.instance(context).getUsers();
-        if (users.isEmpty()) {
-            new FindPeopleTask(uid, lastpost).execute();
-        }
-
         return users;
     }
 
@@ -546,10 +542,12 @@ public class UserManager {
     private class FindPeopleTask extends AsyncTask<Void, Void, ArrayList<User>> {
         String uid;
         String lastpost;
+        String zip;
 
-        public FindPeopleTask(String uid, String lastpost) {
+        public FindPeopleTask(String uid, String lastpost, String zip) {
             this.uid = uid;
             this.lastpost = lastpost;
+            this.zip = zip;
         }
 
         @Override
@@ -558,6 +556,7 @@ public class UserManager {
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("lastpost", lastpost);
+            connectionManager.addParam("zip", zip);
             connectionManager.setUri("findpeople.php");
             String result = connectionManager.sendHttpRequest();
             ArrayList<User> users = new ArrayList<>();

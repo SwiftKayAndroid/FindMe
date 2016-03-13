@@ -21,7 +21,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.swiftkaydevelopment.findme.data.Location;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.database.BaseSQLiteGateway;
 import com.swiftkaydevelopment.findme.database.DatabaseContract;
@@ -109,8 +108,8 @@ public class SqliteUsersGateway extends BaseSQLiteGateway implements UsersGatewa
         values.put(DatabaseContract.UserEntry.COLUMN_NAME_WEED, user.weed);
         values.put(DatabaseContract.UserEntry.COLUMN_NAME_SCHOOL, user.school);
         values.put(DatabaseContract.UserEntry.COLUMN_NAME_RELATIONSHIP, user.mRelationshipStatus);
-        values.put(DatabaseContract.UserEntry.COLUMN_NAME_CITY, user.getLocation().getCity());
-        values.put(DatabaseContract.UserEntry.COLUMN_NAME_DISTANCE, user.getLocation().getDistance());
+        values.put(DatabaseContract.UserEntry.COLUMN_NAME_CITY, user.city);
+        values.put(DatabaseContract.UserEntry.COLUMN_NAME_DISTANCE, user.distance);
         return values;
     }
 
@@ -139,10 +138,8 @@ public class SqliteUsersGateway extends BaseSQLiteGateway implements UsersGatewa
                 user.weed = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_WEED));
                 user.school = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_SCHOOL));
                 user.mRelationshipStatus = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_RELATIONSHIP));
-                String distance = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_DISTANCE));
-                float dis = Float.parseFloat(distance);
-                String city = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_CITY));
-                user.setLocation(new Location(dis, city, null));
+                user.distance = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_DISTANCE));
+                user.city = c.getString(c.getColumnIndexOrThrow(DatabaseContract.UserEntry.COLUMN_NAME_CITY));
 
                 return user;
             }
