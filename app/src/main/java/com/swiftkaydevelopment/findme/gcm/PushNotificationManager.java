@@ -28,6 +28,7 @@ import com.swiftkaydevelopment.findme.data.Comment;
 import com.swiftkaydevelopment.findme.data.Friend;
 import com.swiftkaydevelopment.findme.data.FriendRequest;
 import com.swiftkaydevelopment.findme.data.Message;
+import com.swiftkaydevelopment.findme.data.ProfileView;
 import com.swiftkaydevelopment.findme.data.PushData;
 import com.swiftkaydevelopment.findme.data.StatusLike;
 import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
@@ -40,6 +41,7 @@ public class PushNotificationManager {
     private static final String TYPE_LIKE = "like";
     private static final String TYPE_COMMENT = "comment";
     private static final String TYPE_FRIEND = "friend";
+    private static final String TYPE_PROFILE_VIEW = "view";
 
     private static PushNotificationManager sInstance = null;
     private Context mContext;
@@ -97,6 +99,8 @@ public class PushNotificationManager {
             return new Comment();
         } else if (type.equals(TYPE_FRIEND)) {
             return new Friend();
+        } else if (type.equals(TYPE_PROFILE_VIEW)) {
+            return new ProfileView();
         }
 
         return null;

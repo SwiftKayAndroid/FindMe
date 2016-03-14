@@ -26,8 +26,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.swiftkaydevelopment.findme.adapters.FriendsPagerAdapter;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.adapters.FriendsPagerAdapter;
 
 public class FriendsFragment extends BaseFragment{
     public static final String TAG = "FriendsFragment";

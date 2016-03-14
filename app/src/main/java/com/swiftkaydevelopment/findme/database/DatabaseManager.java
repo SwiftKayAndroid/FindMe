@@ -67,6 +67,10 @@ public class DatabaseManager implements UsersModule, MessagesModule, ModuleEvent
         mMessageModule = sModuleManager.getMessagesModule();
     }
 
+    public void clearDatabases() {
+        mUsersModule.clearUsers();
+    }
+
     @Override
     public boolean createUser(User user) {
         return mUsersModule.createUser(user);

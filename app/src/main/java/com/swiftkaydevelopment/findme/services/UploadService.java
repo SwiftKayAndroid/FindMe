@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.swiftkaydevelopment.findme.R;
@@ -146,8 +145,9 @@ public class UploadService extends BaseActivity {
                     if (!imagechanged) {
                         Toast.makeText(getApplicationContext(),
                                 "Please select image", Toast.LENGTH_SHORT).show();
-                    } else {
-                        AccountManager.getInstance(UploadService.this).uploadImage(pathToPicture, uid, caption.getText().toString());
+                    } else {Toast.makeText(getApplicationContext(),
+                            "Image posted successfully", Toast.LENGTH_SHORT).show();
+                        AccountManager.getInstance(UploadService.this).uploadImage(pathToPicture, uid, caption.getText().toString(), UploadService.this);
                         finish();
                     }
                     return true;

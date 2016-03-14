@@ -35,7 +35,7 @@
                 android:layout_toRightOf="@id/fd"
                 tools:text="TimeStamp"
                 android:textColor="#919191"
-                android:layout_below="@+id/tvPostLocation" />
+                android:layout_below="@+id/postUsername" />
 
             <RelativeLayout
                 android:id="@+id/fd"
@@ -54,15 +54,6 @@
                     android:scaleType="centerCrop" />
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tvPostLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/postTime"
-                tools:text="Orlando"
-                android:textColor="#919191"
-                android:layout_below="@+id/postUsername" />
-
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -80,8 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxHeight="300dp"
-            android:minHeight="100dp"
-            android:src="@drawable/ic_placeholder" />
+            android:minHeight="100dp" />
 
         <RelativeLayout
             android:id="@+id/relativeLayout3"
@@ -95,7 +85,6 @@
                 android:id="@+id/tvPostText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Post Text...."
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#000000"
                 android:layout_margin="16dp" />
@@ -116,7 +105,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#ae5e5e5e"
-                        android:text="one person likes this"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:padding="5dp"
                         android:layout_alignTop="@+id/tvPostNumComments"
@@ -129,7 +117,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="6 Comments"
                         android:id="@+id/tvPostNumComments"
                         android:textColor="#ae5e5e5e"
                         android:padding="5dp"

@@ -12,14 +12,19 @@ import android.widget.ProgressBar;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.FriendsAdapter;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.events.OnFriendsRetrievedEvent;
 import com.swiftkaydevelopment.findme.managers.UserManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
 /**
  * Created by Kevin Haines on 3/2/2015.
  */
-public class FriendsFrag extends BaseFragment implements UserManager.UserManagerListener{
+public class FriendsFrag extends BaseFragment {
     public static final String TAG = "FriendsFrag";
     private static final String ARG_FRIENDS = "ARG_FRIENDS";
 
@@ -97,32 +102,25 @@ public class FriendsFrag extends BaseFragment implements UserManager.UserManager
     @Override
     public void onResume() {
         super.onResume();
-        UserManager.getInstance(uid).addListener(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        UserManager.getInstance(uid).removeListener(this);
+        EventBus.getDefault().unregister(this);
+
     }
 
-    @Override
-    public void onFriendRequestsRetrieved(ArrayList<User> users) {}
-
-    @Override
-    public void onFriendsRetrieved(ArrayList<User> users) {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(OnFriendsRetrievedEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
         mProgressBar.setVisibility(View.GONE);
-        mAdapter.addFriends(users);
+        mAdapter.addFriends(event.friends);
         if (mAdapter.getItemCount() < 1) {
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
             mEmptyView.setVisibility(View.GONE);
         }
     }
-
-    @Override
-    public void onMatchesRetrieved(ArrayList<User> users) {}
-
-    @Override
-    public void onProfileViewsFetched(ArrayList<User> users) {}
 }

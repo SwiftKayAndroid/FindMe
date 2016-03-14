@@ -27,7 +27,6 @@ import com.swiftkaydevelopment.findme.database.gatewayInterfaces.UsersGateway;
 import com.swiftkaydevelopment.findme.database.modules.UsersModule;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Kevin Haines on 2/29/16.
@@ -55,7 +54,7 @@ public class SqliUsersModule implements SQLiteModule, UsersModule {
 
     @Override
     public void clearTables() {
-
+        getWritableDatabase().execSQL(DatabaseContract.UserEntry.CLEAR_TABLE);
     }
 
     @Override

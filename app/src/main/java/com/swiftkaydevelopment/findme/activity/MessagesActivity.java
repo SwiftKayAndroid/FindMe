@@ -21,23 +21,32 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.R;
-import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
+import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.fragment.MessagesFrag;
 import com.swiftkaydevelopment.findme.managers.MessagesManager;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.util.UUID;
 
-public class MessagesActivity extends BaseActivity {
+public class MessagesActivity extends BaseActivity implements MessagesFrag.PictureMessageListener {
     private static final String TAG = "MessagesActivity";
     private static final String ARG_USER = "ARG_USER";
+
+    private static int RESULT_LOAD_IMAGE = 1;
+    boolean camera = false;
+
+    String pathToPicture;
 
     private User user;
     private MessagesFrag        mMessagesFrag;
@@ -119,6 +128,68 @@ public class MessagesActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (!camera) {
+                if (requestCode == RESULT_LOAD_IMAGE && null != data) {
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(selectedImage,
+                            filePathColumn, null, null, null);
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        pathToPicture = cursor.getString(columnIndex);
+                        cursor.close();
+                    }
+                }
+            }
+            mMessagesFrag.onImageSelected(pathToPicture);
+        }
+    }
+
+    public void popImageDialog(){
+
+        new AlertDialog.Builder(this)
+                .setTitle("Please Select")
+                .setNeutralButton("Camera", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        camera = true;
+                        //launch camera
+                        String filePath =
+                                Environment.getExternalStorageDirectory() +"/img" + UUID.randomUUID().toString() + ".jpeg";
+                        pathToPicture = filePath;
+                        File file = new File(filePath);
+                        Uri output = Uri.fromFile(file);
+                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, output);
+                        startActivityForResult(cameraIntent, 1);
+                    }
+                })
+                .setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // launch gallery
+                        camera = false;
+                        Intent i = new Intent(
+                                Intent.ACTION_PICK,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                        startActivityForResult(i, RESULT_LOAD_IMAGE);
+                    }
+                })
+                .setPositiveButton("Cancel", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    @Override
+    public void onStartImageSelection() {
+        popImageDialog();
     }
 
     @Override

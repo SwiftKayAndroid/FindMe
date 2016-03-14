@@ -19,28 +19,22 @@ package com.swiftkaydevelopment.findme.managers;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.swiftkaydevelopment.findme.data.Notification;
+import com.swiftkaydevelopment.findme.events.OnNotificationsRecieved;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NotificationManager {
 
-    public interface NotificationsListener {
-        void onNotificationsFetched(ArrayList<Notification> notifications);
-    }
     private static final String TAG = "NotificationManager";
 
     private static NotificationManager manager = null;
-
-    private CopyOnWriteArrayList<NotificationsListener> mListeners = new CopyOnWriteArrayList<>();
 
     public static NotificationManager getInstance(Context context) {
         synchronized (NotificationManager.class) {
@@ -51,36 +45,14 @@ public class NotificationManager {
         }
     }
 
-    public void notifyNewPushNotification(Bundle data) {
-        Log.e(TAG, data.toString());
-            String type = data.getString("type");
-
-            if (type != null) {
-//                if (type.equals("view")) {
-//                    PushData pd = new PushData();
-//                    pd.title = "New Profile View";
-//                    pd.message = "Someone viewed your profile";
-//                    pd.resId = R.drawable.redfsmall;
-//
-//                    Intent intent = ProfileViewsActivity.createIntent(mContext);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//
-//                    pd.intent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-//                    sendNotification(pd);
-//                }
-            }
-    }
-
+    /**
+     * Gets a list of the user's notifications from the server
+     *
+     * @param uid User's id
+     * @param lastpost Last notification recieved
+     */
     public void getNotifications(String uid, String lastpost) {
         new GetNotificationTask(uid, lastpost).execute();
-    }
-
-    public void addListener(NotificationsListener listener) {
-        mListeners.addIfAbsent(listener);
-    }
-
-    public void removeListener(NotificationsListener listener) {
-        mListeners.remove(listener);
     }
 
     private class GetNotificationTask extends AsyncTask<Void, Void, ArrayList<Notification>> {
@@ -96,7 +68,7 @@ public class NotificationManager {
         protected ArrayList<Notification> doInBackground(Void... params) {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
-            connectionManager.setUri("getnotifications.php");
+            connectionManager.setUri("getnotificationsv_1_6_1.php");
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("lastpost", lastpost);
             String result = connectionManager.sendHttpRequest();
@@ -121,12 +93,7 @@ public class NotificationManager {
         @Override
         protected void onPostExecute(ArrayList<Notification> notifications) {
             super.onPostExecute(notifications);
-
-            for (NotificationsListener l : mListeners) {
-                if (l != null) {
-                    l.onNotificationsFetched(notifications);
-                }
-            }
+            EventBus.getDefault().postSticky(new OnNotificationsRecieved(notifications));
         }
     }
 }

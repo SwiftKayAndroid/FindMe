@@ -17,10 +17,6 @@
 
 package com.swiftkaydevelopment.findme.monetization.google;
 
-import android.os.RemoteException;
-
-import org.json.JSONException;
-
 import java.util.List;
 
 /**
@@ -51,27 +47,27 @@ public class GoogleInventoryManager {
 
     public GoogleInventory queryInventory(boolean querySkuDetails, List<String> moreItemSkus,
                                           List<String> moreSubsSkus) {
-        try {
-            GoogleInventory inv = new GoogleInventory();
-            queryPurchases(inv, ITEM_TYPE_INAPP);
-
-            if (querySkuDetails) {
-                querySkuDetails(ITEM_TYPE_INAPP, inv, moreItemSkus);
-            }
-
-            queryPurchases(inv, ITEM_TYPE_SUBS);
-
-            if (querySkuDetails) {
-                querySkuDetails(ITEM_TYPE_SUBS, inv, moreSubsSkus);
-            }
-
-
-            return inv;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            GoogleInventory inv = new GoogleInventory();
+//            queryPurchases(inv, ITEM_TYPE_INAPP);
+//
+//            if (querySkuDetails) {
+//                querySkuDetails(ITEM_TYPE_INAPP, inv, moreItemSkus);
+//            }
+//
+//            queryPurchases(inv, ITEM_TYPE_SUBS);
+//
+//            if (querySkuDetails) {
+//                querySkuDetails(ITEM_TYPE_SUBS, inv, moreSubsSkus);
+//            }
+//
+//
+//            return inv;
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
         return null;
     }
 
@@ -87,23 +83,23 @@ public class GoogleInventoryManager {
         if (!itemInfo.mItemType.equals(ITEM_TYPE_INAPP)) {
             return;
         }
+//
+//        try {
+//            String token = itemInfo.getToken();
+//            String sku = itemInfo.getSku();
+//            if (token == null || token.equals("")) {
+//                return;
+//            }
 
-        try {
-            String token = itemInfo.getToken();
-            String sku = itemInfo.getSku();
-            if (token == null || token.equals("")) {
-                return;
-            }
-
-            int response = mService.consumePurchase(3, mContext.getPackageName(), token);
-            if (response == BILLING_RESPONSE_RESULT_OK) {
-
-            } else {
-                //todo: handle this
-            }
-        }
-        catch (RemoteException e) {
-            e.printStackTrace();
-        }
+//            int response = mService.consumePurchase(3, mContext.getPackageName(), token);
+//            if (response == BILLING_RESPONSE_RESULT_OK) {
+//
+//            } else {
+//                //todo: handle this
+//            }
+//        }
+//        catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
     }
 }

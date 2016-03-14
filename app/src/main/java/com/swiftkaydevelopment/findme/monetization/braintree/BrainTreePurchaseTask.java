@@ -23,7 +23,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.braintreepayments.api.PaymentRequest;
-import com.sndr.android.beta.monetization.PurchaseClient;
+import com.swiftkaydevelopment.findme.monetization.PurchaseClient;
 
 import java.lang.ref.WeakReference;
 

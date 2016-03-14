@@ -49,7 +49,7 @@ public class CommentsDialog extends AppCompatDialogFragment implements CommentsM
 
     private static String mUid;
     private String mPostid;
-    private ArrayList<Comment> mComments;
+    private ArrayList<Comment> mComments = new ArrayList<>();
     private ImageView ivPostComment;
     private ImageView emptyView;
     private EditText etComment;

@@ -100,7 +100,7 @@ public class Post implements Serializable, JsonCreatable<Post>, DatabaseObject<P
             this.setLiked(object.getBoolean("liked"));
             this.setPostImage(object.getString("postpicloc"));
             JSONObject user = object.getJSONObject("user");
-            User u = User.createUserFromJson(user);
+            User u = SimpleUser.createUserFromJson(user);
             this.setUser(u);
         } catch (JSONException e) {
             e.printStackTrace();

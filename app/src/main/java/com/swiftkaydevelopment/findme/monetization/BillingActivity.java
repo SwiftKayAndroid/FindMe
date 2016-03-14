@@ -27,8 +27,9 @@ import android.util.Log;
 
 import com.braintreepayments.api.BraintreePaymentActivity;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.sndr.android.beta.monetization.braintree.BrainTreePurchaseManager;
-import com.sndr.android.beta.monetization.google.GooglePlayBillingClient;
+import com.swiftkaydevelopment.findme.monetization.braintree.BrainTreePurchaseManager;
+import com.swiftkaydevelopment.findme.monetization.google.GooglePlayBillingClient;
+
 
 /**
  * Created by Kevin Haines on 3/9/16.

@@ -61,7 +61,7 @@ public class Notification implements Serializable {
             }
 
             //todo: we will have to create an individual post thing for this
-            user = User.createUserFromJson(object.getJSONObject("user"));
+            user = SimpleUser.createUserFromJson(object.getJSONObject("user"));
 
             return this;
         } catch (JSONException e) {

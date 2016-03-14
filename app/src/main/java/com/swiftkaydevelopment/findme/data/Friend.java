@@ -39,7 +39,7 @@ public class Friend implements Notifiable {
         pushData.title = "New Friend";
         try {
             JSONObject object = new JSONObject(data.getString("user"));
-            User user = User.createUserFromJson(object);
+            User user = SimpleUser.createUserFromJson(object);
             if (user != null) {
                 pushData.icon = Picasso.with(context).load(user.getPropicloc())
                         .get();

@@ -12,15 +12,19 @@ import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.NotificationsAdapter;
 import com.swiftkaydevelopment.findme.data.Notification;
+import com.swiftkaydevelopment.findme.events.OnNotificationsRecieved;
 import com.swiftkaydevelopment.findme.managers.NotificationManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
 /**
  * Created by Kevin Haines on 8/24/15.
  */
-public class NotificationsFrag extends BaseFragment implements NotificationManager.NotificationsListener,
-        NotificationsAdapter.NotifactionsAdapterListener{
+public class NotificationsFrag extends BaseFragment implements NotificationsAdapter.NotifactionsAdapterListener {
     public static final String TAG = "NotificationsFrag";
     private static final String ARG_NOTES = "ARG_NOTES";
 
@@ -97,7 +101,7 @@ public class NotificationsFrag extends BaseFragment implements NotificationManag
     @Override
     public void onResume() {
         super.onResume();
-        NotificationManager.getInstance(getActivity()).addListener(this);
+        EventBus.getDefault().register(this);
         mAdapter.setListener(this);
     }
 
@@ -105,13 +109,14 @@ public class NotificationsFrag extends BaseFragment implements NotificationManag
     public void onPause() {
         super.onPause();
         mAdapter.setListener(null);
-        NotificationManager.getInstance(getActivity()).removeListener(this);
+        EventBus.getDefault().unregister(this);
     }
 
-    @Override
-    public void onNotificationsFetched(ArrayList<Notification> notifications) {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(OnNotificationsRecieved event) {
+        EventBus.getDefault().removeStickyEvent(event);
         mProgressBar.setVisibility(View.GONE);
-        mAdapter.addNotifications(notifications);
+        mAdapter.addNotifications(event.notifications);
     }
 
     @Override

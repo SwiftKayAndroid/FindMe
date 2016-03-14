@@ -17,8 +17,9 @@
 
 package com.swiftkaydevelopment.findme.monetization.google;
 
-import com.sndr.android.beta.monetization.BaseProduct;
-import com.sndr.android.beta.monetization.PurchaseFlow;
+
+import com.swiftkaydevelopment.findme.monetization.BaseProduct;
+import com.swiftkaydevelopment.findme.monetization.PurchaseFlow;
 
 import org.json.JSONException;
 import org.json.JSONObject;

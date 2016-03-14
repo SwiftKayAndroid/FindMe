@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
@@ -37,6 +39,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -47,6 +50,10 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_MESSAGES = "ARG_MESSAGES";
 
+    public interface PictureMessageListener {
+        void onStartImageSelection();
+    }
+
     private ArrayList<Message>  mMessagesList = new ArrayList<>();
     private User user;
     private ThreadInfo          mThreadInfo;
@@ -54,6 +61,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
 
     private EditText            etmessage;
     private ImageView           ivsend;
+    private ImageView           ivImage;
     private RecyclerView        mRecyclerView;
     private View                mEmptyView;
     private ProgressBar         mProgressBar;
@@ -91,6 +99,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
 
         etmessage = (EditText) layout.findViewById(R.id.etmessaget);
         ivsend = (ImageView) layout.findViewById(R.id.tvsendmessage);
+        ivImage = (ImageView) layout.findViewById(R.id.sendMessageImage);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.messagesInlineRecyclerView);
         mEmptyView = layout.findViewById(R.id.messageInlineEmptyView);
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
@@ -129,6 +138,10 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mMessageAdapter);
         etmessage.addTextChangedListener(this);
+
+        if (etmessage.getText().toString().isEmpty()) {
+            ivsend.setImageResource(R.mipmap.ic_photo_camera_white_24dp);
+        }
     }
 
     @Override
@@ -246,11 +259,9 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         if (count > 0) {
-            ivsend.setEnabled(true);
-            ivsend.setColorFilter(getActivity().getResources().getColor(R.color.base_green));
+            ivsend.setImageResource(R.mipmap.ic_send_white_24dp);
         } else {
-            ivsend.setEnabled(false);
-            ivsend.setColorFilter(getActivity().getResources().getColor(R.color.disabled_gray));
+            ivsend.setImageResource(R.mipmap.ic_photo_camera_white_24dp);
         }
     }
 
@@ -296,22 +307,50 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         mMessageAdapter.removeMessage(message);
     }
 
+    public void onImageSelected(String filePath) {
+        ivImage.setVisibility(View.VISIBLE);
+        File file = new File(filePath);
+
+        Message message = Message.instance();
+        message.setDeletedStatus(0);
+        message.setMessage("");
+        message.mMessageImageLocation = filePath;
+        message.setOuid(uid);
+        message.setReadStatus(1);
+        message.setSeenStatus(0);
+        message.setUser(UserManager.getInstance(uid).me());
+        message.setTime("Just Now");
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromInputMethod(etmessage.getWindowToken(), 0);
+        etmessage.setText("");
+
+        Toast.makeText(getActivity(), "Sending picture", Toast.LENGTH_SHORT).show();
+        MessagesManager.getInstance(uid).sendPictureMessage(uid, message, user);
+    }
+
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.tvsendmessage && !(etmessage.getText().toString().equals(""))) {
-            Message message = Message.instance();
-            message.setDeletedStatus(0);
-            message.setMessage(etmessage.getText().toString());
-            message.setOuid(uid);
-            message.setReadStatus(1);
-            message.setSeenStatus(0);
-            message.setUser(UserManager.getInstance(uid).me());
-            message.setTime("Just Now");
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromInputMethod(etmessage.getWindowToken(), 0);
-            etmessage.setText("");
+        if (v.getId() == R.id.tvsendmessage) {
 
-            MessagesManager.getInstance(uid).sendMessage(message, user);
+            if (!TextUtils.isEmpty(etmessage.getText().toString())) {
+                Message message = Message.instance();
+                message.setDeletedStatus(0);
+                message.setMessage(etmessage.getText().toString());
+                message.setOuid(uid);
+                message.setReadStatus(1);
+                message.setSeenStatus(0);
+                message.setUser(UserManager.getInstance(uid).me());
+                message.setTime("Just Now");
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromInputMethod(etmessage.getWindowToken(), 0);
+                etmessage.setText("");
+
+                MessagesManager.getInstance(uid).sendMessage(message, user);
+            } else {
+                if (getActivity() instanceof PictureMessageListener) {
+                    ((PictureMessageListener) getActivity()).onStartImageSelection();
+                }
+            }
         }
     }
 }

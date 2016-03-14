@@ -49,11 +49,12 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
     private static final String ARG_COMMENTS = "ARG_COMMENTS";
     private static final String ARG_POST = "ARG_POST";
     private static final String ARG_POST_ID = "ARG_POST_ID";
+    private static final String ARG_COMMENTS_FETCHED = "ARG_CMFETCHED";
 
     private Post mPost;
     private String mPostid;
 
-    TextView tvName, tvTime, tvLocation, tvPost, tvNumLikes, tvNumComments;
+    TextView tvName, tvTime, tvPost, tvNumLikes, tvNumComments;
     ImageView ivProfilePicture, ivPostImage, ivPostLike, ivPostToggle;
     ExpandableLinearLayout extrasContainer;
 
@@ -64,6 +65,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
     private ListView lv;
 
     private CommentAdapter mAdapter;
+    private boolean commentsFetched = false;
 
     public static SinglePostFragment newInstance (String uid, String postid) {
         SinglePostFragment frag = new SinglePostFragment();
@@ -98,7 +100,6 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
 
         tvName = (TextView) layout.findViewById(R.id.postUsername);
         tvTime = (TextView) layout.findViewById(R.id.postTime);
-        tvLocation = (TextView) layout.findViewById(R.id.tvPostLocation);
         tvPost = (TextView) layout.findViewById(R.id.tvPostText);
         tvNumLikes = (TextView) layout.findViewById(R.id.tvPostNumLikes);
         tvNumComments = (TextView) layout.findViewById(R.id.tvPostNumComments);
@@ -121,14 +122,17 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
 
         if (savedInstanceState != null) {
             uid = savedInstanceState.getString(ARG_UID);
+            commentsFetched = savedInstanceState.getBoolean(ARG_COMMENTS_FETCHED);
             mPost = (Post) savedInstanceState.getSerializable(ARG_POST);
             mComments = (ArrayList) savedInstanceState.getSerializable(ARG_COMMENTS);
             mPostid = savedInstanceState.getString(ARG_POST_ID);
-            initializePost();
+            if (mPost != null) {
+                initializePost();
+            }
         } else {
             PostManager.getInstance().getSinglePost(mPostid, uid);
-            CommentsManager.getInstance(uid, getActivity()).fetchComments(mPostid);
         }
+        emptyView.setVisibility(View.GONE);
     }
 
     @Override
@@ -137,6 +141,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
         outState.putSerializable(ARG_POST, mPost);
         outState.putSerializable(ARG_COMMENTS, mComments);
         outState.putString(ARG_POST_ID, mPostid);
+        outState.putBoolean(ARG_COMMENTS_FETCHED, commentsFetched);
         super.onSaveInstanceState(outState);
     }
 
@@ -160,6 +165,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
      *
      */
     private void initializePost() {
+
         if (mPost.getNumLikes() == 0) {
             tvNumLikes.setText("No likes");
         } else {
@@ -179,14 +185,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
         }
 
         tvPost.setText(mPost.getPostText());
-        int distance = Integer.parseInt(mPost.getUser().distance);
-        String append = "";
-        if (distance == 1) {
-            append = " mile away";
-        } else {
-            append = " miles away";
-        }
-        tvLocation.setText(Integer.toString(distance) + append);
+
         tvName.setText(mPost.getUser().getName());
         tvTime.setText(mPost.getTime());
 
@@ -238,7 +237,6 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
             ivPostImage.setVisibility(View.GONE);
         }
 
-
         ivPostToggle.setRotation(0);
         ivPostLike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,16 +245,15 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
             }
         });
 
+        if (!commentsFetched) {
+            CommentsManager.getInstance(uid, getActivity()).fetchComments(mPostid);
+        }
+
         if (mAdapter == null) {
             mAdapter = new CommentAdapter(getActivity(), mComments, mPost.getPostId());
         }
-        lv.setAdapter(mAdapter);
 
-        if (mComments.size() == 0) {
-            emptyView.setVisibility(View.VISIBLE);
-        } else {
-            emptyView.setVisibility(View.GONE);
-        }
+        lv.setAdapter(mAdapter);
 
         ivPostComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,10 +275,8 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
 
     @Override
     public void onCommentsLoaded(List<Comment> comments) {
+        commentsFetched = true;
         mAdapter.addComments(comments);
-        if (mAdapter.getCount() > 0) {
-            emptyView.setVisibility(View.GONE);
-        }
     }
 
     @Override

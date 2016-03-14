@@ -87,19 +87,19 @@ public class User implements Serializable {
     }
 
     private static String mUid;
-    private String mOuid;
-    private String mPropicloc;
-    private Gender mGender;
-    private String mName;
-    private String mFirstname;
-    private String mLastname;
+    public String mOuid;
+    public String mPropicloc;
+    public Gender mGender;
+    public String mName;
+    public String mFirstname;
+    public String mLastname;
     public int mLookingFor;
-    private int mAge;
+    public int mAge;
     private boolean mIsFriend;
     private boolean mIsBlocked;
     private boolean mIsMatch;
-    private Orientation mOrientation;
-    private OnlineStatus mOnlineStatus;
+    public Orientation mOrientation;
+    public OnlineStatus mOnlineStatus;
     public String mRelationshipStatus;
     private String mAboutMe;
     private InterestedIn mInterestIn;

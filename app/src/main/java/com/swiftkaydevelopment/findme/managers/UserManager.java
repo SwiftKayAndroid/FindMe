@@ -4,9 +4,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.swiftkaydevelopment.findme.data.SimpleUser;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.events.ConnectionsFoundEvent;
+import com.swiftkaydevelopment.findme.events.OnFriendRequestRetrievedEvent;
+import com.swiftkaydevelopment.findme.events.OnFriendsRetrievedEvent;
+import com.swiftkaydevelopment.findme.events.OnGetUserDetailEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -22,8 +26,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class UserManager {
     public interface UserManagerListener{
-        void onFriendRequestsRetrieved(ArrayList<User> users);
-        void onFriendsRetrieved(ArrayList<User> users);
         void onMatchesRetrieved(ArrayList<User> users);
         void onProfileViewsFetched(ArrayList<User> users);
     }
@@ -156,10 +158,14 @@ public class UserManager {
     public ArrayList<User> findPeopleSync(String uid, String lastpost, String zip, Context context) {
         ArrayList<User> users = DatabaseManager.instance(context).getUsers();
         if (!users.isEmpty()) {
-            lastpost = users.get(users.size() - 1).getOuid();
+            lastpost = "0";
         }
         new FindPeopleTask(uid, lastpost, zip).execute();
         return users;
+    }
+
+    public void getUserDetail(String uid, User user) {
+        new FetchUserTask(uid, user).execute();
     }
 
     /**
@@ -167,12 +173,10 @@ public class UserManager {
      *
      * @param uid User's id
      * @param lastpost lastpost
-     * @param context Current context
      * @return List of users
      */
-    public ArrayList<User> findPeople(String uid, String lastpost, Context context) {
-        ArrayList<User> users = DatabaseManager.instance(context).getUsers();
-        return users;
+    public void findMorePeople(String uid, String lastpost, String zip) {
+        new FindPeopleTask(uid, lastpost, zip).execute();
     }
 
     public void clearUsers(Context context) {
@@ -241,8 +245,8 @@ public class UserManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.setUri("getuser.php");
-            connectionManager.addParam("uid",mUid);
-            connectionManager.addParam("ouid",uid);
+            connectionManager.addParam("uid", mUid);
+            connectionManager.addParam("ouid", uid);
             final String result = connectionManager.sendHttpRequest();
 
             if (result != null) {
@@ -256,6 +260,12 @@ public class UserManager {
                 }
             }
             return user;
+        }
+
+        @Override
+        protected void onPostExecute(User user) {
+            super.onPostExecute(user);
+            EventBus.getDefault().postSticky(new OnGetUserDetailEvent(user));
         }
     }
 
@@ -274,7 +284,7 @@ public class UserManager {
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("lastpage", lastpage);
-            connectionManager.setUri("getprofileviews.php");
+            connectionManager.setUri("getprofileviewsv_1_6_1.php");
             String result = connectionManager.sendHttpRequest();
             ArrayList<User> users = new ArrayList<>();
 
@@ -285,7 +295,7 @@ public class UserManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUserFromJson(child);
+                        User u = SimpleUser.createUserFromJson(child);
                         users.add(u);
                     }
                 } catch (JSONException e) {
@@ -339,7 +349,7 @@ public class UserManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", uid);
-            connectionManager.setUri("getfriendrequests.php");
+            connectionManager.setUri("getfriendrequestsv_1_6_1.php");
             String result = connectionManager.sendHttpRequest();
             ArrayList<User> users = new ArrayList<>();
 
@@ -350,7 +360,7 @@ public class UserManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUserFromJson(child.getJSONObject("user"));
+                        User u = SimpleUser.createUserFromJson(child.getJSONObject("user"));
                         users.add(u);
                     }
                 } catch (JSONException e) {
@@ -363,12 +373,7 @@ public class UserManager {
         @Override
         protected void onPostExecute(ArrayList<User> users) {
             super.onPostExecute(users);
-
-            for (UserManagerListener l : mListeners) {
-                if (l != null) {
-                    l.onFriendRequestsRetrieved(users);
-                }
-            }
+            EventBus.getDefault().postSticky(new OnFriendRequestRetrievedEvent(users));
         }
     }
 
@@ -405,7 +410,7 @@ public class UserManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", uid);
-            connectionManager.setUri("getfriendslist.php");
+            connectionManager.setUri("getfriendsv_1_6_1.php");
             String result = connectionManager.sendHttpRequest();
             ArrayList<User> users = new ArrayList<>();
 
@@ -416,7 +421,7 @@ public class UserManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUserFromJson(child.getJSONObject("user"));
+                        User u = SimpleUser.createUserFromJson(child.getJSONObject("user"));
                         users.add(u);
                     }
                 } catch (JSONException e) {
@@ -429,11 +434,7 @@ public class UserManager {
         @Override
         protected void onPostExecute(ArrayList<User> users) {
             super.onPostExecute(users);
-            for (UserManagerListener l : mListeners) {
-                if (l != null) {
-                    l.onFriendsRetrieved(users);
-                }
-            }
+            EventBus.getDefault().postSticky(new OnFriendsRetrievedEvent(users));
         }
     }
 
@@ -557,7 +558,7 @@ public class UserManager {
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("lastpost", lastpost);
             connectionManager.addParam("zip", zip);
-            connectionManager.setUri("findpeople.php");
+            connectionManager.setUri("findconnections.php");
             String result = connectionManager.sendHttpRequest();
             ArrayList<User> users = new ArrayList<>();
 
@@ -568,7 +569,7 @@ public class UserManager {
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject child = jsonArray.getJSONObject(i);
-                        User u = User.createUserFromJson(child);
+                        User u = SimpleUser.createUserFromJson(child);
                         if (u != null) {
                             users.add(u);
                         }

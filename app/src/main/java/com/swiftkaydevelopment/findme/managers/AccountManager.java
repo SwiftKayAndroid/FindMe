@@ -181,8 +181,8 @@ public class AccountManager {
         }
     }
 
-    public void uploadImage(String path, String uid, String text) {
-        new UploadImageTask(path, uid, text).execute();
+    public void uploadImage(String path, String uid, String text, Context context) {
+        new UploadImageTask(path, uid, text, context).execute();
     }
 
     public void updateStatus (String status, String uid) {
@@ -193,11 +193,19 @@ public class AccountManager {
         String pathToPicture;
         String uid;
         String text;
+        Context context;
 
-        public UploadImageTask(String pathToPicture, String uid, String text) {
+        public UploadImageTask(String pathToPicture, String uid, String text, Context context) {
             this.pathToPicture = pathToPicture;
             this.uid = uid;
             this.text = text;
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Toast.makeText(context, "Uploading image", Toast.LENGTH_LONG).show();
         }
 
         @Override

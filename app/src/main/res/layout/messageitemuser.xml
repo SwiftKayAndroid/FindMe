@@ -5,19 +5,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="8dp">
 
-    <TextView
-        android:id="@+id/messageItemMessageText"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="A whole lot of bullshit in one single long ass text just to test how it looks"
-        android:background="@drawable/messagebackgrounduser"
-        android:padding="15dp"
-        android:textColor="#ffffff"
         android:layout_below="@+id/messageItemTime"
         android:layout_toLeftOf="@+id/messageItemProfilePicture"
         android:layout_toStartOf="@+id/messageItemProfilePicture"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="16dp" />
+        android:background="@drawable/messagebackgrounduser"
+        android:layout_marginLeft="16dp"
+        android:padding="5dp">
+        <TextView
+            android:id="@+id/messageItemMessageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="A whole lot of bullshit in one single long ass text just to test how it looks"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:layout_marginTop="5dp" />
+
+        <ImageView
+            android:id="@+id/ivMessageImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/messageItemTime"

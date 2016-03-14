@@ -138,12 +138,6 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
     }
 
     @Override
-    public void onFriendRequestsRetrieved(ArrayList<User> users) {}
-
-    @Override
-    public void onFriendsRetrieved(ArrayList<User> users) {}
-
-    @Override
     public void onMatchesRetrieved(ArrayList<User> users) {}
 
     @Override
@@ -161,8 +155,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
         mLoadingMorePb.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
         mRefreshLayout.setRefreshing(false);
-        mAdapter.clear();
-        mAdapter.addUsers(UserManager.getInstance(uid).findPeople(uid, "0", getActivity()));
+        mAdapter.addUsers(event.users);
     }
 
     @Override
@@ -170,7 +163,7 @@ public class FindPeopleFrag extends BaseFragment implements UserManager.UserMana
         if (!mLoadingMore) {
             mLoadingMore = true;
             mLoadingMorePb.setVisibility(View.VISIBLE);
-            UserManager.getInstance(uid).findPeople(uid, lastUser.getOuid(), getActivity());
+            UserManager.getInstance(uid).findMorePeople(uid, lastUser.getOuid(), PrefManager.getZip(getActivity()));
         }
     }
 

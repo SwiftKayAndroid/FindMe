@@ -48,7 +48,7 @@ public class Message implements Serializable, Notifiable {
     private int mDeletedStatus;
     private String mTag;
     private String mSenderId;
-    private String mMessageImageLocation;
+    public String mMessageImageLocation;
 
     /**
      * Creates a message form a jsonobject
@@ -80,9 +80,10 @@ public class Message implements Serializable, Notifiable {
             } else {
                 m.setSeenStatus(0);
             }
+            m.mMessageImageLocation = object.getString("messageimageloc");
             m.setTag(object.getString("tag"));
             m.setThreadId(object.getString("threadid"));
-            m.setUser(User.createUserFromJson(object.getJSONObject("user")));
+            m.setUser(SimpleUser.createUserFromJson(object.getJSONObject("user")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -187,6 +188,7 @@ public class Message implements Serializable, Notifiable {
         setSeenStatus(0);
         setThreadId(data.getString("threadid"));
         setTime(data.getString("time"));
+        mMessageImageLocation = data.getString("messageimageloc");
         setUser(User.createUser().fetchUser(data.getString("senderid"), AccountManager.getInstance(context).getUserId()));
         MessagesManager.getInstance("").messageNotificationReceived(this);
 

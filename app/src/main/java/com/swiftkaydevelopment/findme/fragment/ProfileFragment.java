@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -39,10 +40,14 @@ import com.swiftkaydevelopment.findme.activity.ViewPhotos;
 import com.swiftkaydevelopment.findme.adapters.PostAdapter;
 import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.data.User;
-import com.swiftkaydevelopment.findme.database.DatabaseManager;
+import com.swiftkaydevelopment.findme.events.OnGetUserDetailEvent;
 import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.services.UploadService;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -92,11 +97,11 @@ public class ProfileFragment extends BaseFragment implements
             if (getArguments() != null) {
                 user = (User) getArguments().getSerializable(ARG_USER);
                 uid = getArguments().getString(ARG_UID);
+                UserManager.getInstance(uid).getUserDetail(user.getOuid(), user);
             }
 
             if (!user.getOuid().equals(uid)) {
                 UserManager.getInstance(uid).addProfileView(uid, user);
-                DatabaseManager.instance(getActivity()).createUser(user);
             }
         }
     }
@@ -199,6 +204,7 @@ public class ProfileFragment extends BaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
+        EventBus.getDefault().unregister(this);
         PostManager.getInstance().removeListener(this);
         mPostAdapter.setPostAdapterListener(null);
     }
@@ -207,6 +213,7 @@ public class ProfileFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         PostManager.getInstance().addPostListener(this);
+        EventBus.getDefault().register(this);
         if (user.getOuid().equals(uid)) {
             user = UserManager.getInstance(uid).me();
         }
@@ -318,17 +325,45 @@ public class ProfileFragment extends BaseFragment implements
     }
 
     @Override
-    public void onLastPost(Post post) {
-
-    }
+    public void onLastPost(Post post) {}
 
     @Override
     public void onProfilePictureClicked() {
-//        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, null, (user.getOuid().equals(uid)));
-//        getActivity().getSupportFragmentManager().beginTransaction()
-//                .replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
-//                .addToBackStack(null)
-//                .commit();
+        getActivity().startActivity(ViewPhotos.createIntent(getActivity(), user));
+    }
+
+    @Override
+    public void onPostLongClicked(final Post post, View itemView) {
+        if (post.getPostingUsersId().equals(uid)) {
+            PopupMenu popup = new PopupMenu(getActivity(), itemView);
+
+            popup.getMenuInflater().inflate(R.menu.postpopupmenu, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (item.getItemId() == R.id.postMenuDelete) {
+                        PostManager.getInstance().deletePost(post);
+                        mPostAdapter.removePost(post);
+                    }
+                    return true;
+                }
+            });
+            popup.show();
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(OnGetUserDetailEvent event) {
+        if (event.user != null && event.user.getOuid() != null) {
+            if (event.user.getOuid().equals(user.getOuid())) {
+                EventBus.getDefault().removeStickyEvent(event);
+                this.user = event.user;
+                if (mPostAdapter != null) {
+                    mPostAdapter.user = event.user;
+                    mPostAdapter.notifyDataSetChanged();
+                }
+            }
+        }
     }
 
     @Override

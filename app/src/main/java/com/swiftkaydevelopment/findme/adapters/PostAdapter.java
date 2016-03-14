@@ -47,6 +47,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         void onImageClicked(Post post);
         void onLastPost(Post post);
         void onProfilePictureClicked();
+        void onPostLongClicked(Post post, View itemView);
     }
 
     public static final String TAG = "PostAdapter";
@@ -112,7 +113,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
 
         if (holder.viewType == VIEW_TYPE_CONTENT) {
-            Post post = mPostList.get(position);
+            final Post post = mPostList.get(position);
 
             if (post.getNumLikes() == 0) {
                 holder.tvNumLikes.setText("No likes");
@@ -133,14 +134,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
 
             holder.tvPost.setText(post.getPostText());
-            int distance = (int) Float.parseFloat(post.getUser().distance);
-            String append = "";
-            if (distance == 1) {
-                append = " mile away";
-            } else {
-                append = " miles away";
-            }
-            holder.tvLocation.setText(Integer.toString(distance) + append);
             holder.tvName.setText(post.getUser().getFirstname() + " " + post.getUser().getLastname());
             holder.tvTime.setText(post.getTime());
             Picasso.with(mContext)
@@ -192,6 +185,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             });
 
             holder.ivPostLike.setOnClickListener(this);
+
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mListener != null) {
+                        mListener.onPostLongClicked(post, holder.tvName);
+                    }
+                    return true;
+                }
+            });
 
         } else {
             holder.orientation.setText(user.getOrientation().toString());
@@ -268,7 +271,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public class PostViewHolder extends RecyclerView.ViewHolder {
 
         //contentview
-        TextView tvName, tvTime, tvLocation, tvPost, tvNumLikes, tvNumComments;
+        TextView tvName, tvTime, tvPost, tvNumLikes, tvNumComments;
         ImageView ivProfilePicture, ivPostImage, ivPostLike, ivPostToggle;
         ExpandableLinearLayout extrasContainer;
         TagView tagView;
@@ -300,7 +303,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private void setUpContent(View v) {
             tvName = (TextView) v.findViewById(R.id.postUsername);
             tvTime = (TextView) v.findViewById(R.id.postTime);
-            tvLocation = (TextView) v.findViewById(R.id.tvPostLocation);
             tvPost = (TextView) v.findViewById(R.id.tvPostText);
             tvNumLikes = (TextView) v.findViewById(R.id.tvPostNumLikes);
             tvNumComments = (TextView) v.findViewById(R.id.tvPostNumComments);
@@ -344,6 +346,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public void addPosts(ArrayList<Post> posts) {
         mPostList.addAll(posts);
+        notifyDataSetChanged();
+    }
+
+    public void removePost(Post post) {
+        mPostList.remove(post);
         notifyDataSetChanged();
     }
 

@@ -40,7 +40,7 @@
                     android:layout_toRightOf="@id/fd"
                     android:text="TimeStamp"
                     android:textColor="#919191"
-                    android:layout_below="@+id/tvPostLocation" />
+                    android:layout_below="@+id/postUsername" />
 
                 <RelativeLayout
                     android:id="@+id/fd"
@@ -56,15 +56,6 @@
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop" />
                 </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/tvPostLocation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/postTime"
-                    android:text="Posting Users Location"
-                    android:textColor="#919191"
-                    android:layout_below="@+id/postUsername" />
 
                 <ImageView
                     android:layout_width="40dp"

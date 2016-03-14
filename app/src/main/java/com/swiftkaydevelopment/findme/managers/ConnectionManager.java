@@ -318,7 +318,7 @@ public class ConnectionManager {
 
     }
 
-    public void uploadFile(URL connectURL, String pathToFile, String uid, String text){
+    public String uploadFile(URL connectURL, String pathToFile, String uid, String text){
         String iFileName = pathToFile.replaceAll("[^a-zA-Z0-9]", "");
         String lineEnd = "\r\n";
         String twoHyphens = "--";
@@ -394,8 +394,10 @@ public class ConnectionManager {
                 sb.append(line);
 
             }
+
             Log.e(Tag, sb.toString());
             dos.close();
+            return sb.toString();
         }
         catch (MalformedURLException ex) {
             Log.e(Tag, "URL error: " + ex.getMessage(), ex);
@@ -404,6 +406,7 @@ public class ConnectionManager {
         catch (IOException ioe) {
             Log.e(Tag, "IO error: " + ioe.getMessage(), ioe);
         }
+        return "";
     }
 
     private void log(String msg){

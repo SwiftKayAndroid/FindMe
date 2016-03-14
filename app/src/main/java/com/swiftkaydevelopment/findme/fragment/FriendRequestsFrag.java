@@ -11,15 +11,20 @@ import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.adapters.FriendRequestsAdapter;
 import com.swiftkaydevelopment.findme.data.User;
+import com.swiftkaydevelopment.findme.events.OnFriendRequestRetrievedEvent;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.R;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
 /**
  * Created by Kevin Haines on 9/9/15.
  */
-public class FriendRequestsFrag extends BaseFragment implements UserManager.UserManagerListener,
+public class FriendRequestsFrag extends BaseFragment implements
         FriendRequestsAdapter.FriendRequestsAdapterListener {
     public static final String TAG = "FriendRequestsFrag";
     private  static  final String ARG_USERS = "ARG_USERS";
@@ -91,7 +96,7 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
     @Override
     public void onResume() {
         super.onResume();
-        UserManager.getInstance(uid).addListener(this);
+        EventBus.getDefault().register(this);
         if (mAdapter != null) {
             mAdapter.setFriendRequestsAdapterListener(this);
         }
@@ -100,7 +105,7 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
     @Override
     public void onPause() {
         super.onPause();
-        UserManager.getInstance(uid).removeListener(this);
+        EventBus.getDefault().unregister(this);
         if (mAdapter != null) {
             mAdapter.setFriendRequestsAdapterListener(null);
         }
@@ -123,23 +128,15 @@ public class FriendRequestsFrag extends BaseFragment implements UserManager.User
         UserManager.getInstance(uid).denyFriendRequest(uid, user);
     }
 
-    @Override
-    public void onFriendRequestsRetrieved(ArrayList<User> users) {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(OnFriendRequestRetrievedEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
         mProgressBar.setVisibility(View.GONE);
-        mAdapter.addUsers(users);
+        mAdapter.addUsers(event.friendRequests);
         if (mAdapter.getItemCount() < 1) {
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
             mEmptyView.setVisibility(View.GONE);
         }
     }
-
-    @Override
-    public void onFriendsRetrieved(ArrayList<User> users) {}
-
-    @Override
-    public void onMatchesRetrieved(ArrayList<User> users) {}
-
-    @Override
-    public void onProfileViewsFetched(ArrayList<User> users) {}
 }

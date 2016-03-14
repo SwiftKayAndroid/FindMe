@@ -21,8 +21,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
-import com.sndr.android.beta.monetization.PurchaseClient;
-import com.sndr.android.beta.monetization.PurchaseFlow;
+import com.swiftkaydevelopment.findme.monetization.PurchaseClient;
+import com.swiftkaydevelopment.findme.monetization.PurchaseFlow;
+
 
 /**
  * Created by Kevin Haines on 3/9/16.

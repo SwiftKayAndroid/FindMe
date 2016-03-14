@@ -103,6 +103,10 @@ public class PostManager {
         new FetchPostTask(postid, uid).execute();
     }
 
+    public void deletePost(Post post) {
+        new DeletePostTask(post).execute();
+    }
+
     /**
      * Called to fetch the list of posts for a specific user
      *
@@ -314,7 +318,7 @@ public class PostManager {
         protected ArrayList<Post> doInBackground(Void... params) {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
-            connectionManager.setUri("getposts.php");
+            connectionManager.setUri("getpostsv_1_6_1.php");
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("lp", lastpost);
             ArrayList<Post> pList = new ArrayList<>();
@@ -344,6 +348,24 @@ public class PostManager {
             super.onPostExecute(posts);
             mPosts = posts;
             EventBus.getDefault().postSticky(new NewsFeedPostsRetrieved(posts));
+        }
+    }
+
+    private class DeletePostTask extends AsyncTask<Void, Void, Void> {
+        Post post;
+
+        public DeletePostTask(Post post) {
+            this.post = post;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("deletepost.php");
+            connectionManager.addParam("postid", post.getPostId());
+            connectionManager.sendHttpRequest();
+            return null;
         }
     }
 }

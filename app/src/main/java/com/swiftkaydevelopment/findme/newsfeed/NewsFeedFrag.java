@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -262,6 +264,26 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onProfilePictureClicked() {}
+
+    @Override
+    public void onPostLongClicked(final Post post, View itemView) {
+        if (post.getPostingUsersId().equals(uid)) {
+            PopupMenu popup = new PopupMenu(getActivity(), itemView);
+
+            popup.getMenuInflater().inflate(R.menu.postpopupmenu, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (item.getItemId() == R.id.postMenuDelete) {
+                        PostManager.getInstance().deletePost(post);
+                        mPostAdapter.removePost(post);
+                    }
+                    return true;
+                }
+            });
+            popup.show();
+        }
+    }
 
     @Override
     public void onProfilePostsRetrieved(ArrayList<Post> posts) {}

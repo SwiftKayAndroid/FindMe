@@ -17,25 +17,24 @@
 
 package com.swiftkaydevelopment.findme.monetization.braintree;
 
-import com.brightappliance.viper.client.data.ProductGroup;
-import com.sndr.android.beta.monetization.BaseProduct;
-import com.sndr.android.beta.monetization.PurchaseFlow;
+
+import com.swiftkaydevelopment.findme.monetization.BaseProduct;
 
 /**
  * Created by Kevin Haines on 3/9/16.
  * Class Overview:
  */
 public class BrainTreeProduct extends BaseProduct {
-    public ProductGroup.Product mProduct;
-    public ProductGroup mProductGroup;
-
-    public BrainTreeProduct(ProductGroup.Product mProduct) {
-        this.mProduct = mProduct;
-        billingType = PurchaseFlow.INDEPENDANT_PRODUCT;
-    }
-
-    public BrainTreeProduct(ProductGroup mProductGroup) {
-        this.mProductGroup = mProductGroup;
-        billingType = PurchaseFlow.INDEPENDANT_PRODUCT;
-    }
+//    public ProductGroup.Product mProduct;
+//    public ProductGroup mProductGroup;
+//
+//    public BrainTreeProduct(ProductGroup.Product mProduct) {
+//        this.mProduct = mProduct;
+//        billingType = PurchaseFlow.INDEPENDANT_PRODUCT;
+//    }
+//
+//    public BrainTreeProduct(ProductGroup mProductGroup) {
+//        this.mProductGroup = mProductGroup;
+//        billingType = PurchaseFlow.INDEPENDANT_PRODUCT;
+//    }
 }

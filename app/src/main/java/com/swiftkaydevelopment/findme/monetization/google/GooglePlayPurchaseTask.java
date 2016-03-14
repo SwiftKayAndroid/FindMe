@@ -31,7 +31,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.android.vending.billing.IInAppBillingService;
-import com.sndr.android.beta.monetization.PurchaseClient;
+import com.swiftkaydevelopment.findme.monetization.PurchaseClient;
 
 import org.json.JSONException;
 

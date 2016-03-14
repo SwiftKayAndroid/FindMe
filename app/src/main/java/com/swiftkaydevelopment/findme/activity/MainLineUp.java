@@ -31,6 +31,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.BuildConfig;
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.gcm.QuickstartPreferences;
 import com.swiftkaydevelopment.findme.gcm.RegistrationIntentService;
 import com.swiftkaydevelopment.findme.managers.UserManager;
@@ -322,6 +323,9 @@ public class MainLineUp extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.navigation_menu, menu);
+        if (BuildConfig.DEBUG) {
+            menu.findItem(R.id.navMenuClearDatabases).setVisible(true);
+        }
         return true;
     }
 
@@ -329,6 +333,8 @@ public class MainLineUp extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             drawerLayout.openDrawer(GravityCompat.START);
+        } else if (item.getItemId() == R.id.navMenuClearDatabases) {
+            DatabaseManager.instance(this).clearDatabases();
         }
         return super.onOptionsItemSelected(item);
     }

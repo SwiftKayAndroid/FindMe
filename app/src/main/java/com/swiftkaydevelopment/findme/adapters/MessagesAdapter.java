@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.Message;
@@ -84,6 +85,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             } else {
                 holder.tvSeen.setVisibility(View.GONE);
             }
+        }
+
+        if (!TextUtils.isEmpty(mMessageList.get(position).mMessageImageLocation)) {
+            holder.ivImage.setVisibility(View.VISIBLE);
+            Glide.with(mContext)
+                    .load(mMessageList.get(position).mMessageImageLocation)
+                    .into(holder.ivImage);
+        } else {
+            holder.ivImage.setVisibility(View.GONE);
         }
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -168,6 +178,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     public class MessageViewHolder extends RecyclerView.ViewHolder {
 
         ImageView profilePicture;
+        ImageView ivImage;
         TextView tvTime;
         TextView tvMessage;
         TextView tvSeen;
@@ -179,6 +190,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             tvTime = (TextView) itemView.findViewById(R.id.messageItemTime);
             tvMessage = (TextView) itemView.findViewById(R.id.messageItemMessageText);
             tvSeen = (TextView) itemView.findViewById(R.id.messageItemUserSeenStatus);
+            ivImage = (ImageView) itemView.findViewById(R.id.ivMessageImage);
         }
     }
 }

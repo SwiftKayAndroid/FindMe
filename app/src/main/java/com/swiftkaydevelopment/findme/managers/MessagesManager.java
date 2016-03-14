@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.swiftkaydevelopment.findme.data.Message;
+import com.swiftkaydevelopment.findme.data.SimpleUser;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.database.DatabaseManager;
@@ -31,6 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -175,6 +178,11 @@ public class MessagesManager {
         new MarkThreadAsDeletedTask(threadInfo).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
+    public void sendPictureMessage(String uid, Message message, User user) {
+        new SendPictureMessageTask(message, uid, user).execute();
+    }
+
+
     public void markThreadAsSeen(String uid, String ouid) {
         new MarkThreadAsSeenTask(uid, ouid).execute();
     }
@@ -229,7 +237,7 @@ public class MessagesManager {
             } else {
                 connectionManager.addParam("ouid", user.getOuid());
             }
-            connectionManager.setUri("getmessages.php");
+            connectionManager.setUri("getmessagesv_1_6_1.php");
 
             try {
                 JSONObject jsonObject = new JSONObject(connectionManager.sendHttpRequest());
@@ -276,7 +284,7 @@ public class MessagesManager {
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", mUid);
             connectionManager.addParam("lastthread", lastThread);
-            connectionManager.setUri("getmessagethreads.php");
+            connectionManager.setUri("getthreadsv_1_6_1.php");
 
             final String result = connectionManager.sendHttpRequest();
 
@@ -297,7 +305,7 @@ public class MessagesManager {
                             t.readStatus = 0;
                         }
                         t.threadId = child.getString("threadid");
-                        t.threadUser = User.createUserFromJson(child.getJSONObject("user"));
+                        t.threadUser = SimpleUser.createUserFromJson(child.getJSONObject("user"));
                         t.time = child.getString("time");
                         tList.add(t);
                     }
@@ -336,7 +344,7 @@ public class MessagesManager {
             connectionManager.addParam("uid", mUid);
             connectionManager.addParam("ouid", user.getOuid());
             connectionManager.addParam("message", message.getMessage());
-            connectionManager.setUri("sendmessage.php");
+            connectionManager.setUri("sendmessagev_1_6_1.php");
             return connectionManager.sendHttpRequest();
         }
 
@@ -592,6 +600,66 @@ public class MessagesManager {
             connectionManager.setUri("seenmessage.php");
             connectionManager.sendHttpRequest();
             return null;
+        }
+    }
+
+    private class SendPictureMessageTask extends AsyncTask<Void, Void, String> {
+        Message message;
+        String uid;
+        User user;
+
+        public SendPictureMessageTask(Message message, String uid, User user) {
+            this.message = message;
+            this.uid = uid;
+            this.user = user;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.addParam("uid", mUid);
+            connectionManager.setUri("sendmessage.php");
+            try {
+                URL url = new URL("http://www.swiftkay.com/findme/sendpicturemessage.php");
+                String result = connectionManager.uploadFile(url, message.mMessageImageLocation, uid, user.getOuid());
+                return result;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Message m = Message.instance();
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                JSONObject child = jsonObject.getJSONObject("lastmessage");
+
+                m.setThreadId(child.getString("threadid"));
+                m.setSeenStatus(0);
+                m.setReadStatus(1);
+                m.setOuid(child.getString("ouid"));
+                m.setDeletedStatus(0);
+                m.setMessage(child.getString("message"));
+                m.setMessageId("id");
+                m.mMessageImageLocation = child.getString("messageimageloc");
+                m.setTime("Just now");
+                m.setUser(UserManager.getInstance(mUid).me());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            for (MessagesListener l : mMessagesListeners) {
+                l.onMessageSentComplete(m);
+            }
+
+            for (MessageThreadListener l : mMessageThreadListeners) {
+                l.onMessageSentComplete(m);
+            }
         }
     }
 }

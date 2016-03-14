@@ -7,4 +7,9 @@
         android:visible="false"
         android:icon="@mipmap/ic_settings_white_24dp"
         app:showAsAction="always" />
+
+    <item android:id="@+id/navMenuClearDatabases"
+        android:title="Clear db"
+        android:visible="false"
+        />
 </menu>
