@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.Message;
@@ -89,7 +88,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
         if (!TextUtils.isEmpty(mMessageList.get(position).mMessageImageLocation)) {
             holder.ivImage.setVisibility(View.VISIBLE);
-            Glide.with(mContext)
+            Picasso.with(mContext)
                     .load(mMessageList.get(position).mMessageImageLocation)
                     .into(holder.ivImage);
         } else {

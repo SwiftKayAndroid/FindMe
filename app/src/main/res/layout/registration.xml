@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="#0c023a">
 <LinearLayout
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/beach_couple">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/imageView3"
@@ -35,7 +35,8 @@
         android:layout_marginLeft="20dp"
         android:padding="5dp"
         android:gravity="center"
-        android:textColorHint="@color/light_gray" />
+        android:textColorHint="@color/light_gray"
+        android:textColor="@color/base_green" />
 
     <EditText
         android:id="@+id/etregpass"
@@ -50,7 +51,8 @@
         android:hint="Password"
         android:padding="5dp"
         android:gravity="center"
-        android:textColorHint="@color/light_gray" />
+        android:textColorHint="@color/light_gray"
+        android:textColor="@color/base_green" />
 
     <EditText
         android:id="@+id/etregpassconfirm"
@@ -66,7 +68,8 @@
         android:layout_marginBottom="15dp"
         android:padding="5dp"
         android:gravity="center"
-        android:textColorHint="@color/light_gray" />
+        android:textColorHint="@color/light_gray"
+        android:textColor="@color/base_green" />
 
     <EditText
         android:layout_width="match_parent"
@@ -81,7 +84,8 @@
         android:hint="Zipcode(must be valid US only)"
         android:padding="5dp"
         android:gravity="center"
-        android:textColorHint="@color/light_gray" />
+        android:textColorHint="@color/light_gray"
+        android:textColor="@color/base_green" />
 
     <Button
         android:layout_width="match_parent"

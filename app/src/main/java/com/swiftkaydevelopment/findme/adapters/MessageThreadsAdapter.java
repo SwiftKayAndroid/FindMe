@@ -165,7 +165,7 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
         boolean messageFound = false;
         if (mThreadList != null) {
             for (ThreadInfo threadInfo : mThreadList) {
-                if (threadInfo.threadId.equals(message.getThreadId())) {
+                if (threadInfo.ouid.equals(message.getOuid())) {
                     threadInfo.lastMessage = message.getMessage();
                     messageFound = true;
                     break;
@@ -174,7 +174,6 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
             if (!messageFound) {
                 ThreadInfo threadInfo = ThreadInfo.instance(mUid);
                 threadInfo.lastMessage = message.getMessage();
-                threadInfo.threadId = message.getThreadId();
                 threadInfo.threadUser = message.getUser();
                 threadInfo.seenStatus = message.getSeenStatus();
                 threadInfo.ouid = message.getOuid();

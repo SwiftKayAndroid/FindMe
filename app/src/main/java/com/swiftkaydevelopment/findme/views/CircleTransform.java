@@ -23,14 +23,14 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+//import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+//import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.squareup.picasso.Transformation;
 
-public class CircleTransform extends BitmapTransformation implements Transformation {
+public class CircleTransform implements Transformation {
 
     public CircleTransform(Context context) {
-        super(context);
+
     }
 
     @Override
@@ -61,16 +61,6 @@ public class CircleTransform extends BitmapTransformation implements Transformat
         return bitmap;
     }
 
-
-    @Override
-    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-        return transform(toTransform);
-    }
-
-    @Override
-    public String getId() {
-        return "Glide_circle_bitmap";
-    }
 
     @Override
     public String key() {

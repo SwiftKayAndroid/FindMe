@@ -113,7 +113,6 @@ public class MessagesActivity extends BaseActivity implements MessagesFrag.Pictu
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ThreadInfo t = ThreadInfo.instance(uid);
-                            t.threadId = mMessagesFrag.getThreadId();
                             MessagesManager.getInstance(uid).deleteThread(t);
                         }
                     });

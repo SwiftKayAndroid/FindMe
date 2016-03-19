@@ -28,7 +28,6 @@ public class ThreadInfo implements Serializable{
     public static final int     SEEN    = 1;
     public static final int     UNSEEN  = 0;
 
-    public String   threadId;
     public String   mUid;
     public String   ouid;
     public User     threadUser;

@@ -17,7 +17,6 @@
 
 package com.swiftkaydevelopment.findme.monetization;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,8 +24,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.braintreepayments.api.BraintreePaymentActivity;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.swiftkaydevelopment.findme.monetization.braintree.BrainTreePurchaseManager;
 import com.swiftkaydevelopment.findme.monetization.google.GooglePlayBillingClient;
 
@@ -61,29 +58,29 @@ public class BillingActivity extends AppCompatActivity implements PurchaseFlow {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.w(TAG, "onActivityResult: request: " + requestCode + " result: " + resultCode);
-
-        if (resultCode == Activity.RESULT_OK) {
-            //Handle result of BrainTree purchase
-            if (requestCode == BrainTreePurchaseManager.REQUEST_CODE_BRAINTREE_PURCHASE) {
-                PaymentMethodNonce paymentMethodNonce = data.getParcelableExtra(
-                        BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE
-                );
-                if (paymentMethodNonce != null) {
-                    String nonce = paymentMethodNonce.getNonce();
-                    Log.e(TAG, "nonce: " + nonce);
-                    // Send the nonce to your server.
-                    handleBraintreePurchase(nonce);
-                } else {
-                    Log.e(TAG, "paymentMethodNonce is null");
-                }
-            } else if (requestCode == GooglePlayBillingClient.REQUEST_CODE_DIGITAL_PURCHASE) {
-                GooglePlayBillingClient.instance().handleActivityResult(requestCode, resultCode, data);
-            }
-        } else {
-            BrainTreePurchaseManager.instance().clearCurrentPurchase();
-            onPurchaseFailed();
-        }
+//        Log.w(TAG, "onActivityResult: request: " + requestCode + " result: " + resultCode);
+//
+//        if (resultCode == Activity.RESULT_OK) {
+//            //Handle result of BrainTree purchase
+//            if (requestCode == BrainTreePurchaseManager.REQUEST_CODE_BRAINTREE_PURCHASE) {
+//                PaymentMethodNonce paymentMethodNonce = data.getParcelableExtra(
+//                        BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE
+//                );
+//                if (paymentMethodNonce != null) {
+//                    String nonce = paymentMethodNonce.getNonce();
+//                    Log.e(TAG, "nonce: " + nonce);
+//                    // Send the nonce to your server.
+//                    handleBraintreePurchase(nonce);
+//                } else {
+//                    Log.e(TAG, "paymentMethodNonce is null");
+//                }
+//            } else if (requestCode == GooglePlayBillingClient.REQUEST_CODE_DIGITAL_PURCHASE) {
+//                GooglePlayBillingClient.instance().handleActivityResult(requestCode, resultCode, data);
+//            }
+//        } else {
+//            BrainTreePurchaseManager.instance().clearCurrentPurchase();
+//            onPurchaseFailed();
+//        }
     }
 
     /**

@@ -22,7 +22,6 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.braintreepayments.api.PaymentRequest;
 import com.swiftkaydevelopment.findme.monetization.PurchaseClient;
 
 import java.lang.ref.WeakReference;
@@ -120,9 +119,9 @@ public class BrainTreePurchaseTask {
             return;
         }
 
-        PaymentRequest paymentRequest = new PaymentRequest()
-                .clientToken(clientToken);
-        mActivityRef.get().startActivityForResult(paymentRequest.getIntent(mActivityRef.get()), BrainTreePurchaseManager.REQUEST_CODE_BRAINTREE_PURCHASE);
+//        PaymentRequest paymentRequest = new PaymentRequestest()
+//                .clientToken(clientToken);
+//        mActivityRef.get().startActivityForResult(paymentRequest.getIntent(mActivityRef.get()), BrainTreePurchaseManager.REQUEST_CODE_BRAINTREE_PURCHASE);
     }
 
     /**

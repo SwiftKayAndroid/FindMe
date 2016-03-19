@@ -304,7 +304,6 @@ public class MessagesManager {
                         } else {
                             t.readStatus = 0;
                         }
-                        t.threadId = child.getString("threadid");
                         t.threadUser = SimpleUser.createUserFromJson(child.getJSONObject("user"));
                         t.time = child.getString("time");
                         tList.add(t);
@@ -356,7 +355,6 @@ public class MessagesManager {
                 JSONObject jsonObject = new JSONObject(result);
                 JSONObject child = jsonObject.getJSONObject("lastmessage");
 
-                m.setThreadId(child.getString("threadid"));
                 m.setSeenStatus(0);
                 m.setReadStatus(1);
                 m.setOuid(child.getString("ouid"));
@@ -423,7 +421,7 @@ public class MessagesManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", mUid);
-            connectionManager.addParam("threadid", threadInfo.threadId);
+            connectionManager.addParam("ouid", threadInfo.ouid);
             connectionManager.setUri("deletethread.php");
             connectionManager.sendHttpRequest();
             return null;
@@ -553,7 +551,7 @@ public class MessagesManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", mUid);
-            connectionManager.addParam("threadid", threadInfo.threadId);
+            connectionManager.addParam("ouid", threadInfo.ouid);
             connectionManager.setUri("markthreadasread.php");
             connectionManager.sendHttpRequest();
             return null;
@@ -572,7 +570,7 @@ public class MessagesManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", mUid);
-            connectionManager.addParam("threadid", threadInfo.threadId);
+            connectionManager.addParam("ouid", threadInfo.ouid);
             connectionManager.setUri("markthreadasdeleted.php");
             connectionManager.sendHttpRequest();
             return null;

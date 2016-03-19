@@ -28,7 +28,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.CommentAdapter;
@@ -190,12 +190,12 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
         tvTime.setText(mPost.getTime());
 
         if (mPost.getUser().getPropicloc().equals("")) {
-            Glide.with(getActivity())
+            Picasso.with(getActivity())
                     .load(R.drawable.ic_placeholder)
                     .transform(new CircleTransform(getActivity()))
                     .into(ivProfilePicture);
         } else {
-            Glide.with(getActivity())
+            Picasso.with(getActivity())
                     .load(mPost.getUser().getPropicloc())
                     .transform(new CircleTransform(getActivity()))
                     .into(ivProfilePicture);
@@ -219,7 +219,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
             ivPostImage.setVisibility(View.VISIBLE);
             ivPostImage.setImageResource(R.drawable.ic_placeholder);
 
-            Glide.with(getActivity())
+            Picasso.with(getActivity())
                     .load(mPost.getPostImage())
                     .into(ivPostImage);
 

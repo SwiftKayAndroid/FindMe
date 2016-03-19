@@ -25,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.squareup.picasso.Picasso;
@@ -256,7 +255,7 @@ public class MainLineUp extends BaseActivity {
         String imgloc = prefs.getString("propicloc", "");
         if (!TextUtils.isEmpty(imgloc)) {
             if (BuildConfig.GLIDE) {
-                Glide.with(this)
+                Picasso.with(this)
                         .load(imgloc)
                         .transform(new CircleTransform(this))
                         .into(ivusersphoto);
@@ -268,7 +267,7 @@ public class MainLineUp extends BaseActivity {
             }
         } else {
             if (BuildConfig.GLIDE) {
-                Glide.with(this)
+                Picasso.with(this)
                         .load(R.drawable.ic_placeholder)
                         .transform(new CircleTransform(this))
                         .into(ivusersphoto);

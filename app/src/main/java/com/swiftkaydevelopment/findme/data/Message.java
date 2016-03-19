@@ -82,7 +82,6 @@ public class Message implements Serializable, Notifiable {
             }
             m.mMessageImageLocation = object.getString("messageimageloc");
             m.setTag(object.getString("tag"));
-            m.setThreadId(object.getString("threadid"));
             m.setUser(SimpleUser.createUserFromJson(object.getJSONObject("user")));
         } catch (JSONException e) {
             e.printStackTrace();
