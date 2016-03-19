@@ -36,6 +36,7 @@ public class ThreadInfo implements Serializable{
     public String   lastMessage;
     public int      readStatus;
     public int      seenStatus;
+    public String senderId;
 
     public static ThreadInfo instance(String uid) {
         ThreadInfo threadInfo = new ThreadInfo();

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.activity.PrepareImageActivity;
 import com.swiftkaydevelopment.findme.adapters.PostAdapter;
 import com.swiftkaydevelopment.findme.data.Post;
 import com.swiftkaydevelopment.findme.events.NewsFeedPostsRetrieved;
@@ -294,8 +295,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.fabcamera) {
-            Intent i = new Intent("com.swiftkaytech.findme.UPLOADSERVICE");
-            startActivity(i);
+            startActivity(PrepareImageActivity.createIntent(getActivity()));
         } else if (v.getId() == R.id.fabpencil) {
             Intent i = new Intent("com.swiftkaytech.findme.UPDATESTATUS");
             startActivity(i);

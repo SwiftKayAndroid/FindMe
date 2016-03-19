@@ -15,6 +15,7 @@ import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.utils.ImageLoader;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
+import com.swiftkaydevelopment.findme.views.ReducedTransform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             holder.ivImage.setVisibility(View.VISIBLE);
             Picasso.with(mContext)
                     .load(mMessageList.get(position).mMessageImageLocation)
+                    .transform(new ReducedTransform())
                     .into(holder.ivImage);
         } else {
             holder.ivImage.setVisibility(View.GONE);

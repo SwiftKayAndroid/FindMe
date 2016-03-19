@@ -299,10 +299,16 @@ public class MessagesManager {
                         ThreadInfo t = ThreadInfo.instance(mUid);
                         t.ouid = child.getString("ouid");
                         t.lastMessage = child.getString("message");
+                        t.senderId = child.getString("senderid");
                         if (child.getString("readstat").equals("read")) {
                             t.readStatus = 1;
                         } else {
                             t.readStatus = 0;
+                        }
+                        if (child.getString("seenstat").equals("seen")) {
+                            t.seenStatus = 1;
+                        } else {
+                            t.seenStatus = 0;
                         }
                         t.threadUser = SimpleUser.createUserFromJson(child.getJSONObject("user"));
                         t.time = child.getString("time");
@@ -380,7 +386,6 @@ public class MessagesManager {
 
     private class DeleteMessageTask extends AsyncTask<Void, Void, Void>{
         Message message;
-
 
         public DeleteMessageTask(Message message) {
             this.message = message;
@@ -617,7 +622,6 @@ public class MessagesManager {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.addParam("uid", mUid);
-            connectionManager.setUri("sendmessage.php");
             try {
                 URL url = new URL("http://www.swiftkay.com/findme/sendpicturemessage.php");
                 String result = connectionManager.uploadFile(url, message.mMessageImageLocation, uid, user.getOuid());
@@ -636,7 +640,6 @@ public class MessagesManager {
                 JSONObject jsonObject = new JSONObject(result);
                 JSONObject child = jsonObject.getJSONObject("lastmessage");
 
-                m.setThreadId(child.getString("threadid"));
                 m.setSeenStatus(0);
                 m.setReadStatus(1);
                 m.setOuid(child.getString("ouid"));

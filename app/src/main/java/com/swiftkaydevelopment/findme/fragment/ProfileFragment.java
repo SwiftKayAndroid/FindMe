@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.MessagesActivity;
+import com.swiftkaydevelopment.findme.activity.PrepareImageActivity;
 import com.swiftkaydevelopment.findme.activity.UpdateStatus;
 import com.swiftkaydevelopment.findme.activity.ViewPhotos;
 import com.swiftkaydevelopment.findme.adapters.PostAdapter;
@@ -43,7 +44,6 @@ import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.events.OnGetUserDetailEvent;
 import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
-import com.swiftkaydevelopment.findme.services.UploadService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -391,7 +391,7 @@ public class ProfileFragment extends BaseFragment implements
                 UserManager.getInstance(uid).sendFriendRequest(uid, user);
                 Toast.makeText(getActivity(), "Friend Request sent", Toast.LENGTH_SHORT).show();
             } else {
-                getActivity().startActivity(UploadService.createIntent(getActivity()));
+                getActivity().startActivity(PrepareImageActivity.createIntent(getActivity()));
             }
         } else if (v.getId() == mFabCenter.getId()) {
             editProfile();

@@ -1,15 +1,12 @@
 package com.swiftkaydevelopment.findme.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 /**
@@ -39,7 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public String getUid(){return uid;}
     public void setUid(String s){uid = s;}
 
-    protected abstract void createActivity(Bundle inState);
+    protected abstract void createActivity(Bundle savedInstanceState);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

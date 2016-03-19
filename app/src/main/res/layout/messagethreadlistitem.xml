@@ -22,19 +22,19 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Time"
         android:id="@+id/tvmessagethreadtime"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:textColor="@color/holoblue" />
+        android:textColor="@color/holoblue"
+        android:layout_alignTop="@+id/ivmessagethread"
+        android:layout_alignParentEnd="true" />
 
     <RelativeLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/ivmessagethread"
         android:layout_toRightOf="@+id/ivmessagethread"
-        android:layout_toLeftOf="@+id/tvmessagethreadtime">
+        android:layout_toLeftOf="@+id/tvmessagethreadtime"
+        android:id="@+id/relativeLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -58,15 +58,17 @@
             android:singleLine="true"
             android:ellipsize="end" />
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:id="@+id/ivcheckmarkmessagethread"
-            android:layout_toEndOf="@+id/tvmessagethreadname"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/tvmessagethreadname"
-            android:src="@drawable/checkmark"
-            android:layout_marginLeft="5dp"
-            android:visibility="invisible" />
     </RelativeLayout>
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/ivcheckmarkmessagethread"
+        android:src="@drawable/checkmark"
+        android:layout_marginLeft="5dp"
+        android:visibility="visible"
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/tvmessagethreadtime"
+        android:tint="@color/base_green" />
+
 </RelativeLayout>

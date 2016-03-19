@@ -84,9 +84,12 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
             holder.tvmessage.setText(thread.lastMessage);
             holder.tvtime.setText(thread.time);
 
-            if(thread.seenStatus == ThreadInfo.SEEN){
+            if(thread.senderId.equals(mUid) && thread.seenStatus == ThreadInfo.SEEN){
                 holder.checkmark.setVisibility(View.VISIBLE);
+            } else{
+                holder.checkmark.setVisibility(View.GONE);
             }
+
             if (thread.readStatus == ThreadInfo.READ) {
                 holder.tvname.setTypeface(null, Typeface.NORMAL);
                 holder.tvmessage.setTypeface(null, Typeface.NORMAL);
