@@ -156,12 +156,12 @@ public class UserManager {
      * @return List of users
      */
     public ArrayList<User> findPeopleSync(String uid, String lastpost, String zip, Context context) {
-        ArrayList<User> users = DatabaseManager.instance(context).getUsers();
-        if (!users.isEmpty()) {
-            lastpost = "0";
-        }
+//        ArrayList<User> users = DatabaseManager.instance(context).getUsers();
+//        if (!users.isEmpty()) {
+//            lastpost = "0";
+//        }
         new FindPeopleTask(uid, lastpost, zip).execute();
-        return users;
+        return new ArrayList<>();
     }
 
     public void getUserDetail(String uid, User user) {

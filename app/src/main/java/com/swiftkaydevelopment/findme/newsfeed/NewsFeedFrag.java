@@ -120,7 +120,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
         }
 
         if (mPostAdapter == null) {
-            mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid).me(), false, false);
+            mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid).me(), false, false, uid);
             mRecyclerView.setAdapter(mPostAdapter);
             mPostAdapter.setPostAdapterListener(this);
         }
@@ -224,7 +224,7 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
             swipeLayout.setRefreshing(false);
         } else {
             if (mPostAdapter == null) {
-                mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid).me(), false, false);
+                mPostAdapter = new PostAdapter(getActivity(), mPostsList, UserManager.getInstance(uid).me(), false, false, uid);
                 mRecyclerView.setAdapter(mPostAdapter);
                 mPostAdapter.setPostAdapterListener(this);
             } else {

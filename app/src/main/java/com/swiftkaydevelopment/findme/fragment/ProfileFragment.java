@@ -134,7 +134,7 @@ public class ProfileFragment extends BaseFragment implements
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         if (mPostAdapter == null) {
-            mPostAdapter = new PostAdapter(getActivity(), mPostList, user, true, user.getOuid().equals(uid));
+            mPostAdapter = new PostAdapter(getActivity(), mPostList, user, true, user.getOuid().equals(uid), uid);
         }
 
         mRecyclerView.setAdapter(mPostAdapter);

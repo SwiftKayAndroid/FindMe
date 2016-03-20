@@ -25,8 +25,8 @@ android {
         applicationId "com.swiftkaydevelopment.findme"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 11
-        versionName "1.5.5"
+        versionCode 13
+        versionName "1.6.2"
 
         buildConfigField "boolean", "GLIDE", "false"
     }

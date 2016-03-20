@@ -40,10 +40,11 @@ public class Post implements Serializable, JsonCreatable<Post>, DatabaseObject<P
     private User mUser;
     private String mPostText;
     private String mTime;
-    private int mNumLikes;
     private String mPostImage;
     private int mNumComments;
+    public int numReactions;
     private boolean mLiked;
+    public boolean disliked;
     private ArrayList<Comment> comments;
 
     /**
@@ -65,7 +66,6 @@ public class Post implements Serializable, JsonCreatable<Post>, DatabaseObject<P
         this.mPostId = c.getString(c.getColumnIndexOrThrow("mPostId"));
         this.mPostingUsersId = c.getString(c.getColumnIndexOrThrow("mPostingUserId"));
         this.mPostText = c.getString(c.getColumnIndexOrThrow("mPostText"));
-        this.mNumLikes = Integer.parseInt(c.getString(c.getColumnIndexOrThrow("mNumLikes")));
         this.mNumComments = Integer.parseInt(c.getString(c.getColumnIndexOrThrow("mNumComments")));
         this.mLiked = Boolean.valueOf(c.getString(c.getColumnIndexOrThrow("mLiked")));
 
@@ -81,7 +81,6 @@ public class Post implements Serializable, JsonCreatable<Post>, DatabaseObject<P
         values.put("mPostId", mPostId);
         values.put("mPostingUsersId", mPostingUsersId);
         values.put("mPostText", mPostText);
-        values.put("mNumLikes", mNumLikes);
         values.put("mPostImage", mPostImage);
         values.put("mNumComments", mNumComments);
         values.put("mLiked", mLiked);
@@ -94,11 +93,12 @@ public class Post implements Serializable, JsonCreatable<Post>, DatabaseObject<P
             this.setPostText(object.getString("post"));
             this.setPostingUsersId(object.getString("postingusersid"));
             this.setNumComments(object.getInt("numcomments"));
-            this.setNumLikes(object.getInt("numlikes"));
+            this.numReactions = object.getInt("numreactions");
             this.setTime(object.getString("time"));
             this.setPostId(object.getString("postid"));
             this.setLiked(object.getBoolean("liked"));
             this.setPostImage(object.getString("postpicloc"));
+            this.disliked = object.getBoolean("disliked");
             JSONObject user = object.getJSONObject("user");
             User u = SimpleUser.createUserFromJson(user);
             this.setUser(u);
@@ -202,22 +202,6 @@ public class Post implements Serializable, JsonCreatable<Post>, DatabaseObject<P
      */
     public void setNumComments(int mNumComments) {
         this.mNumComments = mNumComments;
-    }
-
-    /**
-     * gets the number of likes for this post
-     * @return number of likes on this post
-     */
-    public int getNumLikes() {
-        return mNumLikes;
-    }
-
-    /**
-     * sets the number of likes for post
-     * @param mNumLikes number of likes for post
-     */
-    public void setNumLikes(int mNumLikes) {
-        this.mNumLikes = mNumLikes;
     }
 
     /**

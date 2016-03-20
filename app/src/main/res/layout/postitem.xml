@@ -57,15 +57,6 @@
                         android:scaleType="centerCrop" />
                 </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:id="@+id/ivPostLike"
-                    android:src="@drawable/checkmark"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="10dp" />
-
             </RelativeLayout>
 
             <ImageView
@@ -111,24 +102,57 @@
                             android:layout_height="wrap_content"
                             android:textColor="#ae5e5e5e"
                             android:text="one person likes this"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
                             android:padding="5dp"
-                            android:layout_alignTop="@+id/tvPostNumComments"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
                             android:layout_marginLeft="16dp"
-                            android:layout_marginBottom="10dp" />
+                            android:layout_alignParentTop="true"
+                            android:layout_toStartOf="@+id/tvPostNumComments" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
                             android:text="6 Comments"
                             android:id="@+id/tvPostNumComments"
                             android:textColor="#ae5e5e5e"
                             android:padding="5dp"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true" />
+
+                        <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ibLikePost"
+                            android:layout_alignParentBottom="false"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:src="@mipmap/ic_thumb_up_outline_white_24dp"
+                            android:background="@null"
+                            android:tint="@color/grayicon"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginBottom="10dp" />
+
+                        <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ibDislikePost"
+                            android:layout_alignParentTop="true"
+                            android:layout_toEndOf="@+id/ibLikePost"
+                            android:layout_marginLeft="16dp"
+                            android:background="@null"
+                            android:src="@mipmap/ic_thumb_down_outline_white_24dp"
+                            android:tint="@color/grayicon" />
+
+                        <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ibComment"
+                            android:layout_alignParentTop="true"
+                            android:layout_toEndOf="@+id/ibDislikePost"
+                            android:tint="@color/grayicon"
+                            android:src="@mipmap/ic_tooltip_outline_white_24dp"
+                            android:background="@null"
+                            android:layout_marginLeft="16dp" />
 
                     </RelativeLayout>
                 </LinearLayout>

@@ -172,6 +172,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         }
     }
 
+    public void markAllAsSeen() {
+        for (Message message : mMessageList) {
+            message.setSeenStatus(1);
+        }
+        notifyDataSetChanged();
+    }
+
     public ArrayList<Message> getMessages() {
         return new ArrayList<>(mMessageList);
     }

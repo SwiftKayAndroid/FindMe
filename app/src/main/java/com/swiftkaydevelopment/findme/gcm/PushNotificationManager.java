@@ -32,6 +32,9 @@ import com.swiftkaydevelopment.findme.data.ProfileView;
 import com.swiftkaydevelopment.findme.data.PushData;
 import com.swiftkaydevelopment.findme.data.StatusLike;
 import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
+import com.swiftkaydevelopment.findme.events.MessageSeenEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class PushNotificationManager {
     private static final String TAG = "PushNotificationManager";
@@ -42,6 +45,7 @@ public class PushNotificationManager {
     private static final String TYPE_COMMENT = "comment";
     private static final String TYPE_FRIEND = "friend";
     private static final String TYPE_PROFILE_VIEW = "view";
+    private static final String TYPE_SEEN_MESSAGE = "seen";
 
     private static PushNotificationManager sInstance = null;
     private Context mContext;
@@ -101,6 +105,8 @@ public class PushNotificationManager {
             return new Friend();
         } else if (type.equals(TYPE_PROFILE_VIEW)) {
             return new ProfileView();
+        } else if (type.equals(TYPE_SEEN_MESSAGE)) {
+            processSeenStatus(data);
         }
 
         return null;
@@ -127,5 +133,9 @@ public class PushNotificationManager {
                 (android.app.NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(data.notificationId, notificationBuilder.build());
+    }
+
+    private void processSeenStatus(Bundle data) {
+        EventBus.getDefault().postSticky(new MessageSeenEvent(data.getString("ouid")));
     }
 }

@@ -20,6 +20,8 @@ import com.swiftkaydevelopment.findme.data.Message;
 import com.swiftkaydevelopment.findme.data.ThreadInfo;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.events.MessageReceivedEvent;
+import com.swiftkaydevelopment.findme.events.MessageSeenEvent;
+import com.swiftkaydevelopment.findme.events.MessageSentEvent;
 import com.swiftkaydevelopment.findme.managers.MessagesManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -155,6 +157,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
         Log.i(TAG, "onResume");
         super.onResume();
         MessagesManager.getInstance(uid).addThreadsListener(this);
+        EventBus.getDefault().register(this);
         if (mMessagesAdapter != null) {
             mMessagesAdapter.setThreadSelectedListener(this);
         }
@@ -165,6 +168,7 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
         Log.i(TAG, "onPause");
         super.onPause();
         MessagesManager.getInstance(uid).removeThreadsListener(this);
+        EventBus.getDefault().unregister(this);
         if (mMessagesAdapter != null) {
             mMessagesAdapter.setThreadSelectedListener(null);
         }
@@ -238,4 +242,15 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
         mMessagesAdapter.addMessage(event.message);
     }
 
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageSeenEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
+        mMessagesAdapter.markSeen(event.ouid);
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageSentEvent event) {
+        EventBus.getDefault().removeStickyEvent(event);
+        mMessagesAdapter.addMessage(event.message);
+    }
 }

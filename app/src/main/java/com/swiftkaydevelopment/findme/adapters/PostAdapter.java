@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,13 +62,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private PostAdapterListener mListener;
     public User user;
     private boolean isUser;
+    private String mUid;
 
-    public PostAdapter(Context context, ArrayList<Post> plist, User user, boolean isProfile, boolean isUser) {
+    public PostAdapter(Context context, ArrayList<Post> plist, User user, boolean isProfile, boolean isUser, String uid) {
         mContext = context;
         mPostList = plist;
         this.user = user;
         this.hasHeader = isProfile;
         this.isUser = isUser;
+        this.mUid = uid;
     }
 
     /**
@@ -115,18 +118,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         if (holder.viewType == VIEW_TYPE_CONTENT) {
             final Post post = mPostList.get(position);
 
-            if (post.getNumLikes() == 0) {
-                holder.tvNumLikes.setText("No likes");
+            if (post.numReactions == 0) {
+                holder.tvNumLikes.setText("");
             } else {
-                if (post.getNumLikes() > 1) {
-                    holder.tvNumLikes.setText(Integer.toString(post.getNumLikes()) + " people liked this!");
+                if (post.numReactions > 1) {
+                    holder.tvNumLikes.setText(Integer.toString(post.numReactions) + " reactions");
                 } else {
-                    holder.tvNumLikes.setText(Integer.toString(post.getNumLikes()) + " person liked this!");
+                    holder.tvNumLikes.setText(Integer.toString(post.numReactions) + " reaction");
                 }
             }
 
             if (post.getNumComments() == 0) {
-                holder.tvNumComments.setText("No comments");
+                holder.tvNumComments.setText("");
             } else if (post.getNumComments() == 1) {
                 holder.tvNumComments.setText("1 comment");
             } else {
@@ -152,11 +155,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 }
             });
 
-            holder.ivPostLike.setTag(position);
-            if (mPostList.get(position).getLiked()) {
-                holder.ivPostLike.setImageResource(R.drawable.checkmark_liked);
+            holder.ibLikePost.setTag(position);
+            holder.ibLikePost.setOnClickListener(this);
+            holder.ibDislikePost.setTag(position);
+            holder.ibDislikePost.setOnClickListener(this);
+
+            if (post.disliked) {
+                holder.ibDislikePost.setColorFilter(mContext.getResources().getColor(R.color.base_green));
             } else {
-                holder.ivPostLike.setImageResource(R.drawable.checkmark);
+                holder.ibDislikePost.setColorFilter(mContext.getResources().getColor(R.color.grayicon));
+            }
+
+            holder.ibComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onCommentsClicked(post);
+                    }
+                }
+            });
+
+            if (mPostList.get(position).getLiked()) {
+                holder.ibLikePost.setColorFilter(mContext.getResources().getColor(R.color.base_green));
+            } else {
+                holder.ibLikePost.setColorFilter(mContext.getResources().getColor(R.color.grayicon));
             }
 
             if (!mPostList.get(position).getPostImage().equals("")) {
@@ -183,8 +205,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     }
                 }
             });
-
-            holder.ivPostLike.setOnClickListener(this);
 
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -272,9 +292,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         //contentview
         TextView tvName, tvTime, tvPost, tvNumLikes, tvNumComments;
-        ImageView ivProfilePicture, ivPostImage, ivPostLike, ivPostToggle;
+        ImageView ivProfilePicture, ivPostImage, ivPostToggle;
         ExpandableLinearLayout extrasContainer;
         TagView tagView;
+        ImageButton ibLikePost, ibDislikePost, ibComment;
 
         //header
         TextView aboutMe, age, gender, orientation, location, status, lookingfor;
@@ -306,12 +327,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             tvPost = (TextView) v.findViewById(R.id.tvPostText);
             tvNumLikes = (TextView) v.findViewById(R.id.tvPostNumLikes);
             tvNumComments = (TextView) v.findViewById(R.id.tvPostNumComments);
-            ivPostLike = (ImageView) v.findViewById(R.id.ivPostLike);
             ivPostImage = (ImageView) v.findViewById(R.id.postImage);
             ivProfilePicture = (ImageView) v.findViewById(R.id.ivPostProfilePicture);
             extrasContainer = (ExpandableLinearLayout) v.findViewById(R.id.postExtrasContainer);
             ivPostToggle = (ImageView) v.findViewById(R.id.ivPostToggleButton);
             tagView = (TagView) v.findViewById(R.id.postTagView);
+            ibLikePost = (ImageButton) v.findViewById(R.id.ibLikePost);
+            ibDislikePost = (ImageButton) v.findViewById(R.id.ibDislikePost);
+            ibComment = (ImageButton) v.findViewById(R.id.ibComment);
         }
 
         /**
@@ -361,17 +384,31 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.ivPostLike) {
+        if (v.getId() == R.id.ibLikePost) {
             int pos = (Integer) v.getTag();
             Post p = mPostList.get(pos);
             if (!p.getLiked()) {
-                PostManager.getInstance().likePost(user.getOuid(), p.getPostId());
-                ((ImageView) v).setImageResource(R.drawable.checkmark_liked);
+                p.setLiked(true);
+                PostManager.getInstance().likePost(mUid, p.getPostId());
+                ((ImageButton) v).setColorFilter(mContext.getResources().getColor(R.color.base_green));
             } else {
-                PostManager.getInstance().unLikePost(user.getOuid(), p.getPostId());
-                ((ImageView) v).setImageResource(R.drawable.checkmark);
+                p.setLiked(false);
+                PostManager.getInstance().unLikePost(mUid, p.getPostId());
+                ((ImageButton) v).setColorFilter(mContext.getResources().getColor(R.color.grayicon));
             }
             p.setLiked(!p.getLiked());
+        } else if (v.getId() == R.id.ibDislikePost) {
+            int pos = (Integer) v.getTag();
+            Post p = mPostList.get(pos);
+            if (!p.disliked) {
+                p.disliked = true;
+                PostManager.getInstance().dislikePost(p, mUid);
+                ((ImageButton) v).setColorFilter(mContext.getResources().getColor(R.color.base_green));
+            } else {
+                p.disliked = false;
+                PostManager.getInstance().unDislikePost(p, mUid);
+                ((ImageButton) v).setColorFilter(mContext.getResources().getColor(R.color.grayicon));
+            }
         }
     }
 }

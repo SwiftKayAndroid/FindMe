@@ -32,6 +32,7 @@ import com.swiftkaydevelopment.findme.data.ThreadInfo;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.events.MessageReceivedEvent;
+import com.swiftkaydevelopment.findme.events.MessageSeenEvent;
 import com.swiftkaydevelopment.findme.managers.MessagesManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 
@@ -326,6 +327,13 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
 
         Toast.makeText(getActivity(), "Sending picture", Toast.LENGTH_SHORT).show();
         MessagesManager.getInstance(uid).sendPictureMessage(uid, message, user);
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageSeenEvent event) {
+        if (event.ouid.equals(user.getOuid())) {
+            mMessageAdapter.markAllAsSeen();
+        }
     }
 
     @Override

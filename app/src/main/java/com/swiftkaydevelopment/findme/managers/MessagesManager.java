@@ -26,6 +26,7 @@ import com.swiftkaydevelopment.findme.data.ThreadInfo;
 import com.swiftkaydevelopment.findme.data.User;
 import com.swiftkaydevelopment.findme.database.DatabaseManager;
 import com.swiftkaydevelopment.findme.events.MessageReceivedEvent;
+import com.swiftkaydevelopment.findme.events.MessageSentEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -381,6 +382,8 @@ public class MessagesManager {
             for (MessageThreadListener l : mMessageThreadListeners) {
                 l.onMessageSentComplete(m);
             }
+
+            EventBus.getDefault().postSticky(new MessageSentEvent(m));
         }
     }
 

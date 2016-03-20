@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,12 +39,12 @@ import com.swiftkaydevelopment.findme.managers.CommentsManager;
 import com.swiftkaydevelopment.findme.managers.PostManager;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
-import com.swiftkaydevelopment.findme.views.ExpandableLinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SinglePostFragment extends BaseFragment implements PostManager.PostsListener, CommentsManager.CommentsManagerListener {
+public class SinglePostFragment extends BaseFragment implements PostManager.PostsListener,
+        CommentsManager.CommentsManagerListener, View.OnClickListener {
     public static final String TAG = "SinglePostFragment";
 
     private static final String ARG_COMMENTS = "ARG_COMMENTS";
@@ -54,11 +55,11 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
     private Post mPost;
     private String mPostid;
 
-    TextView tvName, tvTime, tvPost, tvNumLikes, tvNumComments;
-    ImageView ivProfilePicture, ivPostImage, ivPostLike, ivPostToggle;
-    ExpandableLinearLayout extrasContainer;
-
     private ArrayList<Comment> mComments = new ArrayList<>();
+
+    TextView tvName, tvTime, tvPost, tvNumLikes, tvNumComments;
+    ImageView ivProfilePicture, ivPostImage;
+    ImageButton ibLikePost, ibDislikePost, ibComment;
     private ImageView ivPostComment;
     private ImageView emptyView;
     private EditText etComment;
@@ -103,11 +104,11 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
         tvPost = (TextView) layout.findViewById(R.id.tvPostText);
         tvNumLikes = (TextView) layout.findViewById(R.id.tvPostNumLikes);
         tvNumComments = (TextView) layout.findViewById(R.id.tvPostNumComments);
-        ivPostLike = (ImageView) layout.findViewById(R.id.ivPostLike);
         ivPostImage = (ImageView) layout.findViewById(R.id.postImage);
         ivProfilePicture = (ImageView) layout.findViewById(R.id.ivPostProfilePicture);
-        extrasContainer = (ExpandableLinearLayout) layout.findViewById(R.id.postExtrasContainer);
-        ivPostToggle = (ImageView) layout.findViewById(R.id.ivPostToggleButton);
+        ibLikePost = (ImageButton) layout.findViewById(R.id.ibLikePost);
+        ibDislikePost = (ImageButton) layout.findViewById(R.id.ibDislikePost);
+        ibComment = (ImageButton) layout.findViewById(R.id.ibComment);
         lv = (ListView) layout.findViewById(R.id.lvcommentspop);
         emptyView = (ImageView) layout.findViewById(R.id.commentsEmptyView);
         etComment = (EditText) layout.findViewById(R.id.etcommentonpost);
@@ -166,13 +167,13 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
      */
     private void initializePost() {
 
-        if (mPost.getNumLikes() == 0) {
-            tvNumLikes.setText("No likes");
+        if (mPost.numReactions == 0) {
+            tvNumLikes.setText("");
         } else {
-            if (mPost.getNumLikes() > 1) {
-                tvNumLikes.setText(Integer.toString(mPost.getNumLikes()) + " people liked this!");
+            if (mPost.numReactions > 1) {
+                tvNumLikes.setText(Integer.toString(mPost.numReactions) + " reactions");
             } else {
-                tvNumLikes.setText(Integer.toString(mPost.getNumLikes()) + " person liked this!");
+                tvNumLikes.setText(Integer.toString(mPost.numReactions) + " reaction");
             }
         }
 
@@ -208,10 +209,14 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
                 }
             }
         });
-        if (mPost.getLiked()) {
-            ivPostLike.setImageResource(R.drawable.checkmark_liked);
+
+        ibLikePost.setOnClickListener(this);
+        ibDislikePost.setOnClickListener(this);
+
+        if (mPost.disliked) {
+            ibDislikePost.setColorFilter(getActivity().getResources().getColor(R.color.base_green));
         } else {
-            ivPostLike.setImageResource(R.drawable.checkmark);
+            ibDislikePost.setColorFilter(getActivity().getResources().getColor(R.color.grayicon));
         }
 
         if (!mPost.getPostImage().equals("")) {
@@ -237,13 +242,6 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
             ivPostImage.setVisibility(View.GONE);
         }
 
-        ivPostToggle.setRotation(0);
-        ivPostLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PostManager.getInstance().likePost(uid, mPost.getPostId());
-            }
-        });
 
         if (!commentsFetched) {
             CommentsManager.getInstance(uid, getActivity()).fetchComments(mPostid);
@@ -286,5 +284,30 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
     public void onSinglePostRetrieved(Post post) {
         mPost = post;
         initializePost();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.ibLikePost) {
+            if (!mPost.getLiked()) {
+                mPost.setLiked(true);
+                PostManager.getInstance().likePost(uid, mPost.getPostId());
+                ((ImageButton) v).setColorFilter(getActivity().getResources().getColor(R.color.base_green));
+            } else {
+                mPost.setLiked(false);
+                PostManager.getInstance().unLikePost(uid, mPost.getPostId());
+                ((ImageButton) v).setColorFilter(getActivity().getResources().getColor(R.color.grayicon));
+            }
+        } else if (v.getId() == R.id.ibDislikePost) {
+            if (!mPost.disliked) {
+                mPost.disliked = true;
+                PostManager.getInstance().dislikePost(mPost, uid);
+                ((ImageButton) v).setColorFilter(getActivity().getResources().getColor(R.color.base_green));
+            } else {
+                mPost.disliked = false;
+                PostManager.getInstance().unDislikePost(mPost, uid);
+                ((ImageButton) v).setColorFilter(getActivity().getResources().getColor(R.color.grayicon));
+            }
+        }
     }
 }

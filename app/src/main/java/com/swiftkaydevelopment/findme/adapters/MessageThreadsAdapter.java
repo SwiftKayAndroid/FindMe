@@ -190,6 +190,16 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
         }
     }
 
+    public void markSeen(String ouid) {
+        for (ThreadInfo info : mThreadList) {
+            if (info.ouid.equals(ouid)) {
+                info.seenStatus = 1;
+                notifyItemChanged(mThreadList.indexOf(info));
+                break;
+            }
+        }
+    }
+
     @Override
     public int getItemCount() {
         return mThreadList.size();

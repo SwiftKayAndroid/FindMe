@@ -107,6 +107,14 @@ public class PostManager {
         new DeletePostTask(post).execute();
     }
 
+    public void dislikePost(Post post, String uid) {
+        new DislikePostTask(post, uid).execute();
+    }
+
+    public void unDislikePost(Post post, String uid) {
+        new UnDislikePostTask(post, uid).execute();
+    }
+
     /**
      * Called to fetch the list of posts for a specific user
      *
@@ -364,6 +372,48 @@ public class PostManager {
             connectionManager.setMethod(ConnectionManager.POST);
             connectionManager.setUri("deletepost.php");
             connectionManager.addParam("postid", post.getPostId());
+            connectionManager.sendHttpRequest();
+            return null;
+        }
+    }
+
+    private class DislikePostTask extends AsyncTask<Void, Void, Void> {
+        Post post;
+        String uid;
+
+        public DislikePostTask(Post post, String uid) {
+            this.post = post;
+            this.uid = uid;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("dislikepost.php");
+            connectionManager.addParam("postid", post.getPostId());
+            connectionManager.addParam("uid", uid);
+            connectionManager.sendHttpRequest();
+            return null;
+        }
+    }
+
+    private class UnDislikePostTask extends AsyncTask<Void, Void, Void> {
+        Post post;
+        String uid;
+
+        public UnDislikePostTask(Post post, String uid) {
+            this.post = post;
+            this.uid = uid;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ConnectionManager connectionManager = new ConnectionManager();
+            connectionManager.setMethod(ConnectionManager.POST);
+            connectionManager.setUri("undislikepost.php");
+            connectionManager.addParam("postid", post.getPostId());
+            connectionManager.addParam("uid", uid);
             connectionManager.sendHttpRequest();
             return null;
         }
