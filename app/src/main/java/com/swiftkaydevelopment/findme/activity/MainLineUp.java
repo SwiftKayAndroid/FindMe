@@ -230,6 +230,9 @@ public class MainLineUp extends BaseActivity {
             case R.id.menuPhotos:
                 startActivity(ViewPhotos.createIntent(this, UserManager.getInstance(uid).me()));
             break;
+            case R.id.menuMediate:
+                startActivity(MediationActivity.createIntent(this));
+                break;
             case R.id.menuSettings:
 //                launchPrefs();
                 break;

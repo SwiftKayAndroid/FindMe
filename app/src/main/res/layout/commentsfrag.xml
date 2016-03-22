@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/etcommentonpost"
-        android:background="@color/dark_gray"
+        android:background="@color/grayicon"
         android:id="@+id/view2" />
 
     <EditText
@@ -62,7 +62,7 @@
         android:layout_height="50dp"
         android:id="@+id/ivCommentSend"
         android:src="@mipmap/ic_send_white_24dp"
-        android:tint="@color/black"
+        android:tint="@color/grayicon"
         android:padding="10dp"
         android:layout_alignTop="@+id/view2"
         android:layout_alignParentRight="true"

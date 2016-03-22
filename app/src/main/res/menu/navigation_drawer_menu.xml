@@ -30,11 +30,28 @@
                     android:id="@+id/menuPhotos"
                     android:title="Photos"
                     android:icon="@mipmap/ic_image_multiple_white_24dp"/>
+
+            </menu>
+        </item>
+
+    </group>
+
+    <group
+        android:id="@+id/menuNavModeration"
+        android:checkableBehavior="single">
+        <item android:title="Other">
+            <menu>
+                <item
+                    android:id="@+id/menuMediate"
+                    android:title="Mediate"
+                    android:icon="@mipmap/ic_remove_red_eye_black_24dp"/>
+
                 <item
                     android:id="@+id/menuSettings"
                     android:title="Settings"
                     android:visible="false"
                     android:icon="@mipmap/ic_settings_white_24dp"/>
+
             </menu>
         </item>
 

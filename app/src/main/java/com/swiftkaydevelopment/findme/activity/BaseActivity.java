@@ -31,7 +31,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         err("prefs is null");
         return null;
     }
-    public SharedPreferences getPrefs(){return prefs;}
+
+    public SharedPreferences getPrefs() {return prefs;}
 
     public String getUid(){return uid;}
     public void setUid(String s){uid = s;}

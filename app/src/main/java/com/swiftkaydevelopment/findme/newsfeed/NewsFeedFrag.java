@@ -238,10 +238,17 @@ public class NewsFeedFrag extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onCommentsClicked(Post post) {
-        if (getActivity().getSupportFragmentManager().findFragmentByTag(CommentsDialog.TAG) == null) {
+//        if (getActivity().getSupportFragmentManager().findFragmentByTag(CommentsDialog.TAG) == null) {
             CommentsDialog dialog = CommentsDialog.newInstance(post.getPostId(), uid);
-            dialog.show(getActivity().getSupportFragmentManager(), CommentsDialog.TAG);
-        }
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.fragment_transition_expand_from_bottom, R.anim.slide_out_to_bottom, R.anim.fragment_transition_expand_from_bottom, R.anim.slide_out_to_bottom)
+                    .replace(android.R.id.content, dialog, CommentsDialog.TAG)
+                    .addToBackStack(null)
+                    .commit();
+
+//            dialog.show(getActivity().getSupportFragmentManager(), CommentsDialog.TAG);
+
     }
 
     @Override

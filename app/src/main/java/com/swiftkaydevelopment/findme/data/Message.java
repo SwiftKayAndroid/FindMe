@@ -48,6 +48,7 @@ public class Message implements Serializable, Notifiable {
     private int mDeletedStatus;
     private String mTag;
     private String mSenderId;
+    public String mediation;
     public String mMessageImageLocation;
 
     /**
@@ -69,6 +70,7 @@ public class Message implements Serializable, Notifiable {
             m.setMessage(object.getString("message"));
             m.setMessageId(object.getString("id"));
             m.setOuid(object.getString("ouid"));
+            m.mediation = object.getString("med");
             m.setSenderId(object.getString("senderid"));
             if (object.getString("readstat").equals("read")) {
                 m.setReadStatus(1);
@@ -186,8 +188,10 @@ public class Message implements Serializable, Notifiable {
         setMessage(data.getString("message"));
         setSeenStatus(0);
         setThreadId(data.getString("threadid"));
+        mediation = data.getString("med");
         setTime(data.getString("time"));
         mMessageImageLocation = data.getString("messageimageloc");
+        setSenderId(data.getString("senderid"));
         setUser(User.createUser().fetchUser(data.getString("senderid"), AccountManager.getInstance(context).getUserId()));
         MessagesManager.getInstance("").messageNotificationReceived(this);
 

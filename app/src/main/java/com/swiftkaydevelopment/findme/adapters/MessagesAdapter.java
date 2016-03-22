@@ -65,6 +65,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     @Override
     public void onBindViewHolder(final MessagesAdapter.MessageViewHolder holder, final int position) {
 
+        Message message = mMessageList.get(position);
+
         holder.tvMessage.setText(mMessageList.get(position).getMessage());
         holder.tvTime.setText(mMessageList.get(position).getTime());
         if (TextUtils.isEmpty(mMessageList.get(position).getUser().getPropicloc())) {
@@ -88,11 +90,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         }
 
         if (!TextUtils.isEmpty(mMessageList.get(position).mMessageImageLocation)) {
-            holder.ivImage.setVisibility(View.VISIBLE);
-            Picasso.with(mContext)
-                    .load(mMessageList.get(position).mMessageImageLocation)
-                    .transform(new ReducedTransform())
-                    .into(holder.ivImage);
+            //todo: check preference here as well
+            if (!message.getSenderId().equals(uid) && !mMessageList.get(position).mediation.equals("no")) {
+                holder.ivImage.setVisibility(View.GONE);
+                holder.tvMessage.setText("Pending Mediation");
+            } else {
+                holder.ivImage.setVisibility(View.VISIBLE);
+                Picasso.with(mContext)
+                        .load(mMessageList.get(position).mMessageImageLocation)
+                        .transform(new ReducedTransform())
+                        .into(holder.ivImage);
+            }
         } else {
             holder.ivImage.setVisibility(View.GONE);
         }

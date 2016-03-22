@@ -4,12 +4,13 @@
     android:id="@+id/rlnewsfeed"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/ivcommentpropic"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginLeft="16dp"
         android:scaleType="centerCrop" />
 
