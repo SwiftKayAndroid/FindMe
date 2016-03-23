@@ -223,7 +223,7 @@ public class User implements Serializable {
         protected ArrayList<Post> doInBackground(Void... params) {
             ConnectionManager connectionManager = new ConnectionManager();
             connectionManager.setMethod(ConnectionManager.POST);
-            connectionManager.setUri("getpictures.php");
+            connectionManager.setUri("getphotosv_1_6_1.php");
             connectionManager.addParam("uid", uid);
             connectionManager.addParam("ouid", user.getOuid());
             connectionManager.addParam("lastpage", lastpage);

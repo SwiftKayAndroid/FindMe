@@ -33,7 +33,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tvcommentusername"
         android:layout_below="@+id/tvcommentusername"
-        tools:text="Comment" />
+        tools:text="Comment"
+        android:layout_marginBottom="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,5 +46,14 @@
         android:layout_alignTop="@+id/tvcommentusername"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_gray"
+        android:layout_alignParentBottom="false"
+        android:layout_alignEnd="@+id/tvcommenttime"
+        android:layout_below="@+id/tvcomment"
+        android:layout_alignLeft="@+id/tvcomment" />
 
 </RelativeLayout>

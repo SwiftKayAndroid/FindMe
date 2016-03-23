@@ -56,5 +56,6 @@
     <color name="light_blue">#CEF6F5</color>
     <color name="bottle_green">#086A87</color>
     <color name="grayicon">#979797</color>
+    <color name="divider_gray">#d5d5d5</color>
 
 </resources>

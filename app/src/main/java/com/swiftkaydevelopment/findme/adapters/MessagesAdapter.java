@@ -28,6 +28,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     public interface MessagesAdapterListener{
         void onMessageLongClick(View itemView, Message message);
         void onProfileImageClicked(Message message);
+        void onMessageImageClickd(Message message);
     }
     public static final String TAG = "MessagesAdapter";
     private static final int VIEW_TYPE_USER_MESSAGE = 0;
@@ -65,7 +66,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     @Override
     public void onBindViewHolder(final MessagesAdapter.MessageViewHolder holder, final int position) {
 
-        Message message = mMessageList.get(position);
+        final Message message = mMessageList.get(position);
 
         holder.tvMessage.setText(mMessageList.get(position).getMessage());
         holder.tvTime.setText(mMessageList.get(position).getTime());
@@ -101,6 +102,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                         .transform(new ReducedTransform())
                         .into(holder.ivImage);
             }
+
+            holder.ivImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onMessageImageClickd(message);
+                    }
+                }
+            });
         } else {
             holder.ivImage.setVisibility(View.GONE);
         }

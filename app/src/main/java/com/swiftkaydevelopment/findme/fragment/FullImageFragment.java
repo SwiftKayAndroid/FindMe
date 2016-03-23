@@ -21,12 +21,12 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -45,12 +45,14 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
         void onImageDeleted(Post post);
     }
     public static final String TAG = "FullImageFragment";
+    private static final String ARG_LOC = "ARG_LOC";
 
     private static final String ARG_PIC = "ARG_PIC";
     private static final String ARG_ISUSER = "ARG_ISUSER";
     private static final String DELETE_LABEL = "DELETE";
 
     private Post post;
+    private String mLocation;
     private PhotoView ivPicture;
     private Toolbar mToolbar;
     private boolean isUser;
@@ -58,10 +60,28 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
 
     private FullImageFragListener mListener;
 
+    /**
+     * Factory method for a new instance of Fullimage Fragment using a Post
+     *
+     * @param uid User's id
+     * @param post Post
+     * @param isUser is this the users picture
+     * @return new instance of Fullimage fragment
+     */
     public static FullImageFragment newInstance(String uid, Post post, boolean isUser) {
         FullImageFragment frag = new FullImageFragment();
         Bundle b = new Bundle();
         b.putSerializable(ARG_PIC, post);
+        b.putString(ARG_UID, uid);
+        b.putBoolean(ARG_ISUSER, isUser);
+        frag.setArguments(b);
+        return frag;
+    }
+
+    public static FullImageFragment newInstance(String uid, String location, boolean isUser) {
+        FullImageFragment frag = new FullImageFragment();
+        Bundle b = new Bundle();
+        b.putSerializable(ARG_LOC, location);
         b.putString(ARG_UID, uid);
         b.putBoolean(ARG_ISUSER, isUser);
         frag.setArguments(b);
@@ -79,11 +99,13 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
             uid = savedInstanceState.getString(ARG_UID);
             post = (Post) savedInstanceState.getSerializable(ARG_PIC);
             isUser = savedInstanceState.getBoolean(ARG_ISUSER);
+            mLocation = savedInstanceState.getString(ARG_LOC);
         } else {
             if (getArguments() != null) {
                 uid = getArguments().getString(ARG_UID);
                 post = (Post) getArguments().getSerializable(ARG_PIC);
                 isUser = getArguments().getBoolean(ARG_ISUSER);
+                mLocation = getArguments().getString(ARG_LOC);
             }
         }
     }
@@ -100,11 +122,25 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Picasso.with(getActivity())
-                .load(post.getPostImage())
-                .into(ivPicture);
 
-        if (isUser) {
+        if (savedInstanceState != null) {
+            post = (Post) savedInstanceState.getSerializable(ARG_PIC);
+            mLocation = savedInstanceState.getString(ARG_LOC);
+        }
+
+        if (TextUtils.isEmpty(mLocation) && !TextUtils.isEmpty(post.getPostImage())) {
+            Picasso.with(getActivity())
+                    .load(post.getPostImage())
+                    .into(ivPicture);
+        } else if (!TextUtils.isEmpty(mLocation)) {
+            Picasso.with(getActivity())
+                    .load(mLocation)
+                    .into(ivPicture);
+        } else {
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
+
+        if (isUser && TextUtils.isEmpty(mLocation)) {
             mToolbar.setVisibility(View.VISIBLE);
             mToolbar.inflateMenu(R.menu.fullimage_menu);
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -157,6 +193,7 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
         outState.putString(ARG_UID, uid);
         outState.putSerializable(ARG_PIC, post);
         outState.putBoolean(ARG_ISUSER, isUser);
+        outState.putString(ARG_LOC, mLocation);
         super.onSaveInstanceState(outState);
     }
 
@@ -210,7 +247,9 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
 
         if (getView() != null) {
             mVisible = false;
-            mToolbar.setVisibility(View.INVISIBLE);
+            if (mToolbar.getVisibility() == View.VISIBLE) {
+                mToolbar.setVisibility(View.INVISIBLE);
+            }
             getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -229,7 +268,9 @@ public class FullImageFragment extends BaseFragment implements OkCancelDialog.Ok
     @SuppressLint("InlinedApi")
     private void show() {
         if (getView() != null) {
-            mToolbar.setVisibility(View.VISIBLE);
+            if (mToolbar.getVisibility() == View.INVISIBLE) {
+                mToolbar.setVisibility(View.VISIBLE);
+            }
             mVisible = true;
 
             getView().setFitsSystemWindows(mVisible);

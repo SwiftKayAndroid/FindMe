@@ -34,6 +34,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.adapters.CommentAdapter;
@@ -56,6 +57,8 @@ public class CommentsDialog extends AppCompatDialogFragment implements CommentsM
     private ArrayList<Comment> mComments = new ArrayList<>();
     private ImageView ivPostComment;
     private EditText etComment;
+    private  ListView lv;
+    private ProgressBar mProgressBar;
 
     private CommentAdapter mAdapter;
 
@@ -100,7 +103,8 @@ public class CommentsDialog extends AppCompatDialogFragment implements CommentsM
 
         etComment = (EditText) layout.findViewById(R.id.etcommentonpost);
         ivPostComment = (ImageView) layout.findViewById(R.id.ivCommentSend);
-        ListView lv = (ListView) layout.findViewById(R.id.lvcommentspop);
+        lv = (ListView) layout.findViewById(R.id.lvcommentspop);
+        mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
 
         Toolbar toolbar = (Toolbar) layout.findViewById(R.id.baseActivityToolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
@@ -112,6 +116,21 @@ public class CommentsDialog extends AppCompatDialogFragment implements CommentsM
             }
         });
 
+        return layout;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mProgressBar.setVisibility(View.GONE);
+            mComments = (ArrayList) savedInstanceState.getSerializable(ARG_COMMENTS);
+        } else {
+            mProgressBar.setVisibility(View.VISIBLE);
+            CommentsManager.getInstance(mUid, getActivity()).fetchComments(mPostid);
+        }
+
         if (mAdapter == null) {
             mAdapter = new CommentAdapter(getActivity(), mComments, mPostid);
         }
@@ -119,10 +138,6 @@ public class CommentsDialog extends AppCompatDialogFragment implements CommentsM
 
         etComment.setImeOptions(etComment.getImeOptions() | EditorInfo.IME_FLAG_NO_FULLSCREEN);
         ivPostComment.setOnClickListener(this);
-
-        CommentsManager.getInstance(mUid, getActivity()).fetchComments(mPostid);
-
-        return layout;
     }
 
     @Override
@@ -160,6 +175,7 @@ public class CommentsDialog extends AppCompatDialogFragment implements CommentsM
 
     @Override
     public void onCommentsLoaded(List<Comment> comments) {
+        mProgressBar.setVisibility(View.GONE);
         mAdapter.addComments(comments);
     }
 

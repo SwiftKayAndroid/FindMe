@@ -239,6 +239,14 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     }
 
     @Override
+    public void onMessageImageClickd(Message message) {
+        FullImageFragment fullImageFragment = FullImageFragment.newInstance(uid, message.mMessageImageLocation, uid.equals(message.getSenderId()));
+        getActivity().getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fullImageFragment, FullImageFragment.TAG)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
     public void onProfileImageClicked(Message message) {
         getActivity().startActivity(ProfileActivity.createIntent(getActivity(), message.getUser()));
     }
@@ -259,7 +267,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (count > 0) {
+        if (s.toString().length() > 0) {
             ivsend.setImageResource(R.mipmap.ic_send_white_24dp);
         } else {
             ivsend.setImageResource(R.mipmap.ic_photo_camera_white_24dp);

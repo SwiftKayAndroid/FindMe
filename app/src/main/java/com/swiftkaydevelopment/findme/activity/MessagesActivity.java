@@ -125,8 +125,11 @@ public class MessagesActivity extends BaseActivity implements MessagesFrag.Pictu
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        if (getSupportFragmentManager().findFragmentById(android.R.id.content) != null) {
+            super.onBackPressed();
+        } else {
+            finish();
+        }
     }
 
     @Override
