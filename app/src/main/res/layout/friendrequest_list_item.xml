@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:paddingBottom="5dp">
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/ivfriendslist"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
@@ -68,5 +72,15 @@
         android:src="@mipmap/ic_account_remove_white_24dp"
         android:layout_alignTop="@+id/ivAddFriendFriendRequests"
         android:tint="@color/darkred" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_gray"
+        android:layout_alignParentBottom="false"
+        android:layout_alignEnd="@+id/tvcommenttime"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignLeft="@+id/linearLayout"
+        android:layout_marginTop="10dp" />
 
 </RelativeLayout>

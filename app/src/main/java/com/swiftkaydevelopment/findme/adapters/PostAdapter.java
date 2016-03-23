@@ -149,7 +149,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.ivProfilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!mPostList.get(position).getUser().getOuid().equals(user.getOuid())) {
+                    if (!mPostList.get(position).getUser().getOuid().equals(mUid) || !hasHeader) {
                         mContext.startActivity(ProfileActivity.createIntent(mContext, mPostList.get(position).getUser()));
                     }
                 }

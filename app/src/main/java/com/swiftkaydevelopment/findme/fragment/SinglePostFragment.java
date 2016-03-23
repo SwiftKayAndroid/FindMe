@@ -19,6 +19,7 @@ package com.swiftkaydevelopment.findme.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +65,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
     private ImageView emptyView;
     private EditText etComment;
     private ListView lv;
+    private Toolbar mToolbar;
 
     private CommentAdapter mAdapter;
     private boolean commentsFetched = false;
@@ -102,6 +104,7 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
         tvName = (TextView) layout.findViewById(R.id.postUsername);
         tvTime = (TextView) layout.findViewById(R.id.postTime);
         tvPost = (TextView) layout.findViewById(R.id.tvPostText);
+        mToolbar = (Toolbar) layout.findViewById(R.id.singlePostToolbar);
         tvNumLikes = (TextView) layout.findViewById(R.id.tvPostNumLikes);
         tvNumComments = (TextView) layout.findViewById(R.id.tvPostNumComments);
         ivPostImage = (ImageView) layout.findViewById(R.id.postImage);
@@ -133,6 +136,14 @@ public class SinglePostFragment extends BaseFragment implements PostManager.Post
         } else {
             PostManager.getInstance().getSinglePost(mPostid, uid);
         }
+
+        mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         emptyView.setVisibility(View.GONE);
     }
 

@@ -10,8 +10,11 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
-    <include
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/fullImageToolbar"
-        layout="@layout/base_toolbar"/>
+        android:layout_centerHorizontal="true"
+        android:background="@color/base_green" />
 
 </RelativeLayout>

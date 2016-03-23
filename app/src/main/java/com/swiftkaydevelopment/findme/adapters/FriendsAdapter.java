@@ -52,7 +52,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
                     .into(holder.iv);
         }
         holder.tvname.setText(user.getFirstname() + " " + user.getLastname());
-        holder.tvdesc.setText(user.getAge() + "/" + user.city + "/" + user.getGender().toString());
+        holder.tvdesc.setText(user.getAge() + "/" + user.getGender().toString());
 
     }
 
