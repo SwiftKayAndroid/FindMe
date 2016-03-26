@@ -39,28 +39,27 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:id="@+id/etmessaget"
-        android:layout_alignParentBottom="true"
         android:inputType="textMultiLine|textCapSentences"
-        android:layout_toStartOf="@+id/tvsendmessage"
-        android:layout_toLeftOf="@+id/tvsendmessage"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:hint="Type a message...."
-        android:background="@color/white" />
+        android:background="@color/white"
+        android:layout_above="@+id/ad_view"
+        android:layout_alignEnd="@+id/tvsendmessage" />
 
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/tvsendmessage"
-        android:layout_alignParentBottom="true"
         android:gravity="center"
         android:padding="10dp"
         android:tint="@color/base_green"
         android:layout_below="@+id/messagesInlineRecyclerView"
         android:src="@mipmap/ic_send_white_24dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/ad_view" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -69,12 +68,13 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>
 
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:id="@+id/sendMessageImage"
-        android:layout_above="@+id/divider"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
-        android:visibility="visible" />
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/ad_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:adSize="BANNER"
+        app:adUnitId="@string/banner_ad_unit_id"
+        android:background="@color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/tvsendmessage" />
 </RelativeLayout>

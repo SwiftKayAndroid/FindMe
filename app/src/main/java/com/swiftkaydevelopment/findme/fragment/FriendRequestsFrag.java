@@ -128,6 +128,11 @@ public class FriendRequestsFrag extends BaseFragment implements
         UserManager.getInstance(uid).denyFriendRequest(uid, user);
     }
 
+    @Override
+    public void onLastItem(User item) {
+        //todo: pagination friend requests
+    }
+
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(OnFriendRequestRetrievedEvent event) {
         EventBus.getDefault().removeStickyEvent(event);

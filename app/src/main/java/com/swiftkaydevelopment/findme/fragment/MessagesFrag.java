@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.ProfileActivity;
 import com.swiftkaydevelopment.findme.adapters.MessagesAdapter;
@@ -66,6 +68,7 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     private RecyclerView        mRecyclerView;
     private View                mEmptyView;
     private ProgressBar         mProgressBar;
+    private AdView mAdView;
 
     public static MessagesFrag instance(String uid, User user) {
         MessagesFrag frag = new MessagesFrag();
@@ -100,10 +103,20 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
 
         etmessage = (EditText) layout.findViewById(R.id.etmessaget);
         ivsend = (ImageView) layout.findViewById(R.id.tvsendmessage);
-        ivImage = (ImageView) layout.findViewById(R.id.sendMessageImage);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.messagesInlineRecyclerView);
         mEmptyView = layout.findViewById(R.id.messageInlineEmptyView);
         mProgressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        mAdView = (AdView) layout.findViewById(R.id.ad_view);
+
+        // Create an ad request. Check your logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+
+        // Start loading the ad in the background.
+        mAdView.loadAd(adRequest);
 
         ivsend.setOnClickListener(this);
         return layout;
@@ -161,6 +174,10 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         }
         MessagesManager.getInstance(uid).addMessagesListener(this);
         EventBus.getDefault().register(this);
+
+        if (mAdView != null) {
+            mAdView.resume();
+        }
     }
 
     @Override
@@ -171,6 +188,18 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
         }
         MessagesManager.getInstance(uid).removeMessagesListener(this);
         EventBus.getDefault().unregister(this);
+
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
     }
 
     /**
@@ -249,6 +278,11 @@ public class MessagesFrag extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onProfileImageClicked(Message message) {
         getActivity().startActivity(ProfileActivity.createIntent(getActivity(), message.getUser()));
+    }
+
+    @Override
+    public void onLastItem(Message item) {
+        MessagesManager.getInstance(uid).getMoreMessages(item.getMessageId(), null, getActivity());
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

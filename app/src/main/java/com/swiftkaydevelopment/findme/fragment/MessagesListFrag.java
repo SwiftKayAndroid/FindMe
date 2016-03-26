@@ -218,6 +218,11 @@ public class MessagesListFrag extends BaseFragment implements MessagesManager.Me
     }
 
     @Override
+    public void onLastItem(ThreadInfo item) {
+//        MessagesManager.getInstance(uid).getMoreThreads(item.);
+    }
+
+    @Override
     public void onThreadLongClicked(final ThreadInfo threadInfo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Delete Thread");

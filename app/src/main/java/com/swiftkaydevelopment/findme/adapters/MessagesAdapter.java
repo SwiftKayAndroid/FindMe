@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageViewHolder> {
 
-    public interface MessagesAdapterListener{
+    public interface MessagesAdapterListener extends PaginationAdapterInterface<Message> {
         void onMessageLongClick(View itemView, Message message);
         void onProfileImageClicked(Message message);
         void onMessageImageClickd(Message message);
@@ -135,6 +135,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                 }
             }
         });
+
+        if (position == getItemCount() && (getItemCount() % PaginationAdapterInterface.FULL_PAGE) == 0) {
+            if (mListener != null) {
+                mListener.onLastItem(message);
+            }
+        }
     }
 
     @Override

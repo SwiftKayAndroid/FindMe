@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.NotificationViewHolder> {
 
-    public interface NotifactionsAdapterListener {
+    public interface NotifactionsAdapterListener extends PaginationAdapterInterface<Notification> {
         void onNotificationClicked(Notification note);
     }
     Context mContext;
@@ -75,6 +75,11 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             }
         });
 
+        if (position == getItemCount() && (getItemCount() % PaginationAdapterInterface.FULL_PAGE) == 0) {
+            if (mListener != null) {
+                mListener.onLastItem(note);
+            }
+        }
     }
 
     @Override

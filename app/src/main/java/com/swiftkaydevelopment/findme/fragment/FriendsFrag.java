@@ -24,7 +24,7 @@ import java.util.ArrayList;
 /**
  * Created by Kevin Haines on 3/2/2015.
  */
-public class FriendsFrag extends BaseFragment {
+public class FriendsFrag extends BaseFragment implements FriendsAdapter.FriendsAdapterListener {
     public static final String TAG = "FriendsFrag";
     private static final String ARG_FRIENDS = "ARG_FRIENDS";
 
@@ -85,7 +85,7 @@ public class FriendsFrag extends BaseFragment {
         }
 
         if (mAdapter == null) {
-            mAdapter = new FriendsAdapter(getActivity(), users, uid);
+            mAdapter = new FriendsAdapter(getActivity(), users, uid, this);
         }
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -122,5 +122,10 @@ public class FriendsFrag extends BaseFragment {
         } else {
             mEmptyView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onLastItem(User item) {
+        //todo: pagination of friends
     }
 }

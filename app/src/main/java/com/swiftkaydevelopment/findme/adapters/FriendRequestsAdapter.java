@@ -22,7 +22,7 @@ import java.util.ArrayList;
  */
 public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAdapter.FriendRequestViewHolder> {
 
-    public interface FriendRequestsAdapterListener{
+    public interface FriendRequestsAdapterListener extends PaginationAdapterInterface<User> {
         void onFriendRequestAccepted(User user);
         void onFriendRequestDenied(User user);
     }
@@ -66,6 +66,12 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
         }
         holder.tvName.setText(users.get(position).getFirstname() + " " + users.get(position).getLastname());
         holder.tvDesc.setText(users.get(position).getAge() + "/" + users.get(position).getGender().toString());
+
+        if (position == getItemCount() && (getItemCount() % PaginationAdapterInterface.FULL_PAGE) == 0) {
+            if (mListener != null) {
+                mListener.onLastItem(users.get(position));
+            }
+        }
     }
 
     @Override

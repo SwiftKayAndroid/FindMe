@@ -38,6 +38,9 @@
          [CHAR LIMIT=50]
     -->
     <string name="hour_picker_description">Hours circular slider</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-2430957582057343/5607584916</string>
+
     <!--
          Content description for the minute selector in the time picker, which displays
          selectable five-minute intervals along the inside edge of a circle, as in an analog clock.

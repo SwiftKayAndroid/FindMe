@@ -131,4 +131,9 @@ public class NotificationsFrag extends BaseFragment implements NotificationsAdap
             getActivity().startActivity(ProfileActivity.createIntent(getActivity(), note.user));
         }
     }
+
+    @Override
+    public void onLastItem(Notification item) {
+        //todo: pagination notifications
+    }
 }

@@ -265,7 +265,8 @@
                         android:layout_marginRight="16dp"
                         tools:text="Sex, Love"
                         android:layout_marginTop="15dp"
-                        android:layout_marginLeft="16dp" />
+                        android:layout_marginLeft="16dp"
+                        android:maxWidth="150dp" />
 
                 </LinearLayout>
 
@@ -296,7 +297,8 @@
                         android:gravity="right"
                         android:layout_marginRight="16dp"
                         tools:text="Sex, Love"
-                        android:layout_marginTop="15dp" />
+                        android:layout_marginTop="15dp"
+                        android:maxWidth="150dp" />
 
                 </LinearLayout>
 
@@ -327,7 +329,8 @@
                         android:gravity="right"
                         android:layout_marginRight="16dp"
                         tools:text="Sex, Love"
-                        android:layout_marginTop="15dp" />
+                        android:layout_marginTop="15dp"
+                        android:maxWidth="150dp" />
 
                 </LinearLayout>
 
@@ -358,7 +361,8 @@
                         android:gravity="right"
                         android:layout_marginRight="16dp"
                         tools:text="Sex, Love"
-                        android:layout_marginTop="15dp" />
+                        android:layout_marginTop="15dp"
+                        android:maxWidth="150dp" />
 
                 </LinearLayout>
 

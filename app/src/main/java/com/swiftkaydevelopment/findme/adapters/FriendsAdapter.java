@@ -21,16 +21,22 @@ import java.util.ArrayList;
  * Created by khaines178 on 9/10/15.
  */
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder> {
+
+    public interface FriendsAdapterListener extends PaginationAdapterInterface<User> {
+
+    }
     public static final String TAG = "FriendsAdapter";
     Context mContext;
     String uid;
     ArrayList<User> users = new ArrayList<>();
 
-    public FriendsAdapter(Context context, ArrayList<User> users, String uid) {
+    private FriendsAdapterListener mListener;
+
+    public FriendsAdapter(Context context, ArrayList<User> users, String uid, FriendsAdapterListener listener) {
         this.mContext = context;
         this.uid = uid;
         this.users = users;
-
+        mListener = listener;
     }
 
     @Override
@@ -54,6 +60,11 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         holder.tvname.setText(user.getFirstname() + " " + user.getLastname());
         holder.tvdesc.setText(user.getAge() + "/" + user.getGender().toString());
 
+        if (position == getItemCount() && (getItemCount() % PaginationAdapterInterface.FULL_PAGE) == 0) {
+            if (mListener != null) {
+                mListener.onLastItem(user);
+            }
+        }
     }
 
     @Override

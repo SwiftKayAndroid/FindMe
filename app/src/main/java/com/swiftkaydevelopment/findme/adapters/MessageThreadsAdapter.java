@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAdapter.MessageThreadsViewHolder> {
 
-    public interface ThreadSelectedListener{
+    public interface ThreadSelectedListener extends PaginationAdapterInterface<ThreadInfo> {
         void onThreadSelected(ThreadInfo threadInfo);
         void onThreadLongClicked(ThreadInfo threadInfo);
         void onThreadUserSelected(User user);
@@ -129,6 +129,12 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
                     return true;
                 }
             });
+        }
+
+        if (position == getItemCount() && (getItemCount() % PaginationAdapterInterface.FULL_PAGE) == 0) {
+            if (mListener != null) {
+                mListener.onLastItem(thread);
+            }
         }
     }
 
