@@ -49,7 +49,7 @@
                 <item
                     android:id="@+id/menuSettings"
                     android:title="Settings"
-                    android:visible="false"
+                    android:visible="true"
                     android:icon="@mipmap/ic_settings_white_24dp"/>
 
             </menu>

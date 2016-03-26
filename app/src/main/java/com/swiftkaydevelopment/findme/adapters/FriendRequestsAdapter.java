@@ -65,6 +65,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                     .into(holder.iv);
         }
         holder.tvName.setText(users.get(position).getFirstname() + " " + users.get(position).getLastname());
+        holder.tvDesc.setText(users.get(position).getAge() + "/" + users.get(position).getGender().toString());
     }
 
     @Override

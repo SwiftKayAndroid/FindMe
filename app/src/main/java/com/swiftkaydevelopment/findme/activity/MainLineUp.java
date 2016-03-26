@@ -35,6 +35,7 @@ import com.swiftkaydevelopment.findme.gcm.QuickstartPreferences;
 import com.swiftkaydevelopment.findme.gcm.RegistrationIntentService;
 import com.swiftkaydevelopment.findme.managers.UserManager;
 import com.swiftkaydevelopment.findme.newsfeed.NewsFeedFrag;
+import com.swiftkaydevelopment.findme.settings.Settings;
 import com.swiftkaydevelopment.findme.views.CircleTransform;
 
 /**
@@ -234,7 +235,11 @@ public class MainLineUp extends BaseActivity {
                 startActivity(MediationActivity.createIntent(this));
                 break;
             case R.id.menuSettings:
-//                launchPrefs();
+                Settings settings = Settings.newInstance(uid);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, settings, Settings.TAG)
+                        .addToBackStack(null)
+                        .commit();
                 break;
         }
     }

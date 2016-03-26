@@ -19,11 +19,17 @@ package com.swiftkaydevelopment.findme.data;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
+import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.activity.NotificationActivity;
 import com.swiftkaydevelopment.findme.data.datainterfaces.Notifiable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -35,12 +41,26 @@ public class StatusLike implements Serializable, Notifiable {
     @Override
     public PushData getPushData(Bundle data, Context context) {
 
-//        JSONObject postData = new JSONObject(data.getString("post"));
-//        JSONObject userData = new JSONObject(data.getString("user"));
-
         PushData pushData = new PushData();
         pushData.title = "New like";
-        pushData.message = "Someone liked your status";
+
+        try {
+            JSONObject object = new JSONObject(data.getString("user"));
+            User user = SimpleUser.createUserFromJson(object);
+            if (user != null) {
+                if (!TextUtils.isEmpty(user.getPropicloc())) {
+                    pushData.icon = Picasso.with(context)
+                            .load(user.getPropicloc())
+                            .get();
+                }
+                pushData.message = user.getFirstname() + " liked your status";
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            pushData.message = "Someone liked your status";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         pushData.intent = PushData.createPendingIntent(NotificationActivity.createIntent(context), context);
         pushData.notificationId = getNotificationId();
         pushData.resId = R.mipmap.ic_heart_black_24dp;
