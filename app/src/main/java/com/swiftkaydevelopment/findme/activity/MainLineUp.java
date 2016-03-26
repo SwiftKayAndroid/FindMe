@@ -31,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import com.swiftkaydevelopment.findme.BuildConfig;
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.database.DatabaseManager;
+import com.swiftkaydevelopment.findme.fragment.FeedbackFragment;
 import com.swiftkaydevelopment.findme.gcm.QuickstartPreferences;
 import com.swiftkaydevelopment.findme.gcm.RegistrationIntentService;
 import com.swiftkaydevelopment.findme.managers.UserManager;
@@ -240,6 +241,14 @@ public class MainLineUp extends BaseActivity {
                         .replace(android.R.id.content, settings, Settings.TAG)
                         .addToBackStack(null)
                         .commit();
+
+                break;
+            case R.id.menuFeedback:
+                FeedbackFragment feedbackFragment = FeedbackFragment.newInstance(uid);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, feedbackFragment, FeedbackFragment.TAG)
+                        .addToBackStack(null)
+                        .commit();
                 break;
         }
     }
@@ -274,6 +283,8 @@ public class MainLineUp extends BaseActivity {
                         .into(ivusersphoto);
             }
         } else {
+
+            startActivity(PrepareImageActivity.createIntent(this));
             if (BuildConfig.GLIDE) {
                 Picasso.with(this)
                         .load(R.drawable.ic_placeholder)

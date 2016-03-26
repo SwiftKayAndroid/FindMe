@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.swiftkaydevelopment.findme.R;
 import com.swiftkaydevelopment.findme.data.AppConstants;
@@ -46,6 +48,16 @@ public class MediationActivity extends BaseActivity {
 
     @Override
     protected void createActivity(Bundle savedInstanceState) {
+
+        mToolbar = (Toolbar) findViewById(R.id.baseActivityToolbar);
+        mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.setTitle("Mediate Photos");
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(AppConstants.PreferenceConstants.PREF_MEDIATE_TERMS, false)) {
             MediateTermsFragment fragment = new MediateTermsFragment();

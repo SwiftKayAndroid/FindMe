@@ -179,6 +179,7 @@ public class MessageThreadsAdapter extends RecyclerView.Adapter<MessageThreadsAd
                 threadInfo.lastMessage = message.getMessage();
                 threadInfo.threadUser = message.getUser();
                 threadInfo.seenStatus = message.getSeenStatus();
+                threadInfo.senderId = message.getSenderId();
                 threadInfo.ouid = message.getOuid();
                 threadInfo.readStatus = message.getReadStatus();
                 threadInfo.time = message.getTime();

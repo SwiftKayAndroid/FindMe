@@ -52,6 +52,12 @@
                     android:visible="true"
                     android:icon="@mipmap/ic_settings_white_24dp"/>
 
+                <item
+                    android:id="@+id/menuFeedback"
+                    android:title="Feedback"
+                    android:visible="true"
+                    android:icon="@mipmap/ic_pencil_white_24dp"/>
+
             </menu>
         </item>
 
