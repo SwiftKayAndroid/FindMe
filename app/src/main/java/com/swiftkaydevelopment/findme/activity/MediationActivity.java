@@ -20,8 +20,11 @@ package com.swiftkaydevelopment.findme.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import com.swiftkaydevelopment.findme.R;
+import com.swiftkaydevelopment.findme.data.AppConstants;
+import com.swiftkaydevelopment.findme.fragment.MediateTermsFragment;
 import com.swiftkaydevelopment.findme.fragment.PhotoMediationFragment;
 
 public class MediationActivity extends BaseActivity {
@@ -43,6 +46,11 @@ public class MediationActivity extends BaseActivity {
 
     @Override
     protected void createActivity(Bundle savedInstanceState) {
+
+        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(AppConstants.PreferenceConstants.PREF_MEDIATE_TERMS, false)) {
+            MediateTermsFragment fragment = new MediateTermsFragment();
+            fragment.show(getSupportFragmentManager(), MediateTermsFragment.TAG);
+        }
 
         if (getSupportFragmentManager().findFragmentByTag(PhotoMediationFragment.TAG) == null) {
             PhotoMediationFragment fragment = PhotoMediationFragment.newInstance(uid);

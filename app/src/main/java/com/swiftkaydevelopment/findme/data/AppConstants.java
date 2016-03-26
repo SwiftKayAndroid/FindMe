@@ -31,5 +31,6 @@ public class AppConstants {
         public static final String PREF_PASSWORD = "password";
         public static final String PREF_LOGIN_SAVED = "login_saved";
         public static final String PREF_ZIP = "zip";
+        public static final String PREF_MEDIATE_TERMS = "mediate_terms";
     }
 }

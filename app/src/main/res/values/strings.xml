@@ -17,18 +17,21 @@
         sending the fetched token to the server or subscribing to the PubSub topic. Please try
         running the sample again.</string>
 
-    <!-- Nav Drawer Menu Items -->
-    <string-array name="nav_drawer_items">
-        <item>Connect</item>
-        <item>Profile Views</item>
-        <item>Matches</item>
-        <item>Photos</item>
-
-        <item>Settings</item>
-    </string-array>
-
-    <!-- Label for button to confirm chosen date or time [CHAR LIMIT=30] -->
     <string name="done_label">Done</string>
+    <string name="mediate_terms">To be a mediator you must agree to the following terms: \n\n
+    1. You agree that you are above the age of 18/n
+    2. You understand that in this section, the content shown could be of inappropriate nature, including but not limited to:\n\n
+        \t- Nudity\n
+     \t- Profanity\n
+     \t- Adult content\n
+     \t- Sexually explicit material\n
+     \t- Drugs or other illegal activity\n\n
+    3. You agree that as a mediator you will give fair treatment to any images/content you see and agree to mediate fairly\n\n
+    4. Failure to mediate fairly and by following the mediation guidelines can lead to termination of your account and fees of up to $1000USD\n\n
+    5. You understand that by being a mediator you are volunteering to mediate content on this app. You understand that you will not be paid or compensated for this service unless otherwise discussed (Credits may
+        be rewarded to mediators for in app content but you understand that we are not obligated to provide this compensation and this service may be interupted at times)\n\n
+    6. You understand that the makers and distributers of this app are not responsible for damages done to you due to the content in this section. The images seen can be disturbing and we caution you to only become
+    a mediator if you can handle such disturbing content.</string>
     <!--
          Content description for the hour selector in the time picker, which displays
          selectable hours of the day along the inside edge of a circle, as in an analog clock.
